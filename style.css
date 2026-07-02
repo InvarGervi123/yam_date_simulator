@@ -1,0 +1,132 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #050505;
+  font-family: Arial, sans-serif;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #050505;
+  color: white;
+}
+
+#fallbackBg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(90, 90, 90, 0.35), transparent 30%),
+    linear-gradient(180deg, #101010, #000000);
+  z-index: 0;
+}
+
+#background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  z-index: 1;
+}
+
+#character {
+  position: absolute;
+  left: 5%;
+  bottom: 17%;
+  height: 62vh;
+  max-height: 560px;
+  width: auto;
+  object-fit: contain;
+  display: none;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.75));
+}
+
+#dialogBox {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 5%;
+  min-height: 190px;
+  max-height: 42vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.86);
+  border: 3px solid white;
+  padding: 18px;
+  z-index: 3;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.12);
+}
+
+#speaker {
+  min-height: 30px;
+  font-weight: bold;
+  color: #ffd447;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+#text {
+  white-space: pre-line;
+  line-height: 1.45;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+
+#choices {
+  display: grid;
+  gap: 8px;
+}
+
+button {
+  font-size: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border: 2px solid white;
+  background: #efefef;
+  color: #111;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ffffff;
+}
+
+.choiceBtn {
+  width: 100%;
+  text-align: right;
+}
+
+#nextBtn {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 800px) {
+  #character {
+    left: 2%;
+    bottom: 28%;
+    height: 48vh;
+  }
+
+  #dialogBox {
+    left: 3%;
+    right: 3%;
+    bottom: 3%;
+    max-height: 50vh;
+  }
+
+  #text, #speaker, button {
+    font-size: 18px;
+  }
+}

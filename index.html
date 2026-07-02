@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ים דייט סימולטור</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game">
+    <div id="fallbackBg"></div>
+    <img id="background" alt="רקע" />
+    <img id="character" alt="ים" />
+
+    <section id="dialogBox">
+      <div id="speaker"></div>
+      <div id="text">טוען...</div>
+      <div id="choices"></div>
+      <button id="nextBtn">המשך</button>
+    </section>
+  </main>
+
+  <audio id="music" loop preload="auto"></audio>
+  <audio id="sfx" preload="auto"></audio>
+
+  <script src="story.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
