@@ -12,6 +12,7 @@
 <body>
   <main id="game">
     <button id="soundToggle" aria-label="השתק מוזיקה">🔇</button>
+    <button id="galleryToggle" aria-label="טבלת סופים">🏆</button>
     <div id="fallbackBg"></div>
     <img id="background" alt="רקע" />
     <img id="character" alt="ים" />
@@ -31,6 +32,26 @@
         <p id="minigameInstruction">הוראות משחק</p>
         <div id="minigameVisual"></div>
         <button id="minigameBtn">לחץ/י כאן</button>
+      </div>
+    </div>
+
+    <!-- Ending Gallery Modal -->
+    <div id="galleryModal" style="display: none;">
+      <div id="galleryBox">
+        <button id="closeGallery">×</button>
+        <h3>סופים שנפתחו (<span id="galleryCount">0</span>/<span id="galleryTotal">0</span>)</h3>
+        <div id="galleryTableContainer">
+          <table id="galleryTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>סוג הסוף</th>
+                <th>סטטוס</th>
+              </tr>
+            </thead>
+            <tbody id="galleryBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>

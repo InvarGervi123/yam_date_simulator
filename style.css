@@ -534,3 +534,40 @@ button {
     padding: 10px 24px;
   }
 }
+
+/* --- Narrative Visual Effects (VFX) --- */
+
+.effect-shake {
+  animation: shakeEffect 0.4s ease-in-out;
+}
+
+@keyframes shakeEffect {
+  0%, 100% { transform: translate(0, 0); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-8px, -4px); }
+  20%, 40%, 60%, 80% { transform: translate(8px, 4px); }
+}
+
+.effect-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 999;
+  pointer-events: none;
+  animation: flashEffect 0.35s ease-out forwards;
+}
+
+@keyframes flashEffect {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.effect-redflash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 59, 48, 0.9);
+  z-index: 999;
+  pointer-events: none;
+  animation: flashEffect 0.45s ease-out forwards;
+}

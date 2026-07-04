@@ -316,6 +316,16 @@ function showScene(id) {
   if (scene.music) playMusic(scene.music);
   if (scene.sfx) playSfx(scene.sfx);
 
+  // Trigger Visual Effects (shake, flash, redflash)
+  if (scene.effect) {
+    const gameContainer = document.getElementById("game");
+    const effectClass = `effect-${scene.effect}`;
+    gameContainer.classList.add(effectClass);
+    setTimeout(() => {
+      gameContainer.classList.remove(effectClass);
+    }, 500);
+  }
+
   // Performance Preloading Optimization
   preloadNextAssets(scene);
 
