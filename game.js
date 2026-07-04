@@ -365,6 +365,11 @@ function showScene(id) {
     }, 500);
   }
 
+  // Trigger Custom Scene Vibration
+  if (scene.vibrate) {
+    triggerVibration(scene.vibrate);
+  }
+
   // Performance Preloading Optimization
   preloadNextAssets(scene);
 
