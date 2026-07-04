@@ -571,3 +571,159 @@ button {
   pointer-events: none;
   animation: flashEffect 0.45s ease-out forwards;
 }
+
+/* --- Ending Gallery Tracker UI --- */
+
+#galleryToggle {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 15, 22, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#galleryToggle:hover {
+  background: rgba(255, 212, 71, 0.9);
+  border-color: #ffd447;
+  color: #030305;
+  transform: scale(1.08);
+}
+
+#galleryToggle:active {
+  transform: scale(0.95);
+}
+
+/* Gallery Modal Overlay */
+#galleryModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 3, 5, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 150;
+}
+
+#galleryBox {
+  background: rgba(18, 18, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  border-radius: 22px;
+  padding: 24px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 75dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: mgBoxFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#closeGallery {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  font-size: 28px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+
+#closeGallery:hover {
+  color: #ffffff;
+}
+
+#galleryBox h3 {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  color: #ffd447;
+  text-align: center;
+  font-weight: 700;
+}
+
+#galleryTableContainer {
+  flex-grow: 1;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px;
+}
+
+#galleryTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  font-size: 15px;
+}
+
+#galleryTable th, #galleryTable td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#galleryTable th {
+  background: rgba(255, 255, 255, 0.03);
+  font-weight: 700;
+  color: #a0aec0;
+}
+
+#galleryTable tr:last-child td {
+  border-bottom: none;
+}
+
+.unlocked-row {
+  color: #ffd447;
+  font-weight: 500;
+}
+
+.locked-row {
+  color: #718096;
+}
+
+.unlocked-badge {
+  color: #48bb78;
+  font-weight: 700;
+}
+
+.locked-badge {
+  color: #718096;
+}
+
+/* Custom scrollbar for modal table */
+#galleryTableContainer::-webkit-scrollbar {
+  width: 6px;
+}
+#galleryTableContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+#galleryTableContainer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+#galleryTableContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 212, 71, 0.4);
+}

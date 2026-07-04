@@ -336,6 +336,7 @@ function showScene(id) {
   }
 
   if (scene.end) {
+    unlockEnding(id);
     nextBtn.style.display = "none";
     addChoice("לשחק שוב מההתחלה", "start");
     return;
@@ -357,3 +358,91 @@ function showScene(id) {
 }
 
 showScene("start");
+
+// --- Ending Tracker Cookie & Modal UI Logic ---
+
+function setCookie(name, value, days = 365) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+  }
+  return null;
+}
+
+function getUnlockedEndings() {
+  const cookieVal = getCookie("unlocked_endings");
+  if (!cookieVal) return [];
+  try {
+    return JSON.parse(cookieVal);
+  } catch (e) {
+    return [];
+  }
+}
+
+function unlockEnding(endingId) {
+  const unlocked = getUnlockedEndings();
+  if (!unlocked.includes(endingId)) {
+    unlocked.push(endingId);
+    setCookie("unlocked_endings", JSON.stringify(unlocked));
+  }
+}
+
+const galleryToggle = document.getElementById("galleryToggle");
+const galleryModal = document.getElementById("galleryModal");
+const closeGallery = document.getElementById("closeGallery");
+const galleryBody = document.getElementById("galleryBody");
+const galleryCount = document.getElementById("galleryCount");
+const galleryTotal = document.getElementById("galleryTotal");
+
+function openEndingsGallery() {
+  galleryBody.innerHTML = "";
+  
+  // Dynamic Ending Scanning
+  const endings = [];
+  for (let key in story) {
+    if (story[key].end) {
+      const rawText = story[key].text || "";
+      // Clean up emojis and get first line of ending text
+      const cleanName = rawText.split('\n')[0].replace(/^[🎨🤖📹📻💀🖼💔⚖🏳🎬🏆🏎🧆🍿🎥⭐🚌💸💬📷😬🌿🧬⚙️📁😭🧺💍🦾🖤☔🛏🫳]*/g, '').trim();
+      endings.push({
+        id: key,
+        speaker: story[key].speaker || "סוף",
+        cleanName: cleanName
+      });
+    }
+  }
+
+  const unlocked = getUnlockedEndings();
+  galleryCount.textContent = unlocked.length;
+  galleryTotal.textContent = endings.length;
+
+  endings.forEach((end, idx) => {
+    const isUnlocked = unlocked.includes(end.id);
+    const tr = document.createElement("tr");
+    tr.className = isUnlocked ? "unlocked-row" : "locked-row";
+
+    tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${isUnlocked ? `${end.speaker}: ${end.cleanName}` : "🔒 ???"}</td>
+      <td><span class="${isUnlocked ? 'unlocked-badge' : 'locked-badge'}">${isUnlocked ? 'פתוח' : 'נעול'}</span></td>
+    `;
+    galleryBody.appendChild(tr);
+  });
+
+  galleryModal.style.display = "flex";
+}
+
+galleryToggle.onclick = openEndingsGallery;
+closeGallery.onclick = () => {
+  galleryModal.style.display = "none";
+};
