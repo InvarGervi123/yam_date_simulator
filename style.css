@@ -1156,3 +1156,34 @@ button {
   background: #ffe07a;
   transform: scale(1.05);
 }
+
+/* --- Undertale-style Boss Sprite Styles --- */
+#battleBossSpriteContainer {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  position: relative;
+}
+
+#battleBossSprite {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  animation: undertaleSway 2.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.2));
+}
+
+@keyframes undertaleSway {
+  0% {
+    transform: translateX(-8px) translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateX(0) translateY(-6px) scaleY(1.04) scaleX(0.98);
+  }
+  100% {
+    transform: translateX(8px) translateY(0) rotate(1deg);
+  }
+}

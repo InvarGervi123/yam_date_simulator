@@ -531,7 +531,7 @@ function runDeltaruneBattle(config) {
   let bossAttackPower = 20; // damage per hit
 
   // Audio setup
-  playMusic("audio/main.mp3"); // Play battle music
+  playMusic("audio/boss_fight.mp3"); // Play battle music
 
   // Console writer helper
   function writeConsole(message) {
