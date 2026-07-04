@@ -9,8 +9,72 @@ const nextBtn = document.getElementById("nextBtn");
 const music = document.getElementById("music");
 const sfx = document.getElementById("sfx");
 
+// Minigame Elements
+const minigameOverlay = document.getElementById("minigameOverlay");
+const minigameTitle = document.getElementById("minigameTitle");
+const minigameInstruction = document.getElementById("minigameInstruction");
+const minigameVisual = document.getElementById("minigameVisual");
+const minigameBtn = document.getElementById("minigameBtn");
+
+// Sound Control Logic
+const soundToggle = document.getElementById("soundToggle");
+let isMuted = true;
+
+// Initialize as muted
+music.muted = true;
+sfx.muted = true;
+soundToggle.textContent = "🔇";
+
+soundToggle.onclick = () => {
+  isMuted = !isMuted;
+  music.muted = isMuted;
+  sfx.muted = isMuted;
+  soundToggle.textContent = isMuted ? "🔇" : "🔊";
+  
+  if (!isMuted && music.src) {
+    music.play().catch(() => {});
+  }
+};
+
 const DEFAULT_BG = "images/room.jpg";
 const DEFAULT_CHARACTER = "images/yam.png";
+
+// Performance Optimization: Cache for preloaded images
+const preloadedImages = new Set();
+
+function preloadNextAssets(scene) {
+  if (!scene) return;
+  const urlsToPreload = [];
+
+  // Check next scene assets
+  if (scene.next) {
+    const nextScene = story[scene.next];
+    if (nextScene) {
+      if (nextScene.bg && nextScene.bg !== DEFAULT_BG) urlsToPreload.push(nextScene.bg);
+      if (nextScene.character && nextScene.character !== DEFAULT_CHARACTER) urlsToPreload.push(nextScene.character);
+    }
+  }
+
+  // Check choices next scenes assets
+  if (scene.choices) {
+    scene.choices.forEach(choice => {
+      const nextScene = story[choice.next];
+      if (nextScene) {
+        if (nextScene.bg && nextScene.bg !== DEFAULT_BG) urlsToPreload.push(nextScene.bg);
+        if (nextScene.character && nextScene.character !== DEFAULT_CHARACTER) urlsToPreload.push(nextScene.character);
+      }
+    });
+  }
+
+  // Preload unique URLs asynchronously
+  urlsToPreload.forEach(url => {
+    if (url && !preloadedImages.has(url)) {
+      preloadedImages.add(url);
+      const img = new Image();
+      img.src = url;
+    }
+  });
+}
 
 function fileExistsFallbackImage(img, src) {
   if (!img || !src) {
@@ -65,6 +129,165 @@ function addChoice(label, nextScene) {
   choices.appendChild(btn);
 }
 
+// Minigame Engine
+function runMinigame(config) {
+  minigameOverlay.style.display = "flex";
+  
+  // Hide choices and nextBtn so player cannot skip
+  clearChoices();
+  nextBtn.style.display = "none";
+  
+  if (window.minigameInterval) clearInterval(window.minigameInterval);
+  
+  let timeLeft = config.duration; // in ms
+  let score = 0;
+  
+  // Reset buttons positions & events
+  minigameBtn.style.position = "";
+  minigameBtn.style.left = "";
+  minigameBtn.style.top = "";
+  minigameBtn.style.transform = "";
+  minigameBtn.onclick = null;
+  
+  if (config.type === "click_mash") {
+    minigameTitle.textContent = "משחק לחיצות מהיר!";
+    minigameInstruction.textContent = `לחץ/י על הכפתור ${config.target} פעמים תוך ${(config.duration / 1000).toFixed(1)} שניות!`;
+    minigameBtn.textContent = "ללחוץ!!";
+    
+    minigameVisual.innerHTML = `
+      <div class="mg-progress-container">
+        <div class="mg-progress-bar" id="mgBar" style="width: 0%;"></div>
+      </div>
+      <div class="mg-timer" id="mgTimer">זמן נותר: ${(timeLeft / 1000).toFixed(1)}s</div>
+    `;
+    
+    const mgBar = document.getElementById("mgBar");
+    const mgTimer = document.getElementById("mgTimer");
+    
+    minigameBtn.onclick = () => {
+      score++;
+      const percent = Math.min((score / config.target) * 100, 100);
+      if (mgBar) mgBar.style.width = percent + "%";
+      
+      playSfx("audio/click.mp3"); // Play sound if exists
+      
+      if (score >= config.target) {
+        endMinigame(true);
+      }
+    };
+    
+    const tick = 50;
+    window.minigameInterval = setInterval(() => {
+      timeLeft -= tick;
+      if (mgTimer) mgTimer.textContent = `זמן נותר: ${Math.max(timeLeft / 1000, 0).toFixed(1)}s`;
+      if (timeLeft <= 0) {
+        endMinigame(false);
+      }
+    }, tick);
+    
+  } else if (config.type === "qte") {
+    minigameTitle.textContent = "זמן תגובה מהיר!";
+    minigameInstruction.textContent = `לחץ/י על הכפתור מהר!`;
+    minigameBtn.textContent = "להתחמק!";
+    
+    // Position button randomly inside the overlay
+    minigameBtn.style.position = "absolute";
+    const x = Math.random() * 50 + 25; // 25% to 75%
+    const y = Math.random() * 40 + 30; // 30% to 70%
+    minigameBtn.style.left = `${x}%`;
+    minigameBtn.style.top = `${y}%`;
+    minigameBtn.style.transform = "translate(-50%, -50%)";
+    
+    minigameVisual.innerHTML = `
+      <div class="mg-timer" id="mgTimer">זמן נותר: ${(timeLeft / 1000).toFixed(1)}s</div>
+    `;
+    
+    const mgTimer = document.getElementById("mgTimer");
+    
+    minigameBtn.onclick = () => {
+      endMinigame(true);
+    };
+    
+    const tick = 25;
+    window.minigameInterval = setInterval(() => {
+      timeLeft -= tick;
+      if (mgTimer) mgTimer.textContent = `זמן נותר: ${Math.max(timeLeft / 1000, 0).toFixed(1)}s`;
+      if (timeLeft <= 0) {
+        endMinigame(false);
+      }
+    }, tick);
+    
+  } else if (config.type === "timing_bar") {
+    minigameTitle.textContent = "דיוק בעיתוי!";
+    minigameInstruction.textContent = "לחץ/י בדיוק כשהמחוון נמצא באזור הכחול!";
+    minigameBtn.textContent = "עצור!";
+    
+    minigameVisual.innerHTML = `
+      <div class="mg-timing-container">
+        <div class="mg-timing-zone"></div>
+        <div class="mg-timing-indicator" id="mgIndicator" style="left: 0%;"></div>
+      </div>
+      <div class="mg-timer" id="mgTimer">זמן נותר: ${(timeLeft / 1000).toFixed(1)}s</div>
+    `;
+    
+    const indicator = document.getElementById("mgIndicator");
+    const mgTimer = document.getElementById("mgTimer");
+    
+    let position = 0;
+    let direction = 1;
+    const speed = 3.5; // percent per tick
+    
+    const animInterval = setInterval(() => {
+      position += speed * direction;
+      if (position >= 100) {
+        position = 100;
+        direction = -1;
+      } else if (position <= 0) {
+        position = 0;
+        direction = 1;
+      }
+      if (indicator) indicator.style.left = position + "%";
+    }, 20);
+    
+    minigameBtn.onclick = () => {
+      clearInterval(animInterval);
+      // Success zone is 40% to 60%
+      if (position >= 40 && position <= 60) {
+        endMinigame(true);
+      } else {
+        endMinigame(false);
+      }
+    };
+    
+    const tick = 50;
+    window.minigameInterval = setInterval(() => {
+      timeLeft -= tick;
+      if (mgTimer) mgTimer.textContent = `זמן נותר: ${Math.max(timeLeft / 1000, 0).toFixed(1)}s`;
+      if (timeLeft <= 0) {
+        clearInterval(animInterval);
+        endMinigame(false);
+      }
+    }, tick);
+  }
+  
+  function endMinigame(success) {
+    clearInterval(window.minigameInterval);
+    minigameOverlay.style.display = "none";
+    
+    // Reset positions
+    minigameBtn.style.position = "";
+    minigameBtn.style.left = "";
+    minigameBtn.style.top = "";
+    minigameBtn.style.transform = "";
+    
+    if (success) {
+      showScene(config.nextSuccess);
+    } else {
+      showScene(config.nextFail);
+    }
+  }
+}
+
 function showScene(id) {
   const scene = story[id];
 
@@ -92,6 +315,15 @@ function showScene(id) {
 
   if (scene.music) playMusic(scene.music);
   if (scene.sfx) playSfx(scene.sfx);
+
+  // Performance Preloading Optimization
+  preloadNextAssets(scene);
+
+  // Check for Minigame Trigger
+  if (scene.minigame) {
+    runMinigame(scene.minigame);
+    return;
+  }
 
   if (scene.end) {
     nextBtn.style.display = "none";

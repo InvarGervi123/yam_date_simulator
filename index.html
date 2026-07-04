@@ -11,6 +11,7 @@
 </head>
 <body>
   <main id="game">
+    <button id="soundToggle" aria-label="השתק מוזיקה">🔇</button>
     <div id="fallbackBg"></div>
     <img id="background" alt="רקע" />
     <img id="character" alt="ים" />
@@ -22,6 +23,16 @@
       <div id="text">טוען...</div>
       <button id="nextBtn">המשך</button>
     </section>
+
+    <!-- Minigame Overlay -->
+    <div id="minigameOverlay" style="display: none;">
+      <div id="minigameBox">
+        <h3 id="minigameTitle">מיני משחק</h3>
+        <p id="minigameInstruction">הוראות משחק</p>
+        <div id="minigameVisual"></div>
+        <button id="minigameBtn">לחץ/י כאן</button>
+      </div>
+    </div>
   </main>
 
   <audio id="music" loop preload="auto"></audio>
