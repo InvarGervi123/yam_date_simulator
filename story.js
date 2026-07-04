@@ -26,6 +26,7 @@ const story = {
       { text: "אני אביא בורקס", next: "burekas_path" },
       { text: "לנסות לפרוץ למגירה הסודית שלו בזמן שהוא ישן (משחק עיתוי!)", next: "steal_drawer_prep" },
       { text: "לנסות לגרור אותו בכוח מהמיטה (משחק לחיצות!)", next: "drag_yam_prep" },
+      { text: "להכריז על קרב בוס אפי! (DELTARUNE BOSS FIGHT!)", next: "boss_fight_intro" },
       { text: "לעשות נאום דרמטי כאילו זה סוף העולם", next: "dramatic_speech" },
       { text: "להגיד לו שאני עוברת לינוור", next: "yinover_threat" },
       { text: "לשבת לידו בשקט כמו בן אדם נורמלי", next: "quiet_path" }
@@ -1186,6 +1187,73 @@ const story = {
   end_injured_pub_date: {
     speaker: "סוף 47/59",
     text: "🍺 סוף דייט נגרר\n\nגררת אותו לפאב כשהוא פצוע.\nאנשים בפאב חשבו שזה ריקוד מודרני מיוחד ומחאו לכם כפיים.\nים שתה שלוש כוסות בירה כדי לשכוח את כאב הגב והתחיל לשיר את המנון INVARIRON.\nקרינג' אחושרמוטה, אבל טכנית יצאתם.",
+    end: true
+  },
+
+  // --- DELTARUNE BOSS BATTLE SCENES ---
+
+  boss_fight_intro: {
+    speaker: "המספר",
+    text: "אתה נעמד באמצע החדר.\nמוזיקה אלקטרונית מוזרה מתחילה להתנגן באוויר.\nשם למטה, בתוך המיטה, ים פותח עין אחת זוהרת.\n'רצית קרב? קיבלת!'\nהעולם מסביב מוחשך, והלב האדום שלך נחשף!",
+    choices: [
+      { text: "להתחיל בקרב!", next: "boss_fight_start" }
+    ]
+  },
+
+  boss_fight_start: {
+    speaker: "המספר",
+    text: "קרב בבוס פעיל!",
+    minigame: {
+      type: "deltarune_battle",
+      duration: 999999, // Handled internally by JS battle engine
+      nextSuccess: "boss_fight_win",
+      nextFail: "boss_fight_lose"
+    }
+  },
+
+  boss_fight_win: {
+    speaker: "ים",
+    characterAnimation: "shake",
+    effect: "shake",
+    text: "ים קורס על המיטה, מתנשף.\n'בסדר... בסדר! ניצחת! המיטה שלך חזקה יותר...\nאני אקום, אני אצא איתך לדייט. רק תפסיק לתקוף אותי עם הנתונים האנליטיים האלה!'",
+    choices: [
+      { text: "לגרור אותו לדייט הניצחון בפתח תקווה!", next: "end_boss_victory_force" }
+    ]
+  },
+
+  boss_fight_lose: {
+    speaker: "המספר",
+    effect: "redflash",
+    text: "הלב שלך נסדק ונשבר לרסיסים...\nים מפהק פיהוק ענק ומכסה את עצמו מחדש בשמיכה.\n'לילה טוב, נתראה בשנה הבאה. או כשיעלה סרטון חדש... כלומר לעולם לא.'",
+    choices: [
+      { text: "להשלים עם התבוסה", next: "end_boss_defeat" }
+    ]
+  },
+
+  boss_fight_spare: {
+    speaker: "ים",
+    characterAnimation: "bounce",
+    text: "ים מביט בך בעיניים דומעות.\n'ריחמת עלי? למרות שידעת שיש לי מינוס שלושה סאבים?!'\nהוא קם מהמיטה מרצונו החופשי.\n'אתה חבר אמיתי. יאללה, בוא נלך לאכול בורקס ולדבר על האלגוריתם.'",
+    choices: [
+      { text: "לצאת לדייט רומנטי ובריא", next: "end_boss_spare" }
+    ]
+  },
+
+  end_boss_defeat: {
+    speaker: "סוף 48/59",
+    text: "💀 סוף התבוסה בקרב הבוס\n\nהובסת על ידי ים בקרב אפי.\nהוא חזר לישון לעוד 100 שנה, בזמן שאתה נשארת בחדר כואב ומושפל.\nאולי פעם הבאה תביא בורקס מרפא.",
+    end: true
+  },
+
+  end_boss_victory_force: {
+    speaker: "סוף 49/59",
+    text: "🏆 סוף ניצחון הכוח\n\nהבסת את ים בכוח הזרוע והכרחת אותו לצאת לדייט.\nהדייט היה מתוח, ים בקושי דיבר כי הוא פחד שתכה אותו שוב עם דוח האנליטיקס.\nניצחון? כן. אהבה? פחות.",
+    end: true
+  },
+
+  end_boss_spare: {
+    speaker: "סוף 50/59",
+    text: "✨ סוף הרחמים והתקשורת\n\nחסת על ים וסלחת לו.\nיצאתם לדייט מדהים, אכלתם בורקס חם, ועשיתם סאב משותף לערוץ.\nהאלגוריתם שמח, ים שמח, ואפילו ינוור שלח לכם הודעת ברכה בדיסקורד.",
     end: true
   }
 };

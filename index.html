@@ -56,6 +56,56 @@
         </div>
       </div>
     </div>
+
+    <!-- Deltarune Battle Overlay -->
+    <div id="battleOverlay" style="display: none;">
+      <div id="battleContainer">
+        <!-- Boss HP Header -->
+        <div id="battleBossHeader">
+          <span class="battle-label">ים שמואל</span>
+          <div class="boss-hp-container">
+            <div id="bossHpBar" style="width: 100%;"></div>
+          </div>
+          <span id="bossHpText">200 / 200</span>
+        </div>
+
+        <!-- The Bullet Hell Box / Text Area -->
+        <div id="battleBoard">
+          <!-- Text Console -->
+          <div id="battleConsole"></div>
+          
+          <!-- Dodging Arena -->
+          <div id="battleArena" style="display: none;">
+            <div id="playerHeart">❤️</div>
+          </div>
+        </div>
+
+        <!-- Player HP status bar -->
+        <div id="battlePlayerStatus">
+          <span class="player-name">KRIS</span>
+          <span class="player-lv">LV 1</span>
+          <span class="player-hp-label">HP</span>
+          <div class="player-hp-container">
+            <div id="playerHpBar" style="width: 100%;"></div>
+          </div>
+          <span id="playerHpText">100 / 100</span>
+        </div>
+
+        <!-- Action menu buttons -->
+        <div id="battleActions">
+          <button class="battleBtn" id="btnFight">⚔️ FIGHT</button>
+          <button class="battleBtn" id="btnAct">💬 ACT</button>
+          <button class="battleBtn" id="btnItem">🎒 ITEM</button>
+          <button class="battleBtn" id="btnSpare">✨ SPARE</button>
+        </div>
+
+        <!-- ACT / ITEM sub-options overlay (dynamic list) -->
+        <div id="battleSubMenu" style="display: none;">
+          <button id="closeSubMenu">× ביטול</button>
+          <div id="battleSubList"></div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <audio id="music" loop preload="auto"></audio>

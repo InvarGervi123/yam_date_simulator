@@ -143,6 +143,11 @@ function addChoice(label, nextScene) {
 
 // Minigame Engine
 function runMinigame(config) {
+  if (config.type === "deltarune_battle") {
+    runDeltaruneBattle(config);
+    return;
+  }
+
   minigameOverlay.style.display = "flex";
   
   // Hide choices and nextBtn so player cannot skip
@@ -493,3 +498,398 @@ galleryToggle.onclick = openEndingsGallery;
 closeGallery.onclick = () => {
   galleryModal.style.display = "none";
 };
+
+// --- Deltarune Turn-based Boss Battle Engine ---
+function runDeltaruneBattle(config) {
+  const overlay = document.getElementById("battleOverlay");
+  const bossHpBar = document.getElementById("bossHpBar");
+  const bossHpText = document.getElementById("bossHpText");
+  const playerHpBar = document.getElementById("playerHpBar");
+  const playerHpText = document.getElementById("playerHpText");
+  const consoleEl = document.getElementById("battleConsole");
+  const arena = document.getElementById("battleArena");
+  const actions = document.getElementById("battleActions");
+  const subMenu = document.getElementById("battleSubMenu");
+  const subList = document.getElementById("battleSubList");
+  const closeSub = document.getElementById("closeSubMenu");
+  const heart = document.getElementById("playerHeart");
+  const board = document.getElementById("battleBoard");
+
+  overlay.style.display = "flex";
+
+  let playerHp = 100;
+  let bossHp = 200;
+  let bossMercy = 0;
+  let isGameOver = false;
+
+  // Modifiers from ACT options
+  let playerAttackBonus = 0;
+  let bossAttackPower = 20; // damage per hit
+
+  // Audio setup
+  playMusic("audio/main.mp3"); // Play battle music
+
+  // Console writer helper
+  function writeConsole(message) {
+    consoleEl.textContent = "";
+    let index = 0;
+    if (window.consoleTypeInterval) clearInterval(window.consoleTypeInterval);
+    
+    // Typewriter effect
+    window.consoleTypeInterval = setInterval(() => {
+      if (index < message.length) {
+        consoleEl.textContent += message[index];
+        index++;
+      } else {
+        clearInterval(window.consoleTypeInterval);
+      }
+    }, 20);
+  }
+
+  function updateHpBars() {
+    bossHpBar.style.width = Math.max((bossHp / 200) * 100, 0) + "%";
+    bossHpText.textContent = `${Math.max(bossHp, 0)} / 200`;
+    playerHpBar.style.width = Math.max((playerHp / 100) * 100, 0) + "%";
+    playerHpText.textContent = `${Math.max(playerHp, 0)} / 100`;
+
+    if (playerHp <= 30) {
+      playerHpBar.style.background = "#ff3b30"; // danger warning
+    } else {
+      playerHpBar.style.background = "#4cd137";
+    }
+  }
+
+  function startPlayerTurn() {
+    if (isGameOver) return;
+    subMenu.style.display = "none";
+    arena.style.display = "none";
+    consoleEl.style.display = "block";
+    actions.style.pointerEvents = "auto";
+    
+    let turnMsg = `* ים מפהק ומתכסה בשמיכה. מה תעשה/י?\n(רחמים: ${bossMercy}%)`;
+    if (bossHp < 80) turnMsg = `* ים נראה עייף ומובס. (רחמים: ${bossMercy}%)`;
+    writeConsole(turnMsg);
+  }
+
+  // Action Button Listeners
+  document.getElementById("btnFight").onclick = () => {
+    triggerVibration(15);
+    actions.style.pointerEvents = "none";
+    
+    // FIGHT Option
+    const damage = Math.round(35 + Math.random() * 15 + playerAttackBonus);
+    bossHp -= damage;
+    updateHpBars();
+    playSfx("audio/hit.mp3");
+
+    writeConsole(`* תקפת את ים עם סקרינשוט נתונים! ים ספג ${damage} נזק!`);
+
+    setTimeout(() => {
+      if (bossHp <= 0) {
+        winBattle(false); // Win by force
+      } else {
+        startEnemyTurn();
+      }
+    }, 1800);
+  };
+
+  document.getElementById("btnAct").onclick = () => {
+    triggerVibration(15);
+    subList.innerHTML = "";
+    subMenu.style.display = "flex";
+
+    const actOptions = [
+      {
+        name: "לאיים למחוק את שרת הדיסקורד",
+        action: () => {
+          playerAttackBonus += 15;
+          writeConsole(`* איימת למחוק את השרת! ההגנה של ים ירדה. (ההתקפה שלך גדלה!)`);
+        }
+      },
+      {
+        name: "להציע לו בורקס פגום",
+        action: () => {
+          bossAttackPower = Math.max(bossAttackPower - 6, 8);
+          writeConsole(`* ים אכל בורקס פגום ונחלש! כוח התקיפה שלו ירד.`);
+        }
+      },
+      {
+        name: "להחמיא לטאמבנייל החדש שלו",
+        action: () => {
+          bossMercy = Math.min(bossMercy + 35, 100);
+          writeConsole(`* החמאת לו על הטאמבנייל! הרחמים עלו ב-35%.`);
+        }
+      },
+      {
+        name: "לשיר לו שיר של ינוור",
+        action: () => {
+          bossMercy = Math.min(bossMercy + 50, 100);
+          playerHp = Math.max(playerHp - 10, 1); // cringe damage!
+          updateHpBars();
+          writeConsole(`* שרת לו שיר של ינוור! הרחמים עלו ב-50%, אך חטפת 10 נזק קרינג'!`);
+        }
+      }
+    ];
+
+    actOptions.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "subBtn";
+      btn.textContent = opt.name;
+      btn.onclick = () => {
+        triggerVibration(20);
+        subMenu.style.display = "none";
+        actions.style.pointerEvents = "none";
+        opt.action();
+        setTimeout(startEnemyTurn, 2000);
+      };
+      subList.appendChild(btn);
+    });
+  };
+
+  document.getElementById("btnItem").onclick = () => {
+    triggerVibration(15);
+    subList.innerHTML = "";
+    subMenu.style.display = "flex";
+
+    const items = [
+      { name: "בורקס חם (מרפא 50 HP)", heal: 50 },
+      { name: "פחית אנרגיה (מרפא 30 HP)", heal: 30 }
+    ];
+
+    items.forEach(item => {
+      const btn = document.createElement("button");
+      btn.className = "subBtn";
+      btn.textContent = item.name;
+      btn.onclick = () => {
+        triggerVibration(20);
+        subMenu.style.display = "none";
+        actions.style.pointerEvents = "none";
+        playerHp = Math.min(playerHp + item.heal, 100);
+        updateHpBars();
+        writeConsole(`* אכלת ${item.name.split(' ')[0]}! נרפאת ב-${item.heal} נקודות חיים.`);
+        setTimeout(startEnemyTurn, 1800);
+      };
+      subList.appendChild(btn);
+    });
+  };
+
+  document.getElementById("btnSpare").onclick = () => {
+    triggerVibration(15);
+    actions.style.pointerEvents = "none";
+    if (bossMercy >= 100 || bossHp <= 40) {
+      winBattle(true); // Win by mercy/spare
+    } else {
+      writeConsole(`* ניסית לחוס על ים, אך הוא עדיין רוצה לישון!`);
+      setTimeout(startEnemyTurn, 1800);
+    }
+  };
+
+  closeSub.onclick = () => {
+    triggerVibration(15);
+    subMenu.style.display = "none";
+  };
+
+  // --- Real-time Bullet Hell Dodging ---
+  let keysPressed = {};
+  const moveSpeed = 4;
+  let projectiles = [];
+  
+  // Track keyboard arrows
+  function handleKeyDown(e) {
+    keysPressed[e.key] = true;
+  }
+  function handleKeyUp(e) {
+    keysPressed[e.key] = false;
+  }
+
+  function startEnemyTurn() {
+    if (isGameOver) return;
+    consoleEl.style.display = "none";
+    subMenu.style.display = "none";
+    arena.style.display = "block";
+
+    // Reset heart position to center of board
+    const boardWidth = board.clientWidth;
+    const boardHeight = board.clientHeight;
+    let heartX = boardWidth / 2 - 10;
+    let heartY = boardHeight / 2 - 10;
+    heart.style.left = heartX + "px";
+    heart.style.top = heartY + "px";
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    // Dynamic keyboard movement loop
+    window.battleMoveInterval = setInterval(() => {
+      if (keysPressed["ArrowUp"] || keysPressed["w"]) heartY = Math.max(heartY - moveSpeed, 0);
+      if (keysPressed["ArrowDown"] || keysPressed["s"]) heartY = Math.min(heartY + moveSpeed, boardHeight - 20);
+      if (keysPressed["ArrowLeft"] || keysPressed["a"]) heartX = Math.max(heartX - moveSpeed, 0);
+      if (keysPressed["ArrowRight"] || keysPressed["d"]) heartX = Math.min(heartX + moveSpeed, boardWidth - 20);
+
+      heart.style.left = heartX + "px";
+      heart.style.top = heartY + "px";
+    }, 16);
+
+    // Mobile touch controls (drag heart directly)
+    function handleTouchMove(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = board.getBoundingClientRect();
+      heartX = Math.max(0, Math.min(touch.clientX - rect.left - 10, boardWidth - 20));
+      heartY = Math.max(0, Math.min(touch.clientY - rect.top - 10, boardHeight - 20));
+      heart.style.left = heartX + "px";
+      heart.style.top = heartY + "px";
+    }
+
+    board.addEventListener("touchmove", handleTouchMove, { passive: false });
+    board.addEventListener("touchstart", handleTouchMove, { passive: false });
+
+    // Projectile Spawning
+    const emojis = ["🥫", "🥐", "😴", "💤"];
+    window.battleSpawnInterval = setInterval(() => {
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+      const proj = document.createElement("div");
+      proj.className = "projectile";
+      proj.textContent = emoji;
+
+      // Choose random border edge
+      const edge = Math.floor(Math.random() * 4);
+      let x, y;
+      if (edge === 0) { // Top
+        x = Math.random() * boardWidth;
+        y = -20;
+      } else if (edge === 1) { // Bottom
+        x = Math.random() * boardWidth;
+        y = boardHeight + 20;
+      } else if (edge === 2) { // Left
+        x = -20;
+        y = Math.random() * boardHeight;
+      } else { // Right
+        x = boardWidth + 20;
+        y = Math.random() * boardHeight;
+      }
+
+      proj.style.left = x + "px";
+      proj.style.top = y + "px";
+      arena.appendChild(proj);
+
+      // Travel vector targeting the player
+      const angle = Math.atan2(heartY - y, heartX - x);
+      const speed = 2.5 + Math.random() * 2;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+
+      projectiles.push({
+        el: proj,
+        x: x,
+        y: y,
+        vx: vx,
+        vy: vy
+      });
+    }, 600);
+
+    // Projectile position update and collision loop
+    window.battleUpdateInterval = setInterval(() => {
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.el.style.left = p.x + "px";
+        p.el.style.top = p.y + "px";
+
+        // Collision Check (AABB)
+        const heartRect = heart.getBoundingClientRect();
+        const projRect = p.el.getBoundingClientRect();
+
+        const overlap = !(
+          heartRect.right < projRect.left ||
+          heartRect.left > projRect.right ||
+          heartRect.bottom < projRect.top ||
+          heartRect.top > projRect.bottom
+        );
+
+        if (overlap) {
+          // Take damage!
+          playerHp -= bossAttackPower;
+          updateHpBars();
+          playSfx("audio/hit.mp3");
+          triggerVibration(120);
+
+          // Flash damage effect on board
+          overlay.classList.add("battle-dmg-flash");
+          setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 200);
+
+          // Cleanup projectile
+          p.el.remove();
+          projectiles.splice(i, 1);
+
+          if (playerHp <= 0) {
+            loseBattle();
+            return;
+          }
+          continue;
+        }
+
+        // Clean up out of bounds projectiles
+        if (p.x < -40 || p.x > boardWidth + 40 || p.y < -40 || p.y > boardHeight + 40) {
+          p.el.remove();
+          projectiles.splice(i, 1);
+        }
+      }
+    }, 16);
+
+    // End enemy turn after 6 seconds
+    window.battleTurnTimeout = setTimeout(() => {
+      cleanupEnemyTurn();
+      startPlayerTurn();
+    }, 6000);
+
+    function cleanupEnemyTurn() {
+      clearInterval(window.battleMoveInterval);
+      clearInterval(window.battleSpawnInterval);
+      clearInterval(window.battleUpdateInterval);
+      clearTimeout(window.battleTurnTimeout);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      board.removeEventListener("touchmove", handleTouchMove);
+      board.removeEventListener("touchstart", handleTouchMove);
+
+      projectiles.forEach(p => p.el.remove());
+      projectiles = [];
+    }
+  }
+
+  function loseBattle() {
+    isGameOver = true;
+    clearInterval(window.battleMoveInterval);
+    clearInterval(window.battleSpawnInterval);
+    clearInterval(window.battleUpdateInterval);
+    clearTimeout(window.battleTurnTimeout);
+    projectiles.forEach(p => p.el.remove());
+    projectiles = [];
+
+    overlay.style.display = "none";
+    showScene(config.nextFail);
+  }
+
+  function winBattle(spared) {
+    isGameOver = true;
+    clearInterval(window.battleMoveInterval);
+    clearInterval(window.battleSpawnInterval);
+    clearInterval(window.battleUpdateInterval);
+    clearTimeout(window.battleTurnTimeout);
+    projectiles.forEach(p => p.el.remove());
+    projectiles = [];
+
+    overlay.style.display = "none";
+    if (spared) {
+      showScene("boss_fight_spare");
+    } else {
+      showScene(config.nextSuccess);
+    }
+  }
+
+  // Start the first turn
+  updateHpBars();
+  startPlayerTurn();
+}
