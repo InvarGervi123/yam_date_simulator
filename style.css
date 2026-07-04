@@ -81,7 +81,7 @@ html, body {
 #characterContainer {
   position: absolute;
   left: 8%;
-  bottom: 18dvh;
+  bottom: 28dvh;
   height: 65dvh;
   max-height: 600px;
   z-index: 2;
@@ -245,7 +245,7 @@ button {
   #characterContainer {
     left: 50%;
     transform: translateX(-50%);
-    bottom: 22dvh;
+    bottom: 38dvh;
     height: 52dvh;
   }
 
@@ -291,7 +291,7 @@ button {
 @media (max-width: 480px) {
   #characterContainer {
     height: 48dvh;
-    bottom: 24dvh;
+    bottom: 40dvh;
   }
 
   #dialogBox {
