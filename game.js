@@ -25,11 +25,20 @@ music.muted = true;
 sfx.muted = true;
 soundToggle.textContent = "🔇";
 
+function triggerVibration(pattern) {
+  if (typeof navigator !== "undefined" && navigator.vibrate) {
+    try {
+      navigator.vibrate(pattern);
+    } catch (e) {}
+  }
+}
+
 soundToggle.onclick = () => {
   isMuted = !isMuted;
   music.muted = isMuted;
   sfx.muted = isMuted;
   soundToggle.textContent = isMuted ? "🔇" : "🔊";
+  triggerVibration(20);
   
   if (!isMuted && music.src) {
     music.play().catch(() => {});
@@ -125,7 +134,10 @@ function addChoice(label, nextScene) {
   const btn = document.createElement("button");
   btn.className = "choiceBtn";
   btn.textContent = label;
-  btn.onclick = () => showScene(nextScene);
+  btn.onclick = () => {
+    triggerVibration(15);
+    showScene(nextScene);
+  };
   choices.appendChild(btn);
 }
 
@@ -170,6 +182,7 @@ function runMinigame(config) {
       if (mgBar) mgBar.style.width = percent + "%";
       
       playSfx("audio/click.mp3"); // Play sound if exists
+      triggerVibration(12); // Buzz on mash
       
       if (score >= config.target) {
         endMinigame(true);
@@ -205,6 +218,7 @@ function runMinigame(config) {
     const mgTimer = document.getElementById("mgTimer");
     
     minigameBtn.onclick = () => {
+      triggerVibration(25);
       endMinigame(true);
     };
     
@@ -251,6 +265,7 @@ function runMinigame(config) {
     
     minigameBtn.onclick = () => {
       clearInterval(animInterval);
+      triggerVibration(30);
       // Success zone is 40% to 60%
       if (position >= 40 && position <= 60) {
         endMinigame(true);
@@ -281,8 +296,10 @@ function runMinigame(config) {
     minigameBtn.style.transform = "";
     
     if (success) {
+      triggerVibration([80, 40, 120]);
       showScene(config.nextSuccess);
     } else {
+      triggerVibration([180, 80, 180]);
       showScene(config.nextFail);
     }
   }
@@ -333,6 +350,16 @@ function showScene(id) {
     const gameContainer = document.getElementById("game");
     const effectClass = `effect-${scene.effect}`;
     gameContainer.classList.add(effectClass);
+    
+    // Haptic vibrations matching the visual intensity
+    if (scene.effect === "shake") {
+      triggerVibration([100, 50, 100]);
+    } else if (scene.effect === "redflash") {
+      triggerVibration(250);
+    } else if (scene.effect === "flash") {
+      triggerVibration(80);
+    }
+
     setTimeout(() => {
       gameContainer.classList.remove(effectClass);
     }, 500);
@@ -363,7 +390,10 @@ function showScene(id) {
   if (scene.next) {
     nextBtn.style.display = "block";
     nextBtn.textContent = scene.nextText || "המשך";
-    nextBtn.onclick = () => showScene(scene.next);
+    nextBtn.onclick = () => {
+      triggerVibration(15);
+      showScene(scene.next);
+    };
   } else {
     nextBtn.style.display = "none";
   }
