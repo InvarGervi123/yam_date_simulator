@@ -78,19 +78,26 @@ html, body {
   z-index: 1;
 }
 
-#character {
+#characterContainer {
   position: absolute;
   left: 8%;
   bottom: 18dvh;
   height: 65dvh;
   max-height: 600px;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#character {
+  height: 100%;
   width: auto;
   object-fit: contain;
   display: none;
-  z-index: 2;
-  pointer-events: none;
   filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.85));
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #dialogBox {
@@ -235,12 +242,11 @@ button {
 
 /* Mobile Portrait & Tablets */
 @media (max-width: 768px) {
-  #character {
+  #characterContainer {
     left: 50%;
     transform: translateX(-50%);
     bottom: 22dvh;
     height: 52dvh;
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.75));
   }
 
   #dialogBox {
@@ -283,7 +289,7 @@ button {
 
 /* Small Mobile Portrait */
 @media (max-width: 480px) {
-  #character {
+  #characterContainer {
     height: 48dvh;
     bottom: 24dvh;
   }
@@ -315,7 +321,7 @@ button {
 
 /* Mobile Landscape */
 @media (max-height: 500px) and (orientation: landscape) {
-  #character {
+  #characterContainer {
     left: 8%;
     transform: none;
     bottom: 0;
@@ -570,6 +576,45 @@ button {
   z-index: 999;
   pointer-events: none;
   animation: flashEffect 0.45s ease-out forwards;
+}
+
+/* --- Character Animations (VFX) --- */
+
+.char-bounce {
+  animation: charBounce 0.4s ease-out;
+}
+
+@keyframes charBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+.char-shake {
+  animation: charShake 0.4s ease-in-out;
+}
+
+@keyframes charShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+.char-float {
+  animation: charFloat 3s ease-in-out infinite;
+}
+
+@keyframes charFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.char-slide-in {
+  animation: charSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes charSlideIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Ending Gallery Tracker UI --- */

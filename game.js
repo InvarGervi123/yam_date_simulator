@@ -309,6 +309,18 @@ function showScene(id) {
   fileExistsFallbackImage(bg, bgSrc);
   fileExistsFallbackImage(character, charSrc);
 
+  // Trigger Character Animations (bounce, shake, slide_in, float)
+  character.className = "";
+  if (scene.characterAnimation) {
+    const animClass = `char-${scene.characterAnimation}`;
+    character.classList.add(animClass);
+    if (scene.characterAnimation !== "float") {
+      setTimeout(() => {
+        character.classList.remove(animClass);
+      }, 500);
+    }
+  }
+
   speaker.textContent = scene.speaker || "";
   text.textContent = scene.text || "";
   clearChoices();
