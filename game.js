@@ -525,6 +525,7 @@ function runDeltaruneBattle(config) {
   let bossHp = 200;
   let bossMercy = 0;
   let isGameOver = false;
+  let turnCount = 0;
 
   // Modifiers from ACT options
   let playerAttackBonus = 0;
@@ -763,14 +764,14 @@ function runDeltaruneBattle(config) {
     subMenu.style.display = "none";
     arena.style.display = "block";
 
-    // Yam Speaks next to his animated sprite!
+    // Yam Speaks next to his animated sprite! (Broken with \n for perfect bubble fit!)
     const quotes = [
-      "אתה לא תנצח את כוח השינה שלי!",
-      "אני עייף מדי בשביל הנזק הזה...",
-      "עוד מילה אחת ואני מוחק את שרת הדיסקורד!",
-      "הקליקים האלה כואבים!",
-      "מישהו אמר בורקס?!",
-      "אני רק רוצה לחזור לישון..."
+      "אתה לא תנצח\nאת כוח השינה\nשלי!",
+      "אני עייף מדי\nבשביל הנזק\nהזה...",
+      "עוד מילה אחת\nואני מוחק את\nשרת הדיסקורד!",
+      "הקליקים האלה\nכואבים לי!",
+      "מישהו אמר\nבורקס חם?!",
+      "אני רק רוצה\nלחזור לישון..."
     ];
     const bubble = document.getElementById("bossSpeechBubble");
     bubble.textContent = quotes[Math.floor(Math.random() * quotes.length)];
@@ -813,15 +814,17 @@ function runDeltaruneBattle(config) {
     board.addEventListener("touchmove", handleTouchMove, { passive: false });
     board.addEventListener("touchstart", handleTouchMove, { passive: false });
 
-    // Projectile Spawning
-    const emojis = ["🥫", "🥐", "😴", "💤"];
-    window.battleSpawnInterval = setInterval(() => {
+    // --- Dynamic Strategic Attack Phases ---
+    turnCount++;
+    const currentPattern = turnCount % 3;
+
+    function spawnRandomProjectile() {
+      const emojis = ["🥫", "🥐", "😴", "💤"];
       const emoji = emojis[Math.floor(Math.random() * emojis.length)];
       const proj = document.createElement("div");
       proj.className = "projectile";
       proj.textContent = emoji;
 
-      // Choose random border edge
       const edge = Math.floor(Math.random() * 4);
       let x, y;
       if (edge === 0) { // Top
@@ -842,7 +845,6 @@ function runDeltaruneBattle(config) {
       proj.style.top = y + "px";
       arena.appendChild(proj);
 
-      // Travel vector targeting the player
       const angle = Math.atan2(heartY - y, heartX - x);
       const speed = 2.5 + Math.random() * 2;
       const vx = Math.cos(angle) * speed;
@@ -855,16 +857,191 @@ function runDeltaruneBattle(config) {
         vx: vx,
         vy: vy
       });
-    }, 600);
+    }
+
+    function spawnProjectileAt(x, y, vx, vy) {
+      const proj = document.createElement("div");
+      proj.className = "projectile";
+      proj.textContent = "🥫";
+      proj.style.left = x + "px";
+      proj.style.top = y + "px";
+      arena.appendChild(proj);
+      projectiles.push({
+        el: proj,
+        x: x,
+        y: y,
+        vx: vx,
+        vy: vy
+      });
+    }
+
+    if (currentPattern === 0) {
+      // Pattern 0: Warning Lasers! Dashed warning line -> massive glowing beam
+      const spawnLaser = (dir) => {
+        if (isGameOver) return;
+        const targetX = heartX + 10;
+        const targetY = heartY + 10;
+        const warn = document.createElement("div");
+        warn.className = "laser-warning";
+        
+        if (dir === "vertical") {
+          warn.style.left = (targetX - 3) + "px";
+          warn.style.top = "0px";
+          warn.style.width = "6px";
+          warn.style.height = boardHeight + "px";
+        } else {
+          warn.style.left = "0px";
+          warn.style.top = (targetY - 3) + "px";
+          warn.style.width = boardWidth + "px";
+          warn.style.height = "6px";
+        }
+        board.appendChild(warn);
+        playSfx("audio/hit.mp3");
+        
+        setTimeout(() => {
+          if (isGameOver) {
+            warn.remove();
+            return;
+          }
+          warn.remove();
+          
+          const beam = document.createElement("div");
+          beam.className = "laser-beam";
+          
+          if (dir === "vertical") {
+            beam.style.left = (targetX - 25) + "px";
+            beam.style.top = "0px";
+            beam.style.width = "50px";
+            beam.style.height = boardHeight + "px";
+          } else {
+            beam.style.left = "0px";
+            beam.style.top = (targetY - 25) + "px";
+            beam.style.width = boardWidth + "px";
+            beam.style.height = "50px";
+          }
+          board.appendChild(beam);
+          playSfx("audio/hit.mp3");
+          
+          let checkCount = 0;
+          const checkInterval = setInterval(() => {
+            if (isGameOver) {
+              clearInterval(checkInterval);
+              beam.remove();
+              return;
+            }
+            
+            const heartCenterX = heartX + 10;
+            const heartCenterY = heartY + 10;
+            let hit = false;
+            if (dir === "vertical") {
+              const minX = targetX - 25;
+              const maxX = targetX + 25;
+              if (heartCenterX >= minX && heartCenterX <= maxX) hit = true;
+            } else {
+              const minY = targetY - 25;
+              const maxY = targetY + 25;
+              if (heartCenterY >= minY && heartCenterY <= maxY) hit = true;
+            }
+            
+            if (hit) {
+              playerHp -= 10;
+              updateHpBars();
+              triggerVibration(50);
+              overlay.classList.add("battle-dmg-flash");
+              setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 100);
+              if (playerHp <= 0) {
+                clearInterval(checkInterval);
+                loseBattle();
+              }
+            }
+            
+            checkCount++;
+            if (checkCount >= 8) {
+              clearInterval(checkInterval);
+              beam.remove();
+            }
+          }, 100);
+        }, 1000);
+      };
+      
+      window.laser1Timeout = setTimeout(() => spawnLaser("vertical"), 500);
+      window.laser2Timeout = setTimeout(() => spawnLaser("horizontal"), 2800);
+
+      let spawnCount = 0;
+      window.battleSpawnInterval = setInterval(() => {
+        if (spawnCount >= 5) return;
+        spawnRandomProjectile();
+        spawnCount++;
+      }, 900);
+      
+    } else if (currentPattern === 1) {
+      // Pattern 1: Burek Orbiters (rotating shield around center)
+      for (let j = 0; j < 4; j++) {
+        const orb = document.createElement("div");
+        orb.className = "projectile";
+        orb.textContent = "🥐";
+        orb.style.fontSize = "24px";
+        arena.appendChild(orb);
+        projectiles.push({
+          el: orb,
+          isOrbiter: true,
+          angleOffset: (j * Math.PI / 2),
+          radius: 85,
+          x: 0,
+          y: 0
+        });
+      }
+      
+      window.battleSpawnInterval = setInterval(() => {
+        const proj = document.createElement("div");
+        proj.className = "projectile";
+        proj.textContent = "😴";
+        const x = Math.random() * (boardWidth - 20);
+        const y = -20;
+        proj.style.left = x + "px";
+        proj.style.top = y + "px";
+        arena.appendChild(proj);
+        
+        projectiles.push({
+          el: proj,
+          x: x,
+          y: y,
+          vx: 0,
+          vy: 2.2
+        });
+      }, 700);
+      
+    } else {
+      // Pattern 2: Shrinking Cardinal Walls
+      let round = 0;
+      window.battleSpawnInterval = setInterval(() => {
+        if (round >= 4) return;
+        const offsets = [0, boardWidth / 3, (2 * boardWidth) / 3];
+        offsets.forEach(offset => {
+          spawnProjectileAt(offset, -20, 0, 2);
+          spawnProjectileAt(offset, boardHeight + 20, 0, -2);
+        });
+        round++;
+      }, 1300);
+    }
 
     // Projectile position update and collision loop
     window.battleUpdateInterval = setInterval(() => {
       for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.el.style.left = p.x + "px";
-        p.el.style.top = p.y + "px";
+        
+        if (p.isOrbiter) {
+          p.angleOffset += 0.035;
+          p.x = boardWidth / 2 - 10 + Math.cos(p.angleOffset) * p.radius;
+          p.y = boardHeight / 2 - 10 + Math.sin(p.angleOffset) * p.radius;
+          p.el.style.left = p.x + "px";
+          p.el.style.top = p.y + "px";
+        } else {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.el.style.left = p.x + "px";
+          p.el.style.top = p.y + "px";
+        }
 
         // Collision Check (AABB)
         const heartRect = heart.getBoundingClientRect();
@@ -878,17 +1055,14 @@ function runDeltaruneBattle(config) {
         );
 
         if (overlap) {
-          // Take damage!
           playerHp -= bossAttackPower;
           updateHpBars();
           playSfx("audio/hit.mp3");
           triggerVibration(120);
 
-          // Flash damage effect on board
           overlay.classList.add("battle-dmg-flash");
           setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 200);
 
-          // Cleanup projectile
           p.el.remove();
           projectiles.splice(i, 1);
 
@@ -900,7 +1074,7 @@ function runDeltaruneBattle(config) {
         }
 
         // Clean up out of bounds projectiles
-        if (p.x < -40 || p.x > boardWidth + 40 || p.y < -40 || p.y > boardHeight + 40) {
+        if (!p.isOrbiter && (p.x < -60 || p.x > boardWidth + 60 || p.y < -60 || p.y > boardHeight + 60)) {
           p.el.remove();
           projectiles.splice(i, 1);
         }
@@ -918,11 +1092,14 @@ function runDeltaruneBattle(config) {
       clearInterval(window.battleSpawnInterval);
       clearInterval(window.battleUpdateInterval);
       clearTimeout(window.battleTurnTimeout);
+      clearTimeout(window.laser1Timeout);
+      clearTimeout(window.laser2Timeout);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       board.removeEventListener("touchmove", handleTouchMove);
       board.removeEventListener("touchstart", handleTouchMove);
 
+      document.querySelectorAll(".laser-warning, .laser-beam").forEach(el => el.remove());
       projectiles.forEach(p => p.el.remove());
       projectiles = [];
     }
