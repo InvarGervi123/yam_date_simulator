@@ -7,7 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/minigames.css" />
+  <link rel="stylesheet" href="css/battle.css" />
 </head>
 <body>
   <main id="game">
@@ -57,18 +59,16 @@
       </div>
     </div>
 
-    <!-- Formula Sheet Modal -->
+    <!-- Math Formula Sheet Modal -->
     <div id="formulaModal" style="display: none;">
       <div id="formulaBox">
         <button id="closeFormula">×</button>
-        <h3>דף נוסחאות רשמי - ים שמואל הפקות</h3>
+        <h3>דף נוסחאות למבחן של ים</h3>
         <div id="formulaContent">
           <ul>
-            <li>📐 <strong>משפט פיתגורס לבורקס:</strong> a² + b² = c² (לחישוב יתר של בורקס גבינה משולש)</li>
-            <li>📈 <strong>משוואת ינוור לקליקים:</strong> Clicks = Cringe² × Views</li>
-            <li>💸 <strong>נוסחת השכירות של תל אביב:</strong> Rent = Area × 9000</li>
-            <li>🚫 <strong>משפט פתח תקווה:</strong> PT ∉ ℝ (פתח תקווה אינה קבוצת המספרים הממשיים, כלומר היא לא קיימת)</li>
-            <li>🔺 <strong>נוסחת שטח משולש בורקס:</strong> S = (בסיס × גובה) / 2</li>
+            <li><strong>📐 משולש בורקס גבינה:</strong> Area = (Base × Height) / 2</li>
+            <li><strong>🏠 דירת 2 מ"ר בתל אביב:</strong> Rent = Area × 9000 ₪ (שכירות ריאלית לחלוטין)</li>
+            <li><strong>🌀 משוואת קיום ינוור:</strong> פתח תקווה ∉ Universe ⇒ ינוור ∉ ℝ (קיום דמיוני בלבד)</li>
           </ul>
         </div>
       </div>
@@ -135,6 +135,9 @@
   <audio id="sfx" preload="auto"></audio>
 
   <script src="story.js"></script>
-  <script src="game.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/minigames.js"></script>
+  <script src="src/battle.js"></script>
+  <script src="src/engine.js"></script>
 </body>
 </html>
