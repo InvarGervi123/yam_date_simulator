@@ -531,6 +531,7 @@ function runDeltaruneBattle(config) {
   let bossAttackPower = 20; // damage per hit
 
   // Audio setup
+  soundToggle.style.display = "none";
   playMusic("audio/boss_fight.mp3"); // Play battle music
 
   // Console writer helper
@@ -634,11 +635,22 @@ function runDeltaruneBattle(config) {
         }
       },
       {
+        name: isMuted ? "🔊 הפעל מוזיקת רקע" : "🔇 השתק מוזיקת רקע",
+        action: () => {
+          isMuted = !isMuted;
+          music.muted = isMuted;
+          sfx.muted = isMuted;
+          soundToggle.textContent = isMuted ? "🔇" : "🔊";
+          writeConsole(isMuted ? `* השתקת את מוזיקת הקרב.` : `* הפעלת את מוזיקת הקרב.`);
+        }
+      },
+      {
         name: "להזמין אותו לצלם פתיחת תיבות יחד",
         action: () => {
           writeConsole(`* הזמנת אותו לפתוח תיבות! העיניים של ים בורקות מאושר...`);
           setTimeout(() => {
             isGameOver = true;
+            soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_unboxing_collab");
           }, 1800);
@@ -651,6 +663,7 @@ function runDeltaruneBattle(config) {
           writeConsole(`* אמרת לו שהחלפת את הסוויץ' שלו בבורקס! ים נכנס לזעם מטורף...`);
           setTimeout(() => {
             isGameOver = true;
+            soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_switch_rage");
           }, 1800);
@@ -663,6 +676,7 @@ function runDeltaruneBattle(config) {
           writeConsole(`* הצעת לו לחלוק את השמיכה! ים מתלהב מעסקת השינה...`);
           setTimeout(() => {
             isGameOver = true;
+            soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_bed_alliance");
           }, 1800);
@@ -923,6 +937,7 @@ function runDeltaruneBattle(config) {
     projectiles.forEach(p => p.el.remove());
     projectiles = [];
 
+    soundToggle.style.display = "flex";
     overlay.style.display = "none";
     showScene(config.nextFail);
   }
@@ -936,6 +951,7 @@ function runDeltaruneBattle(config) {
     projectiles.forEach(p => p.el.remove());
     projectiles = [];
 
+    soundToggle.style.display = "flex";
     overlay.style.display = "none";
     if (spared) {
       showScene("boss_fight_spare");

@@ -1243,3 +1243,38 @@ button {
   width: 0;
   z-index: -1;
 }
+
+/* --- PC / Desktop Full-Screen Scale Enhancements --- */
+@media (min-width: 1024px) {
+  #battleContainer {
+    max-width: 950px;
+  }
+  #battleBoard {
+    height: 380px;
+  }
+  #battleBossSpriteContainer {
+    height: 240px;
+  }
+  #choices {
+    max-width: 800px;
+    gap: 16px;
+    top: 40%;
+  }
+  .choiceBtn {
+    padding: 16px 24px;
+    font-size: 22px;
+  }
+  #dialogBox {
+    max-width: 1200px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-height: 220px;
+    bottom: 6%;
+  }
+  #text {
+    font-size: 26px;
+  }
+  #speaker {
+    font-size: 30px;
+  }
+}
