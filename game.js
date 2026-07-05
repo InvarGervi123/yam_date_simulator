@@ -528,6 +528,7 @@ function runDeltaruneBattle(config) {
   let turnCount = 0;
   const moods = ["lazy", "stressed", "bored", "hungry"];
   let currentMood = "lazy";
+  let lastTurnHealed = false;
 
   // Modifiers from ACT options
   let playerAttackBonus = 0;
@@ -593,7 +594,12 @@ function runDeltaruneBattle(config) {
     bubble.style.display = "block";
 
     let turnMsg = `* ים מביט בך במצב רוח מיוחד. מה תעשה/י?\n(רחמים: ${bossMercy}%)`;
-    if (bossHp < 80) turnMsg = `* ים נראה מותש ודי מובס. (רחמים: ${bossMercy}%)`;
+    if (lastTurnHealed) {
+      turnMsg = `* ים אכל טונה עם נוטלה והתרפא ב-45 HP! איכס, איזה שילוב מזעזע.\n(רחמים: ${bossMercy}%)`;
+      lastTurnHealed = false;
+    } else if (bossHp < 80) {
+      turnMsg = `* ים נראה מותש ודי מובס. (רחמים: ${bossMercy}%)`;
+    }
     writeConsole(turnMsg);
   }
 
@@ -820,19 +826,37 @@ function runDeltaruneBattle(config) {
     subMenu.style.display = "none";
     arena.style.display = "block";
 
-    // Yam Speaks next to his animated sprite! (Broken with \n for perfect bubble fit!)
-    const quotes = [
-      "אתה לא תנצח\nאת כוח השינה\nשלי!",
-      "אני עייף מדי\nבשביל הנזק\nהזה...",
-      "עוד מילה אחת\nואני מוחק את\nשרת הדיסקורד!",
-      "הקליקים האלה\nכואבים לי!",
-      "מישהו אמר\nבורקס חם?!",
-      "אני רק רוצה\nלחזור לישון..."
-    ];
+    // --- Yam Tuna & Nutella Healing (Disgusting Hebrew Meme!) ---
+    // 45% chance to heal 45 HP if boss HP is under 150
+    let healTriggered = false;
+    if (bossHp < 150 && Math.random() < 0.45) {
+      healTriggered = true;
+      lastTurnHealed = true;
+      bossHp = Math.min(bossHp + 45, 200);
+      updateHpBars();
+      playSfx("audio/triumph.mp3");
+      triggerVibration([100, 100, 100]);
+    }
+
     const bubble = document.getElementById("bossSpeechBubble");
-    bubble.textContent = quotes[Math.floor(Math.random() * quotes.length)];
-    bubble.style.display = "block";
-    setTimeout(() => { bubble.style.display = "none"; }, 2500);
+    if (healTriggered) {
+      bubble.textContent = "יאמי!\nטונה עם\nנוטלה!!";
+      bubble.style.display = "block";
+      setTimeout(() => { bubble.style.display = "none"; }, 2500);
+    } else {
+      // Yam Speaks next to his animated sprite! (Broken with \n for perfect bubble fit!)
+      const quotes = [
+        "אתה לא תנצח\nאת כוח השינה\nשלי!",
+        "אני עייף מדי\nבשביל הנזק\nהזה...",
+        "עוד מילה אחת\nואני מוחק את\nשרת הדיסקורד!",
+        "הקליקים האלה\nכואבים לי!",
+        "מישהו אמר\nבורקס חם?!",
+        "אני רק רוצה\nלחזור לישון..."
+      ];
+      bubble.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+      bubble.style.display = "block";
+      setTimeout(() => { bubble.style.display = "none"; }, 2500);
+    }
 
     // Reset heart position to center of board
     const boardWidth = board.clientWidth;
@@ -872,7 +896,7 @@ function runDeltaruneBattle(config) {
 
     // --- Dynamic Strategic Attack Phases ---
     turnCount++;
-    const currentPattern = turnCount % 3;
+    const currentPattern = turnCount % 4; // Cycled through 4 distinct patterns!
 
     function spawnRandomProjectile() {
       const emojis = ["🥫", "🥐", "😴", "💤"];
@@ -902,7 +926,7 @@ function runDeltaruneBattle(config) {
       arena.appendChild(proj);
 
       const angle = Math.atan2(heartY - y, heartX - x);
-      const speed = 2.5 + Math.random() * 2;
+      const speed = 3.0 + Math.random() * 2; // Slightly faster to increase difficulty
       const vx = Math.cos(angle) * speed;
       const vy = Math.sin(angle) * speed;
 
@@ -1017,7 +1041,7 @@ function runDeltaruneBattle(config) {
               beam.remove();
             }
           }, 100);
-        }, 1000);
+        }, 850); // Warning time decreased from 1000ms to 850ms for higher difficulty!
       };
       
       window.laser1Timeout = setTimeout(() => spawnLaser("vertical"), 500);
@@ -1063,22 +1087,92 @@ function runDeltaruneBattle(config) {
           x: x,
           y: y,
           vx: 0,
-          vy: 2.2
+          vy: 2.8 // Increased speed from 2.2 to 2.8 for higher difficulty!
         });
-      }, 700);
+      }, 600); // Spawn interval decreased from 700ms to 600ms
       
-    } else {
-      // Pattern 2: Shrinking Cardinal Walls
+    } else if (currentPattern === 2) {
+      // Pattern 2: Targeted Crossfire (Cans Converge on Heart Location!)
       let round = 0;
-      window.battleSpawnInterval = setInterval(() => {
-        if (round >= 4) return;
-        const offsets = [0, boardWidth / 3, (2 * boardWidth) / 3];
-        offsets.forEach(offset => {
-          spawnProjectileAt(offset, -20, 0, 2);
-          spawnProjectileAt(offset, boardHeight + 20, 0, -2);
+      const spawnTargetedProj = (startX, startY) => {
+        if (isGameOver) return;
+        const proj = document.createElement("div");
+        proj.className = "projectile";
+        proj.textContent = "🥫";
+        proj.style.left = startX + "px";
+        proj.style.top = startY + "px";
+        arena.appendChild(proj);
+        
+        const angle = Math.atan2(heartY - startY, heartX - startX);
+        const speed = 3.6;
+        projectiles.push({
+          el: proj,
+          x: startX,
+          y: startY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed
         });
+      };
+
+      window.battleSpawnInterval = setInterval(() => {
+        if (round >= 5) return;
+        spawnTargetedProj(Math.random() * boardWidth, -20);
+        spawnTargetedProj(Math.random() * boardWidth, boardHeight + 20);
+        spawnTargetedProj(-20, Math.random() * boardHeight);
+        spawnTargetedProj(boardWidth + 20, Math.random() * boardHeight);
         round++;
-      }, 1300);
+      }, 1000);
+    } else {
+      // Pattern 3: Angry Bus Attack! Giant 🚌 warns and sweeps the screen.
+      const spawnBus = (yPosition, delay) => {
+        if (isGameOver) return;
+        
+        const warn = document.createElement("div");
+        warn.className = "bus-warning";
+        warn.style.left = "0px";
+        warn.style.top = yPosition + "px";
+        warn.style.width = boardWidth + "px";
+        warn.style.height = "55px";
+        board.appendChild(warn);
+        playSfx("audio/hit.mp3");
+        
+        setTimeout(() => {
+          if (isGameOver) {
+            warn.remove();
+            return;
+          }
+          warn.remove();
+          
+          const bus = document.createElement("div");
+          bus.className = "bus-projectile";
+          bus.textContent = "🚌";
+          bus.style.left = "-80px";
+          bus.style.top = yPosition + "px";
+          bus.style.width = "70px";
+          bus.style.height = "50px";
+          arena.appendChild(bus);
+          playSfx("audio/hit.mp3");
+          
+          projectiles.push({
+            el: bus,
+            x: -80,
+            y: yPosition,
+            vx: 8.5, // Extremely fast!
+            vy: 0,
+            isBus: true
+          });
+        }, delay);
+      };
+      
+      window.bus1Timeout = setTimeout(() => spawnBus(boardHeight / 2 - 25, 900), 500);
+      window.bus2Timeout = setTimeout(() => spawnBus(boardHeight - 65, 900), 2800);
+      
+      let spawnCount = 0;
+      window.battleSpawnInterval = setInterval(() => {
+        if (spawnCount >= 4) return;
+        spawnRandomProjectile();
+        spawnCount++;
+      }, 1000);
     }
 
     // Projectile position update and collision loop
@@ -1087,9 +1181,11 @@ function runDeltaruneBattle(config) {
         const p = projectiles[i];
         
         if (p.isOrbiter) {
-          p.angleOffset += 0.035;
-          p.x = boardWidth / 2 - 10 + Math.cos(p.angleOffset) * p.radius;
-          p.y = boardHeight / 2 - 10 + Math.sin(p.angleOffset) * p.radius;
+          p.angleOffset += 0.045; // Orbit speed increased from 0.035 to 0.045!
+          // Oscillate radius between 20px (sweeps center) and 110px over time to crush the center!
+          const currentRadius = 65 + Math.sin(Date.now() / 250) * 45;
+          p.x = boardWidth / 2 - 10 + Math.cos(p.angleOffset) * currentRadius;
+          p.y = boardHeight / 2 - 10 + Math.sin(p.angleOffset) * currentRadius;
           p.el.style.left = p.x + "px";
           p.el.style.top = p.y + "px";
         } else {
@@ -1111,10 +1207,11 @@ function runDeltaruneBattle(config) {
         );
 
         if (overlap) {
-          playerHp -= bossAttackPower;
+          const dmg = p.isBus ? 45 : bossAttackPower;
+          playerHp -= dmg;
           updateHpBars();
           playSfx("audio/hit.mp3");
-          triggerVibration(120);
+          triggerVibration(p.isBus ? [200, 100, 200] : 120);
 
           overlay.classList.add("battle-dmg-flash");
           setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 200);
@@ -1130,7 +1227,7 @@ function runDeltaruneBattle(config) {
         }
 
         // Clean up out of bounds projectiles
-        if (!p.isOrbiter && (p.x < -60 || p.x > boardWidth + 60 || p.y < -60 || p.y > boardHeight + 60)) {
+        if (!p.isOrbiter && (p.x < -100 || p.x > boardWidth + 100 || p.y < -100 || p.y > boardHeight + 100)) {
           p.el.remove();
           projectiles.splice(i, 1);
         }
@@ -1150,12 +1247,14 @@ function runDeltaruneBattle(config) {
       clearTimeout(window.battleTurnTimeout);
       clearTimeout(window.laser1Timeout);
       clearTimeout(window.laser2Timeout);
+      clearTimeout(window.bus1Timeout);
+      clearTimeout(window.bus2Timeout);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       board.removeEventListener("touchmove", handleTouchMove);
       board.removeEventListener("touchstart", handleTouchMove);
 
-      document.querySelectorAll(".laser-warning, .laser-beam").forEach(el => el.remove());
+      document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
       projectiles.forEach(p => p.el.remove());
       projectiles = [];
     }

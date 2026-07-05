@@ -1339,3 +1339,24 @@ button {
   0% { transform: scaleX(0.95); }
   100% { transform: scaleX(1.05); }
 }
+
+/* --- Bus Attack Styles --- */
+.bus-warning {
+  position: absolute;
+  background: rgba(255, 69, 0, 0.35);
+  border-top: 2px dashed #ff4500;
+  border-bottom: 2px dashed #ff4500;
+  z-index: 5;
+  animation: flashWarning 0.15s infinite alternate;
+}
+
+.bus-projectile {
+  position: absolute;
+  font-size: 42px;
+  line-height: 1;
+  z-index: 7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
