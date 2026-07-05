@@ -526,6 +526,8 @@ function runDeltaruneBattle(config) {
   let bossMercy = 0;
   let isGameOver = false;
   let turnCount = 0;
+  const moods = ["lazy", "stressed", "bored", "hungry"];
+  let currentMood = "lazy";
 
   // Modifiers from ACT options
   let playerAttackBonus = 0;
@@ -572,8 +574,26 @@ function runDeltaruneBattle(config) {
     consoleEl.style.display = "block";
     actions.style.pointerEvents = "auto";
     
-    let turnMsg = `* ים מפהק ומתכסה בשמיכה. מה תעשה/י?\n(רחמים: ${bossMercy}%)`;
-    if (bossHp < 80) turnMsg = `* ים נראה עייף ומובס. (רחמים: ${bossMercy}%)`;
+    // Choose a random mood for Yam this turn!
+    currentMood = moods[Math.floor(Math.random() * moods.length)];
+    
+    // Set speech bubble text based on mood and show it
+    let quote = "";
+    if (currentMood === "lazy") {
+      quote = "זזז...\nאל תעירו אותי\nמחקירות...";
+    } else if (currentMood === "stressed") {
+      quote = "הצפיות של הערוץ\nיורדות! מה\nנעשה?!";
+    } else if (currentMood === "bored") {
+      quote = "משעמם לי...\nאין לי כוח\nלדייטים.";
+    } else if (currentMood === "hungry") {
+      quote = "אני מוכן למות\nבשביל בורקס\nחם...";
+    }
+    const bubble = document.getElementById("bossSpeechBubble");
+    bubble.textContent = quote;
+    bubble.style.display = "block";
+
+    let turnMsg = `* ים מביט בך במצב רוח מיוחד. מה תעשה/י?\n(רחמים: ${bossMercy}%)`;
+    if (bossHp < 80) turnMsg = `* ים נראה מותש ודי מובס. (רחמים: ${bossMercy}%)`;
     writeConsole(turnMsg);
   }
 
@@ -606,33 +626,69 @@ function runDeltaruneBattle(config) {
 
     const actOptions = [
       {
-        name: "לאיים למחוק את שרת הדיסקורד",
+        name: "🔍 בדוק (CHECK)",
         action: () => {
-          playerAttackBonus += 15;
-          writeConsole(`* איימת למחוק את השרת! ההגנה של ים ירדה. (ההתקפה שלך גדלה!)`);
+          let hint = "";
+          if (currentMood === "lazy") {
+            hint = "* ים שמואל - עצלן במיוחד. הוא ישן עמוק.\n* רמז: משהו קיצוני צריך להעיר אותו.";
+          } else if (currentMood === "stressed") {
+            hint = "* ים שמואל - לחוץ מהערוץ. הביטחון שלו ברצפה.\n* רמז: הוא זקוק למילים חמות על העיצובים שלו.";
+          } else if (currentMood === "bored") {
+            hint = "* ים שמואל - משועמם למוות.\n* רמז: אולי שיר או הופעה קטנה יעוררו אותו.";
+          } else if (currentMood === "hungry") {
+            hint = "* ים שמואל - רעב בצורה מפחידה.\n* רמז: תציע לו מאפה בצק חם!";
+          }
+          writeConsole(hint);
         }
       },
       {
-        name: "להציע לו בורקס פגום",
+        name: "לאיים למחוק את שרת הדיסקורד",
         action: () => {
-          bossAttackPower = Math.max(bossAttackPower - 6, 8);
-          writeConsole(`* ים אכל בורקס פגום ונחלש! כוח התקיפה שלו ירד.`);
+          if (currentMood === "lazy") {
+            bossMercy = Math.min(bossMercy + 40, 100);
+            writeConsole(`* איימת למחוק את השרת! ים קפץ בבהלה! הרחמים עלו ב-40%.`);
+          } else {
+            bossAttackPower += 6;
+            writeConsole(`* האיום סתם עיצבן את ים! (כוח התקיפה שלו עלה ב-6!)`);
+          }
+        }
+      },
+      {
+        name: "להציע לו בורקס חם",
+        action: () => {
+          if (currentMood === "hungry") {
+            bossMercy = Math.min(bossMercy + 40, 100);
+            writeConsole(`* הצעת לו בורקס חם! הוא אכל בשמחה. הרחמים עלו ב-40%.`);
+          } else {
+            bossAttackPower += 6;
+            writeConsole(`* ים סירב לאכול והתעצבן! הוא לא רעב כרגע. (כוח התקיפה שלו עלה ב-6!)`);
+          }
         }
       },
       {
         name: "להחמיא לטאמבנייל החדש שלו",
         action: () => {
-          bossMercy = Math.min(bossMercy + 35, 100);
-          writeConsole(`* החמאת לו על הטאמבנייל! הרחמים עלו ב-35%.`);
+          if (currentMood === "stressed") {
+            bossMercy = Math.min(bossMercy + 40, 100);
+            writeConsole(`* החמאת לו על הטאמבנייל! הוא קיבל ביטחון. הרחמים עלו ב-40%.`);
+          } else {
+            bossAttackPower += 6;
+            writeConsole(`* ים התעצבן: 'אל תחמיא לי סתם!' (כוח התקיפה שלו עלה ב-6!)`);
+          }
         }
       },
       {
         name: "לשיר לו שיר של ינוור",
         action: () => {
-          bossMercy = Math.min(bossMercy + 50, 100);
-          playerHp = Math.max(playerHp - 10, 1); // cringe damage!
-          updateHpBars();
-          writeConsole(`* שרת לו שיר של ינוור! הרחמים עלו ב-50%, אך חטפת 10 נזק קרינג'!`);
+          if (currentMood === "bored") {
+            bossMercy = Math.min(bossMercy + 50, 100);
+            playerHp = Math.max(playerHp - 10, 1);
+            updateHpBars();
+            writeConsole(`* שרת לו שיר של ינוור! הוא התעורר מהשעמום! הרחמים עלו ב-50% (ספגת 10 קרינג').`);
+          } else {
+            bossAttackPower += 6;
+            writeConsole(`* השיר של ינוור סתם עיצבן אותו! (כוח התקיפה שלו עלה ב-6!)`);
+          }
         }
       },
       {
