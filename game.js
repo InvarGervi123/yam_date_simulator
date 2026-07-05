@@ -632,6 +632,42 @@ function runDeltaruneBattle(config) {
           updateHpBars();
           writeConsole(`* שרת לו שיר של ינוור! הרחמים עלו ב-50%, אך חטפת 10 נזק קרינג'!`);
         }
+      },
+      {
+        name: "להזמין אותו לצלם פתיחת תיבות יחד",
+        action: () => {
+          writeConsole(`* הזמנת אותו לפתוח תיבות! העיניים של ים בורקות מאושר...`);
+          setTimeout(() => {
+            isGameOver = true;
+            overlay.style.display = "none";
+            showScene("end_unboxing_collab");
+          }, 1800);
+        },
+        instantEnd: true
+      },
+      {
+        name: "לגלות לו שהחלפת לו את ה-Switch בבורקס",
+        action: () => {
+          writeConsole(`* אמרת לו שהחלפת את הסוויץ' שלו בבורקס! ים נכנס לזעם מטורף...`);
+          setTimeout(() => {
+            isGameOver = true;
+            overlay.style.display = "none";
+            showScene("end_switch_rage");
+          }, 1800);
+        },
+        instantEnd: true
+      },
+      {
+        name: "להציע לו לחלוק את שמיכת הפוך יחד",
+        action: () => {
+          writeConsole(`* הצעת לו לחלוק את השמיכה! ים מתלהב מעסקת השינה...`);
+          setTimeout(() => {
+            isGameOver = true;
+            overlay.style.display = "none";
+            showScene("end_bed_alliance");
+          }, 1800);
+        },
+        instantEnd: true
       }
     ];
 
@@ -644,6 +680,7 @@ function runDeltaruneBattle(config) {
         subMenu.style.display = "none";
         actions.style.pointerEvents = "none";
         opt.action();
+        if (opt.instantEnd) return;
         setTimeout(startEnemyTurn, 2000);
       };
       subList.appendChild(btn);
@@ -711,6 +748,20 @@ function runDeltaruneBattle(config) {
     consoleEl.style.display = "none";
     subMenu.style.display = "none";
     arena.style.display = "block";
+
+    // Yam Speaks next to his animated sprite!
+    const quotes = [
+      "אתה לא תנצח את כוח השינה שלי!",
+      "אני עייף מדי בשביל הנזק הזה...",
+      "עוד מילה אחת ואני מוחק את שרת הדיסקורד!",
+      "הקליקים האלה כואבים!",
+      "מישהו אמר בורקס?!",
+      "אני רק רוצה לחזור לישון..."
+    ];
+    const bubble = document.getElementById("bossSpeechBubble");
+    bubble.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    bubble.style.display = "block";
+    setTimeout(() => { bubble.style.display = "none"; }, 2500);
 
     // Reset heart position to center of board
     const boardWidth = board.clientWidth;

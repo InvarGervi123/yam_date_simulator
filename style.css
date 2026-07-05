@@ -39,7 +39,7 @@ html, body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  z-index: 100;
+  z-index: 210;
   padding: 0;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -1186,4 +1186,60 @@ button {
   100% {
     transform: translateX(8px) translateY(0) rotate(1deg);
   }
+}
+
+#bossSpeechBubble {
+  position: absolute;
+  background: white;
+  color: black;
+  border: 3px solid black;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 14px;
+  max-width: 150px;
+  top: 15px;
+  right: 15%;
+  z-index: 10;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.5);
+  direction: rtl;
+  text-align: right;
+  animation: bubblePop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+#bossSpeechBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 20px;
+  border-width: 15px 0 0 15px;
+  border-style: solid;
+  border-color: white transparent;
+  display: block;
+  width: 0;
+}
+
+#bossSpeechBubble::before {
+  content: '';
+  position: absolute;
+  bottom: -19px;
+  left: 18px;
+  border-width: 17px 0 0 17px;
+  border-style: solid;
+  border-color: black transparent;
+  display: block;
+  width: 0;
+  z-index: -1;
 }
