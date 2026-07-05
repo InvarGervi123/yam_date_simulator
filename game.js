@@ -951,12 +951,23 @@ function runDeltaruneBattle(config) {
     projectiles.forEach(p => p.el.remove());
     projectiles = [];
 
-    soundToggle.style.display = "flex";
-    overlay.style.display = "none";
     if (spared) {
+      soundToggle.style.display = "flex";
+      overlay.style.display = "none";
       showScene("boss_fight_spare");
     } else {
-      showScene(config.nextSuccess);
+      // Play dramatic death animation!
+      const bossSprite = document.getElementById("battleBossSprite");
+      bossSprite.classList.add("boss-death-animation");
+      playSfx("audio/hit.mp3");
+      triggerVibration([100, 100, 100, 100, 600]);
+
+      setTimeout(() => {
+        bossSprite.classList.remove("boss-death-animation");
+        soundToggle.style.display = "flex";
+        overlay.style.display = "none";
+        showScene(config.nextSuccess);
+      }, 3500);
     }
   }
 

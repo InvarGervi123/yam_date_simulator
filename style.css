@@ -1200,7 +1200,7 @@ button {
   font-size: 14px;
   max-width: 150px;
   top: 15px;
-  right: 15%;
+  left: 15%;
   z-index: 10;
   box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.5);
   direction: rtl;
@@ -1223,8 +1223,8 @@ button {
   content: '';
   position: absolute;
   bottom: -15px;
-  left: 20px;
-  border-width: 15px 0 0 15px;
+  right: 20px;
+  border-width: 15px 15px 0 0;
   border-style: solid;
   border-color: white transparent;
   display: block;
@@ -1235,8 +1235,8 @@ button {
   content: '';
   position: absolute;
   bottom: -19px;
-  left: 18px;
-  border-width: 17px 0 0 17px;
+  right: 18px;
+  border-width: 17px 17px 0 0;
   border-style: solid;
   border-color: black transparent;
   display: block;
@@ -1265,9 +1265,9 @@ button {
     font-size: 22px;
   }
   #dialogBox {
-    max-width: 1200px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 6%;
+    right: 6%;
+    transform: none;
     min-height: 220px;
     bottom: 6%;
   }
@@ -1276,5 +1276,43 @@ button {
   }
   #speaker {
     font-size: 30px;
+  }
+}
+
+/* --- Dramatic Boss Death Animation --- */
+.boss-death-animation {
+  animation: bossDeath 3.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
+}
+
+@keyframes bossDeath {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) sepia(0);
+  }
+  10% {
+    transform: scale(1.25) rotate(15deg) translateY(-20px);
+    filter: sepia(1) saturate(12) hue-rotate(0deg);
+  }
+  20% {
+    transform: scale(0.85) rotate(-15deg) translateY(10px);
+    filter: sepia(1) saturate(12) hue-rotate(90deg);
+  }
+  40% {
+    transform: scale(1.5) rotate(45deg);
+    filter: sepia(1) saturate(12) hue-rotate(180deg) invert(1);
+  }
+  60% {
+    transform: scale(0.5) rotate(180deg) translateY(-100px);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(0.2) rotate(720deg) translateY(200px);
+    opacity: 0.4;
+    filter: grayscale(1) brightness(0.2);
+  }
+  100% {
+    transform: scale(0) rotate(1080deg) translateY(300px);
+    opacity: 0;
+    filter: grayscale(1) brightness(0);
   }
 }
