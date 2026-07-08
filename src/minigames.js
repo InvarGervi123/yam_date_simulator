@@ -9,6 +9,10 @@ function runMinigame(config) {
     runMathMinigame(config);
     return;
   }
+  if (config.type === "baldi_basics") {
+    runBaldiMinigame(config);
+    return;
+  }
 
   minigameOverlay.style.display = "flex";
   
