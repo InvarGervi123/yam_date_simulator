@@ -1,7 +1,7 @@
 // --- Story Chapter: BALDI ---
 Object.assign(window.story, {
   baldi_intro: {
-    character: "images/yam_sleepy.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "ים שולף מהמיטה טאבלט פלסטיק ירוק ומיושן.\n'רוצה ללכת לדייט? קודם כל נוכיח שאתה ראוי לזה מבחינה אינטלקטואלית! קח את הטאבלט הלימודי שלי, You Can Think! Pad, ופתור את 3 התרגילים. אם תעשה טעות... כדאי שתתחיל לרוץ מהר.'",
     choices: [

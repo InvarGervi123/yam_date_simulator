@@ -71,7 +71,7 @@ Object.assign(window.story, {
   },
 
   simple_offer: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     characterAnimation: "float",
     text: "'דייט? עכשיו?\nאני עסוק ב־INVARIRON, בים שמואל הפקות, ובפרויקט הכי חשוב שלי: לא לזוז.'",
@@ -84,7 +84,7 @@ Object.assign(window.story, {
   },
 
   love_vs_channels: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "ים מסתכל עלייך כאילו הרגע הצעת למחוק לו את ההיסטוריה ביוטיוב.\n\n'אהבה לא יכולה לחכות?\nיפה. גם האלגוריתם לא. האלגוריתם רעב. האלגוריתם לא ישן. האלגוריתם לא שואל מה שלומך.'",
     choices: [
@@ -96,7 +96,7 @@ Object.assign(window.story, {
 
   algorithm_love: {
     speaker: "ים",
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     characterAnimation: "bounce",
     text: "'את... תהיי האלגוריתם שלי?'\n\nהוא מתרגש.\nלא כי זה רומנטי, אלא כי זו הפעם הראשונה שמישהו אמר לו משפט יותר מטומטם מהתירוצים שלו.",
     choices: [
@@ -106,7 +106,7 @@ Object.assign(window.story, {
   },
 
   content_date: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "'דייט כתוכן?'\n\nים קם חצי סנטימטר מהמיטה.\nזה לא נשמע הרבה, אבל מבחינת פיזיקה זה כמו נחיתה על הירח עם כפכפים.",
     choices: [
@@ -117,7 +117,7 @@ Object.assign(window.story, {
   },
 
   live_date: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "'לייב?'\nים מתחיל להזיע.\nלא מרגש. מלחץ.\nהוא מדמיין צ'אט של שלושה אנשים, מתוכם אחד בוט ואחד ינוור שכותב: תקום יא אגדה שבורה.",
     choices: [
@@ -127,7 +127,7 @@ Object.assign(window.story, {
   },
 
   privacy_argument: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "'דייט פרטי? בלי תוכן? בלי כותרת? בלי תמונה ממוזערת?'\n\nהוא נראה אבוד. כמו יוצר תוכן בלי אינטרנט ובלי תירוץ.",
     choices: [
@@ -138,7 +138,7 @@ Object.assign(window.story, {
 
   sub_offer: {
     speaker: "ים",
-    character: "images/yam.png",
+    character: "images/yam_angry.png",
     text: "'סאב לשני הערוצים?'\n\nים פותח עין אחת.\nזה הרגע הכי אינטימי שלו היום.",
     choices: [
       { text: "כן. INVARIRON וגם ים שמואל הפקות", next: "two_subs" },
@@ -149,7 +149,7 @@ Object.assign(window.story, {
   },
 
   two_subs: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "'שני סאבים זה כבר חצי מערכת יחסים.'\n\nהוא מנסה לקום. המיטה מתנגדת.\nהמיטה: 'אני הייתי פה קודם.'",
     choices: [
@@ -160,7 +160,7 @@ Object.assign(window.story, {
   },
 
   one_sub: {
-    character: "images/yam.png",
+    character: "images/yam_angry.png",
     speaker: "ים",
     text: "ים: 'סאב אחד? זה כמו להגיד אני אוהבת אותך אבל רק בגרסת ניסיון.'\n\nהחדר נהיה קר. אפילו הכרית עשתה לך אנפולו.",
     choices: [
@@ -171,7 +171,7 @@ Object.assign(window.story, {
 
   full_package: {
     speaker: "ים",
-    character: "images/yam.png",
+    character: "images/yam_happy.png",
     text: "'סאב, לייק ופעמון?'\n\nים מרגיש כאילו קיבל הצעת נישואים דרך YouTube Studio.\nהוא כמעט מחייך. זה מפחיד את כולם.",
     choices: [
       { text: "להציע דייט רשמי", next: "true_date_offer" },
@@ -210,7 +210,7 @@ Object.assign(window.story, {
   },
 
   bed_date_offer: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "'דייט בלי לקום?'\n\nים נראה מאושר.\nזו לא אהבה. זו לוגיסטיקה שמצאה משמעות בחיים.",
     choices: [
@@ -244,7 +244,7 @@ Object.assign(window.story, {
   },
 
   petah_tikva_path: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "'פתח תקווה?'\n\nים שואל את זה כמו שמישהו שואל אם יש חיים אחרי המוות, אבל עם יותר חניה כחול־לבן.",
     choices: [
@@ -285,7 +285,7 @@ Object.assign(window.story, {
   },
 
   screen_date: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "'דייט דרך מסך?'\n\nים נדלק.\nלא רומנטית. טכנית.\nהוא כבר פותח דיסקורד כאילו זה חדר חתונות.",
     choices: [
@@ -328,7 +328,7 @@ Object.assign(window.story, {
 
   burekas_path: {
     speaker: "ים",
-    character: "images/yam.png",
+    character: "images/yam_happy.png",
     text: "'בורקס?'\n\nהחדר משתנה.\nהמוזיקה נהיית דרמטית, למרות שיש רק קובץ אחד בתיקיית audio.\nים קם רבע נשמה.",
     choices: [
       { text: "בורקס גבינה", next: "cheese_burekas" },
@@ -383,7 +383,7 @@ Object.assign(window.story, {
 
   hand_moment: {
     speaker: "המספר",
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     text: "את מחזיקה לו יד.\nים מסתכל על הידיים שלכם.\nהוא לוחש: 'זה יותר חם מהתגובות שלי ביוטיוב.'\n\nברגע הזה אפילו ההומור השחור לקח צעד אחורה ואמר: טוב, זה חמוד.",
     choices: [
       { text: "לצאת לדייט אמיתי", next: "end_true_love" },
@@ -465,7 +465,7 @@ Object.assign(window.story, {
   },
 
   honest_talk: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "ים אומר: 'האמת? לפעמים אין לי כוח להיות בן אדם. להיות ערוץ יותר קל. ערוץ לא צריך לקום. רק להעלות.'\n\nהמשפט הזה היה עמוק מדי בשביל משחק בשם ים דייט סימולטור, אז מיד נופל בורקס מהשמיים כדי לאזן.",
     choices: [
@@ -476,7 +476,7 @@ Object.assign(window.story, {
   },
 
   channel_wont_hug: {
-    character: "images/yam.png",
+    character: "images/yam_angry.png",
     speaker: "ים",
     text: "'הערוץ לא יחבק אותי?'\n\nים מסתכל על המסך.\nהמסך מחזיר לו השתקפות של אדם שמנהל מערכת יחסים עם סטטיסטיקות צפייה.\nזה היה רגע קשה. מטומטם, אבל קשה.",
     choices: [
@@ -495,7 +495,7 @@ Object.assign(window.story, {
   },
 
   darker_joke: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "ים אומר: 'זה בסדר, גם המוטיבציה שלי מתה, פשוט לא היה לה מי שיבוא ללוויה.'\n\nשניכם צוחקים.\nלא כי זה טוב. כי זה מדויק מדי.",
     choices: [
@@ -505,7 +505,7 @@ Object.assign(window.story, {
   },
 
   yinover_threat: {
-    character: "images/yam.png",
+    character: "images/yam_angry.png",
     speaker: "ים",
     text: "ים קופא.\nהמילה 'ינוור' תלויה באוויר כמו קללה עתיקה שנכתבה בקומנט ביוטיוב.\n\n'מה אמרת?'",
     choices: [
@@ -516,7 +516,7 @@ Object.assign(window.story, {
   },
 
   yinover_recover: {
-    character: "images/yam.png",
+    character: "images/yam_sleepy.png",
     speaker: "ים",
     text: "ים נושם.\n'אל תעשי לי את זה. יש מילים שלא זורקים בחדר עם מיטה רגישה.'",
     choices: [
@@ -527,7 +527,7 @@ Object.assign(window.story, {
 
   invariron_flattery: {
     speaker: "ים",
-    character: "images/yam.png",
+    character: "images/yam_happy.png",
     text: "'INVARIRON יותר טוב?'\n\nים מחייך.\nהוא מנסה להסתיר את זה, אבל הפנים שלו עושות לייק לבד.",
     choices: [
       { text: "כן, ועכשיו דייט", next: "true_date_offer" },
@@ -545,7 +545,7 @@ Object.assign(window.story, {
   },
 
   cringe_recovery: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     text: "ים מהנהן. 'כן, זה באמת היה קרינג'. אבל לפחות זה היה קרינג' עם כוונה.'",
     choices: [
@@ -801,7 +801,7 @@ Object.assign(window.story, {
   },
 
   drag_injured_date: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     text: "ים נסחב על הרצפה כמו שטיח ישן, משאיר סימנים על הפרקט.\n'את... פסיכופטית אחושרמוטה...' הוא לוחש.\n'אבל לפחות את עקבית. בסדר, נצא לדייט, רק תפסיקי לגרור אותי במדרגות.'",
     choices: [
@@ -869,7 +869,7 @@ Object.assign(window.story, {
   },
 
   math_quiz_success: {
-    character: "images/yam.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     characterAnimation: "bounce",
     text: "העיניים של ים נפערות בתדהמה.\n'וואו... המוח שלך מריץ קוד יעיל יותר מהאלגוריתם של יוטיוב! פתרת את זה בצורה מושלמת!'\nהוא קם מהמיטה מרצונו החופשי.\n'מגיע לך דייט של אלופים בפתח תקווה!'",
@@ -879,7 +879,7 @@ Object.assign(window.story, {
   },
 
   math_quiz_fail: {
-    character: "images/yam.png",
+    character: "images/yam_angry.png",
     speaker: "ים",
     characterAnimation: "shake",
     effect: "redflash",
@@ -952,7 +952,7 @@ Object.assign(window.story, {
   },
 
   yam_depression_ask: {
-    character: "images/yam_sad.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     characterAnimation: "float",
     text: "ים נאנח, מוריד מעט את השמיכה ומביט בך בעיניים עצובות:\n'התקבלתי לעבודה בהייטק! אבל... רק כעוזר של המנקה הראשי במשרד.\nכל היום אני שוטף כוסות קפה של מתכנתים שלובשים כפכפים. אבל החלום האמיתי שלי הוא לעבוד בתעשיית הקולנוע! לביים סרטים אפיים עם עלילות מפותלות, ולא סרטוני גיימינג שבהם ינוור צועק עלי.'",
@@ -1013,7 +1013,7 @@ Object.assign(window.story, {
   },
 
   block_highway_protest: {
-    character: "images/yam_sleepy.png",
+    character: "images/yam_dead.png",
     speaker: "ים",
     characterAnimation: "bounce",
     text: "ים פוקח עיניים גדולות ומזנק מהמיטה:\n'מה?! עוגת גבינה פירורים בחינם לחוסמים?! אני קם ברגע זה! יאללה, בואי נחסום את כביש 4!'\nאתם מגיעים לכביש 4, מתיישבים על האספלט וחוסמים את כל התנועה.\nהנהגים צופרים וצועקים קללות מטורפות. פתאום, נהג משאית זועם מאיץ ישר לכיוון שלכם וצועק: 'עופו מהכביש או שאני דורס אתכם!'",
@@ -1055,7 +1055,7 @@ Object.assign(window.story, {
   },
 
   highway_run_away: {
-    character: "images/yam.png",
+    character: "images/yam_horny.png",
     speaker: "ים",
     characterAnimation: "shake",
     text: "קפצתם למדרכה כמו פחדנים.\nהמשאית עוברת במהירות ומשאירה ענן אבק.\nים מביט בך בכעס: 'ברחת? ויתרת על עוגת גבינה חינם?! אהבה צריכה להבנות על הקרבה ופחמימות! אני חוזר למיטה שלי באורנית!'",

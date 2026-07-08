@@ -9,7 +9,7 @@ Object.assign(window.story, {
 
   end_content_empire: {
     speaker: "סוף 2/59",
-    character: "images/yam_horny.png",
+    character: "images/yam_dead.png",
     text: "📹 סוף אימפריית התוכן\n\nהדייט הופך לסרטון: 'ניסיתי לצאת לדייט וכמעט קמתי מהמיטה'.\nהוא מקבל 13 צפיות, 2 לייקים, ותגובה אחת מינוור: 'חלש'.\nים קורא לזה הצלחה מסחררת.\nאת קוראת לזה קשר עם בעיות.",
     end: true
   },
