@@ -1,5 +1,8 @@
 // --- Baldi's Basics in Oranit: 3D Raycaster Engine ---
 
+const jumpscareYamImg = new Image();
+jumpscareYamImg.src = "images/yam.png";
+
 function runBaldiMinigame(config) {
   minigameOverlay.style.display = "flex";
   clearChoices();
@@ -233,6 +236,16 @@ function runBaldiMinigame(config) {
     padTeacherImg.classList.remove("baldi-glitch-face");
     padInput.value = "";
     
+    // Numeric input filters to prevent letters like 'e'
+    padInput.onkeypress = (e) => {
+      if (!/[0-9\-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    };
+    padInput.oninput = () => {
+      padInput.value = padInput.value.replace(/[^0-9\-]/g, "");
+    };
+
     // Render Problem 1
     padProbNum.textContent = "Problem 1 of 3";
     padQText.textContent = `${a1} + ${b1} = ?`;
@@ -312,14 +325,13 @@ function runBaldiMinigame(config) {
       ctx.fillStyle = (Math.floor(Date.now() / 80) % 2 === 0) ? "#7a1111" : "#000000";
       ctx.fillRect(0, 0, 320, 240);
 
-      // Shaking giant emoji face of Yam
-      ctx.font = "90px Courier New";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#ffffff";
+      // Shaking giant image of Yam
       let shakeX = Math.random() * 16 - 8;
       let shakeY = Math.random() * 16 - 8;
-      ctx.fillText("😠", 160 + shakeX, 120 + shakeY);
+
+      let imgW = 160;
+      let imgH = 160;
+      ctx.drawImage(jumpscareYamImg, 160 - imgW / 2 + shakeX, 120 - imgH / 2 + shakeY, imgW, imgH);
       return;
     }
 
