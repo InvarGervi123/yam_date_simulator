@@ -283,9 +283,9 @@ function runDeltaruneBattle(config) {
     subList.innerHTML = "";
     subMenu.style.display = "flex";
 
-    const items = [
-      { name: "בורקס חם (מרפא 50 HP)", heal: 50 },
-      { name: "פחית אנרגיה (מרפא 30 HP)", heal: 30 }
+    const items = config.items || [
+      { name: "בורקס חם (מרפא 50 HP)", heal: 50, sfx: "audio/healing.mp3" },
+      { name: "פחית אנרגיה (מרפא 30 HP)", heal: 30, sfx: "audio/click.mp3" }
     ];
 
     items.forEach(item => {
@@ -298,6 +298,10 @@ function runDeltaruneBattle(config) {
         actions.style.pointerEvents = "none";
         playerHp = Math.min(playerHp + item.heal, 100);
         updateHpBars();
+        
+        // Play custom heal SFX if configured, otherwise default to healing.mp3
+        playSfx(item.sfx || "audio/healing.mp3");
+
         writeConsole(`* אכלת ${item.name.split(' ')[0]}! נרפאת ב-${item.heal} נקודות חיים.`);
         setTimeout(startEnemyTurn, 1800);
       };
@@ -348,7 +352,7 @@ function runDeltaruneBattle(config) {
       lastTurnHealed = true;
       bossHp = Math.min(bossHp + 45, 200);
       updateHpBars();
-      playSfx("audio/triumph.mp3");
+      playSfx("audio/healing.mp3");
       triggerVibration([100, 100, 100]);
     }
 

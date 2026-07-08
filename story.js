@@ -1122,7 +1122,7 @@ const story = {
 
   escape_success: {
     speaker: "המספר",
-    sfx: "audio/triumph.mp3",
+    sfx: "audio/healing.mp3",
     effect: "flash",
     characterAnimation: "bounce",
     text: "כיסא הגלגלים טס במסדרונות, לוקח סיבובים על שני גלגלים כמו מכונית מירוץ!\nאתם פורצים את דלתות הזכוכית של המיון ויוצאים אל החנייה.\nינוור נשאר מאחור, מתנשף ומקלל בדיסקורד.\nים, שכל הנסיעה רעד מפחד, פתאום מחייך: 'וואו... זה היה... הדבר הכי מלהיב שקרה לי מאז שלייב שלי עבר את ה-20 צפיות! הגב שלי מרגיש הרבה יותר טוב מהאדרנלין!'",
@@ -1242,7 +1242,11 @@ const story = {
       type: "deltarune_battle",
       duration: 999999, // Handled internally by JS battle engine
       nextSuccess: "boss_fight_win",
-      nextFail: "boss_fight_lose"
+      nextFail: "boss_fight_lose",
+      items: [
+        { name: "בורקס חם מהתנור (מרפא 50 HP)", heal: 50, sfx: "audio/healing.mp3" },
+        { name: "פחית אנרגיה של ינוור (מרפא 30 HP)", heal: 30, sfx: "audio/click.mp3" }
+      ]
     }
   },
 
@@ -1461,7 +1465,7 @@ const story = {
 
   tel_aviv_rich: {
     speaker: "המספר",
-    sfx: "audio/triumph.mp3",
+    sfx: "audio/healing.mp3",
     effect: "flash",
     text: "הצלחתם! מכרתם בורקסים ב-20,000 ש\"ח תוך שעה!\nשכרתם פנטהאוז יוקרתי בקומה 45 במגדלי עזריאלי.\nאבל ים התמכר לבועת הנדל\"ן של תל אביב ומסרב לצאת מהמיטה אלא אם השותפים שלו משלמים דמי ניהול.",
     choices: [
@@ -1499,7 +1503,7 @@ const story = {
 
   scam_success: {
     speaker: "המספר",
-    sfx: "audio/triumph.mp3",
+    sfx: "audio/healing.mp3",
     effect: "flash",
     text: "ברחתם בהצלחה עם הכסף!\nהגעתם לתל אביב וקניתם קופסת קרטון ממותגת ברוטשילד ב-3 מיליון ש\"ח.",
     choices: [
@@ -1944,7 +1948,7 @@ const story = {
 
   highway_dodge_success: {
     speaker: "המספר",
-    sfx: "audio/triumph.mp3",
+    sfx: "audio/healing.mp3",
     effect: "flash",
     text: "קפצתם הצידה בזינוק הירואי ברבע השנייה האחרונה!\nהמשאית סוטה, נתקעת במעקה הבטיחות והדלת האחורית שלה נפתחת... מתברר שזו הייתה משאית משלוחים של קונדיטוריה!\nאלפי עוגות גבינה פירורים עפות באוויר ונוחתות לכם ישר בידיים!",
     choices: [
