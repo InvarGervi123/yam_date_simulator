@@ -354,6 +354,17 @@ function runDeltaruneBattle(config) {
       updateHpBars();
       playSfx("audio/healing.mp3");
       triggerVibration([100, 100, 100]);
+
+      // Chew animation: food_1 -> food_2 -> food_3 -> food_2 -> food_3 -> default
+      const bossSprite = document.getElementById("battleBossSprite");
+      if (bossSprite) {
+        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_1.png"; }, 0);
+        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 350);
+        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 700);
+        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 1050);
+        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 1400);
+        setTimeout(() => { bossSprite.src = "images/Boss_fight.png"; }, 2000);
+      }
     }
 
     const bubble = document.getElementById("bossSpeechBubble");
