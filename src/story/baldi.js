@@ -1,6 +1,7 @@
 // --- Story Chapter: BALDI ---
 Object.assign(window.story, {
   baldi_intro: {
+    character: "images/yam_sleepy.png",
     speaker: "ים",
     text: "ים שולף מהמיטה טאבלט פלסטיק ירוק ומיושן.\n'רוצה ללכת לדייט? קודם כל נוכיח שאתה ראוי לזה מבחינה אינטלקטואלית! קח את הטאבלט הלימודי שלי, You Can Think! Pad, ופתור את 3 התרגילים. אם תעשה טעות... כדאי שתתחיל לרוץ מהר.'",
     choices: [
@@ -20,6 +21,7 @@ Object.assign(window.story, {
   },
 
   baldi_win: {
+    character: "images/yam_surpise.png",
     speaker: "ים",
     characterAnimation: "bounce",
     text: "ים מביט בך בהלם, משליך את סרגל העץ שלו הצידה.\n'וואו! פתרת הכל והצלחת להתחמק מכל מכות הסרגל שלי! אתה גאון אמיתי. מגיע לך פרס - דייט בורקס רומנטי ויוקרתי!'",
@@ -29,6 +31,7 @@ Object.assign(window.story, {
   },
 
   baldi_lose: {
+    character: "images/yam_angry.png",
     speaker: "ים",
     characterAnimation: "shake",
     effect: "redflash",

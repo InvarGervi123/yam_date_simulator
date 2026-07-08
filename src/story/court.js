@@ -12,6 +12,7 @@ Object.assign(window.story, {
   },
 
   court_press_hours: {
+    character: "images/yam_dead.png",
     speaker: "ים",
     characterAnimation: "shake",
     text: "ים מזיע מתחת לשמיכה: 'אה... נו... ערכתי משהו כמו 18 שעות ביום! המקלדת שלי כמעט עלתה באש!'\nינוור זועק מהצד: 'שקר וכזב! הקובץ האחרון בתיקיית העריכה שלו עודכן בשנת 2025!'",
