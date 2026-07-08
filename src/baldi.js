@@ -115,6 +115,7 @@ function runBaldiMinigame(config) {
   let isGameOver = false;
   let isMinigameActive = true;
   let activePadSession = false;
+  let jumpScareActive = false;
 
   // Sound slaps loop
   let yamLastSlap = 0;
@@ -237,6 +238,12 @@ function runBaldiMinigame(config) {
     padQText.textContent = `${a1} + ${b1} = ?`;
     padInput.focus();
 
+    padInput.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        padSubmit.click();
+      }
+    };
+
     padSubmit.onclick = () => {
       const val = parseInt(padInput.value.trim());
       playSfx("audio/click.mp3");
@@ -300,6 +307,22 @@ function runBaldiMinigame(config) {
 
   // Render 3D Frame
   function render3D() {
+    if (jumpScareActive) {
+      // Flashing screen
+      ctx.fillStyle = (Math.floor(Date.now() / 80) % 2 === 0) ? "#7a1111" : "#000000";
+      ctx.fillRect(0, 0, 320, 240);
+
+      // Shaking giant emoji face of Yam
+      ctx.font = "90px Courier New";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#ffffff";
+      let shakeX = Math.random() * 16 - 8;
+      let shakeY = Math.random() * 16 - 8;
+      ctx.fillText("😠", 160 + shakeX, 120 + shakeY);
+      return;
+    }
+
     // Clear screen with ceiling & floor colors
     ctx.fillStyle = "#d2d2a6"; // Ceiling
     ctx.fillRect(0, 0, 320, 120);
@@ -528,30 +551,41 @@ function runBaldiMinigame(config) {
           if (map[Math.floor(nextYamY)][Math.floor(yamRef.x)] === 0) yamRef.y = nextYamY;
         }
 
-        // Catch check
-        if (dist < 0.6) {
-          lives--;
-          if (lives <= 0) {
-            endGame(false);
-            return;
-          } else {
-            // Push Yam back to safety zone & reset
-            playSfx("audio/hit.mp3");
-            triggerVibration([300, 100, 300]);
-            const gc = document.getElementById("game");
-            if (gc) {
-              gc.classList.add("effect-redflash");
-              setTimeout(() => gc.classList.remove("effect-redflash"), 300);
-            }
-            
-            promptText.textContent = `נפגעת! נשארו לך ${lives} חיים!`;
-            promptText.style.color = "#ff3333";
-            
-            // Push Yam away
-            yamRef.x = Math.max(1.5, Math.min(14.5, yamRef.x - Math.sign(px - yamRef.x) * 3.5));
-            yamRef.y = Math.max(1.5, Math.min(14.5, yamRef.y - Math.sign(py - yamRef.y) * 3.5));
-          }
+      // Catch check
+      if (dist < 0.6 && !jumpScareActive) {
+        lives--;
+        jumpScareActive = true;
+        
+        playSfx("audio/hit.mp3");
+        triggerVibration([500, 150, 500]);
+
+        const gc = document.getElementById("game");
+        if (gc) {
+          gc.classList.add("effect-redflash");
+          setTimeout(() => gc.classList.remove("effect-redflash"), 300);
         }
+
+        if (lives <= 0) {
+          // Giant game over jumpscare
+          promptText.textContent = "נתפסת על ידי ים!";
+          promptText.style.color = "#ff0000";
+          setTimeout(() => {
+            jumpScareActive = false;
+            endGame(false);
+          }, 1200);
+          return;
+        } else {
+          // Regular hit jumpscare
+          promptText.textContent = `נפגעת! נשארו לך ${lives} חיים!`;
+          promptText.style.color = "#ff3333";
+          setTimeout(() => {
+            jumpScareActive = false;
+            // Push Yam away
+            yamRef.x = Math.max(1.5, Math.min(14.5, yamRef.x - Math.sign(px - yamRef.x) * 4.5));
+            yamRef.y = Math.max(1.5, Math.min(14.5, yamRef.y - Math.sign(py - yamRef.y) * 4.5));
+          }, 600);
+        }
+      }
       }
 
       // Check near notebook prompt
