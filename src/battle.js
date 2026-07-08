@@ -340,6 +340,7 @@ function runDeltaruneBattle(config) {
 
   function startEnemyTurn() {
     if (isGameOver) return;
+    keysPressed = {}; // Clear any keys held down from previous turns/actions
     consoleEl.style.display = "none";
     subMenu.style.display = "none";
     arena.style.display = "block";
