@@ -4,6 +4,11 @@ const jumpscareYamImg = new Image();
 jumpscareYamImg.src = "images/yam.png";
 
 function runBaldiMinigame(config) {
+  const minigameBox = document.getElementById("minigameBox");
+  if (minigameBox) {
+    minigameBox.classList.add("baldi-active");
+  }
+
   minigameOverlay.style.display = "flex";
   clearChoices();
   nextBtn.style.display = "none";
@@ -466,15 +471,22 @@ function runBaldiMinigame(config) {
           if (size > 150) size = 150;
           if (size < 6) size = 6;
 
-          ctx.font = `${size}px Courier New`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
+          if (s.type === "yam") {
+            // Draw Yam image as a billboard sprite instead of emoji!
+            let imgW = size;
+            let imgH = size;
+            ctx.drawImage(jumpscareYamImg, screenX - imgW / 2, 120 - imgH / 2, imgW, imgH);
+          } else {
+            ctx.font = `${size}px Courier New`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
 
-          // Text shadow
-          ctx.fillStyle = "#000000";
-          ctx.fillText(s.label, screenX + 1, 120 + 1);
-          ctx.fillStyle = s.type === "yam" ? "#ff0000" : "#ffffff";
-          ctx.fillText(s.label, screenX, 120);
+            // Text shadow
+            ctx.fillStyle = "#000000";
+            ctx.fillText(s.label, screenX + 1, 120 + 1);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText(s.label, screenX, 120);
+          }
         }
       }
     });
@@ -634,6 +646,10 @@ function runBaldiMinigame(config) {
     isMinigameActive = false;
     window.removeEventListener("keydown", handleKeyDown);
     window.removeEventListener("keyup", handleKeyUp);
+
+    if (minigameBox) {
+      minigameBox.classList.remove("baldi-active");
+    }
 
     setTimeout(() => {
       minigameOverlay.style.display = "none";

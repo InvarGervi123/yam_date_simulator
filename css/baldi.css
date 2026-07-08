@@ -245,17 +245,38 @@
 
 @media (min-width: 1024px) {
   .baldi-container {
-    max-width: 860px;
-    padding: 24px;
+    max-width: 580px;
+    padding: 20px;
   }
   .baldi-3d-screen-wrapper {
-    max-width: 800px;
+    max-width: 520px;
   }
   .baldi-header {
-    font-size: 26px;
-    margin-bottom: 16px;
+    font-size: 22px;
+    margin-bottom: 12px;
   }
   .baldi-controls {
-    max-width: 500px;
+    max-width: 440px;
   }
+}
+
+/* --- Override standard minigame box when Baldi is active --- */
+#minigameBox.baldi-active {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+#minigameBox.baldi-active #minigameTitle,
+#minigameBox.baldi-active #minigameInstruction,
+#minigameBox.baldi-active #minigameBtn {
+  display: none !important;
 }
