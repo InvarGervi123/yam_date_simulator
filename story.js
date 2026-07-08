@@ -2157,17 +2157,44 @@ const story = {
   },
 
   end_baldi_success: {
-    speaker: "סוף 87/88",
+    speaker: "סוף 87/90",
     vibrate: [100, 50, 100, 50, 200],
     text: "🎓 סוף מורה מצטיין\n\nשרדת את שיעור המתמטיקה המטורף של ים!\nהצלחת לפתור את המשוואות ולחמוק מכל מכות הסרגל שלו.\nים מעריך את הכישורים שלך והסכים לצאת איתך לדייט רומנטי בבורקס הקרוב, שם הוא מסביר לך על חוקי הגאומטריה של הבצק.\nניצחון אקדמי רומנטי!",
     end: true
   },
 
   end_baldi_fail: {
-    speaker: "סוף 88/88",
+    speaker: "סוף 88/90",
     effect: "redflash",
     vibrate: [500],
     text: "📏 סוף המכה של הסרגל\n\nנכשלת בפתרון השאלות של ים, והוא תפס אותך!\nהוא הרביץ לך עם סרגל העץ שלו עד שהבטחת לערוך לו את כל הסרטונים לערוץ בחינם.\nעכשיו אתה כלוא בחדר שלו, פותר משוואות כפולות ומנקה את שמיכת הפוך.\nלא בדיוק הדייט שחלמת עליו.",
     end: true
+  },
+
+  end_baldi_secret_suspicious: {
+    speaker: "סוף סודי 89/90",
+    vibrate: [100, 100, 300],
+    text: "", // Will be filled dynamically in onEnter
+    end: true,
+    onEnter: (self) => {
+      // Find all ending keys in story (except this secret ending itself)
+      const allEndingKeys = [];
+      for (let k in story) {
+        if (story[k] && story[k].end && k !== "end_baldi_secret_suspicious") {
+          allEndingKeys.push(k);
+        }
+      }
+      const unlocked = getUnlockedEndings();
+      // Check if all OTHER endings have been unlocked
+      const hasUnlockedAllOthers = allEndingKeys.every(k => unlocked.includes(k));
+
+      if (hasUnlockedAllOthers) {
+        self.speaker = "סוף סודי מלא 90/90";
+        self.text = "👑 סוף סודי מלא: דרמת המשקל של ים\n\nמדהים! פתרת את כל הסופים במשחק והוכחת נאמנות עיוורת לערוץ!\nהנה המשך הסוד: ים פעם היה רזה! הוא היה רץ 10 קילומטר ביום ואפילו תפס גנב בכיכר אורנית!\nאבל יום אחד הוא גילה את הבצק החם והמלוח של בורקס פוני, והוא נשבע לא לקום מהמיטה לעולם.\nזו הסיבה שהוא מסרב לצאת איתך לדייט רגיל.\nהסוד הגדול נחשף במלואו!";
+      } else {
+        self.speaker = "סוף סודי 89/90";
+        self.text = "🤫 סוף סודי: סוד חשוד על ים\n\nשרדת את שיעור המתמטיקה של ים ללא אף תשובה נכונה! ים המום מחוסר הידע הקיצוני שלך, ומפלט סוד כמוס מהעבר:\nים פעם היה רזה! וזו דרמה ענקית שהוא מסרב לדבר עליה...\n\n💡 רמז: אם ברצונך לחשוף את ההמשך המלא של הסוד המסתורי הזה - עליך קודם כל לפתוח את כל שאר 89 הסופים של המשחק!";
+      }
+    }
   }
 };

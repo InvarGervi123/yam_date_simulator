@@ -107,6 +107,9 @@ function runBaldiMinigame(config) {
   let collectedNotebooksCount = 0;
   let currentNotebookRef = null;
 
+  let correctAnswers = 0;
+  let mistakesCount = 0;
+
   // Sprite billboards (e: Emoji, x, y, collected/active)
   let sprites = [
     { type: "notebook", label: "📘", x: 3.5, y: 3.5, collected: false },
@@ -226,7 +229,6 @@ function runBaldiMinigame(config) {
     padModal.style.display = "flex";
     
     let step = 1;
-    let correct = 0;
 
     let a1 = Math.floor(Math.random() * 8) + 2;
     let b1 = Math.floor(Math.random() * 8) + 2;
@@ -268,14 +270,22 @@ function runBaldiMinigame(config) {
       triggerVibration(15);
 
       if (step === 1) {
-        if (val === ans1) correct++;
+        if (val === ans1) {
+          correctAnswers++;
+        } else {
+          mistakesCount++;
+        }
         step = 2;
         padInput.value = "";
         padProbNum.textContent = "Problem 2 of 3";
         padQText.textContent = `${a2} × ${b2} = ?`;
         padInput.focus();
       } else if (step === 2) {
-        if (val === ans2) correct++;
+        if (val === ans2) {
+          correctAnswers++;
+        } else {
+          mistakesCount++;
+        }
         step = 3;
         padInput.value = "";
         
@@ -289,6 +299,7 @@ function runBaldiMinigame(config) {
         padQText.textContent = `${Math.floor(Math.random() * 9000) + 1000} + ▓░▒█ × ░▒ = ?`;
         padInput.focus();
       } else if (step === 3) {
+        mistakesCount++; // Q3 glitch is always a mistake
         // Submit glitch answer -> Yam goes angry!
         playSfx("audio/crack.mp3");
         triggerVibration([400, 100, 400]);
@@ -556,7 +567,8 @@ function runBaldiMinigame(config) {
         let dy = py - yamRef.y;
         let dist = Math.sqrt(dx*dx + dy*dy);
         
-        let targetInterval = Math.max(250, Math.min(1300, dist * 250)); // speed up
+        // Speed up the slapping interval based on mistake count
+        let targetInterval = Math.max(180, Math.min(1300, (dist * 250) - (mistakesCount * 120)));
         
         if (timeNow - yamLastSlap > targetInterval) {
           yamLastSlap = timeNow;
@@ -567,7 +579,8 @@ function runBaldiMinigame(config) {
           let gridDirX = Math.sign(px - yamRef.x);
           let gridDirY = Math.sign(py - yamRef.y);
 
-          let stepAmount = 0.55;
+          // Step size increases with mistakes!
+          let stepAmount = 0.55 + mistakesCount * 0.12;
           let nextYamX = yamRef.x + gridDirX * stepAmount;
           let nextYamY = yamRef.y + gridDirY * stepAmount;
 
@@ -579,6 +592,7 @@ function runBaldiMinigame(config) {
       if (dist < 0.6 && !jumpScareActive) {
         lives--;
         jumpScareActive = true;
+        mistakesCount++; // Getting hit also counts as a mistake and speeds him up!
         
         playSfx("audio/hit.mp3");
         triggerVibration([500, 150, 500]);
@@ -658,7 +672,11 @@ function runBaldiMinigame(config) {
       if (success) {
         playSfx("audio/healing.mp3");
         triggerVibration([100, 50, 250]);
-        showScene(config.nextSuccess);
+        if (correctAnswers === 0) {
+          showScene("end_baldi_secret_suspicious");
+        } else {
+          showScene(config.nextSuccess);
+        }
       } else {
         playSfx("audio/game_over.mp3");
         triggerVibration([400, 200, 400]);

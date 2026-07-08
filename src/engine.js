@@ -101,6 +101,10 @@ function addChoice(label, nextScene) {
 function showScene(id) {
   const scene = story[id];
 
+  if (scene && typeof scene.onEnter === "function") {
+    scene.onEnter(scene);
+  }
+
   if (!scene) {
     speaker.textContent = "שגיאה";
     text.textContent = "הסצנה לא קיימת: " + id;
