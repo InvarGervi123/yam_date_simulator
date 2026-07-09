@@ -698,6 +698,9 @@ function runDeltaruneBattle(config) {
 
     // Projectile position update and collision loop
     window.battleUpdateInterval = setInterval(() => {
+      let isGrazingThisFrame = false;
+      const heartRect = heart.getBoundingClientRect();
+
       for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
         
@@ -717,7 +720,6 @@ function runDeltaruneBattle(config) {
         }
 
         // Collision Check (AABB)
-        const heartRect = heart.getBoundingClientRect();
         const projRect = p.el.getBoundingClientRect();
 
         const overlap = !(
@@ -747,17 +749,18 @@ function runDeltaruneBattle(config) {
           continue;
         }
 
-        // --- Graze Check (If close but not overlapping, and not grazed yet) ---
-        if (!p.grazed) {
-          const grazeBoxSize = 25; // 25px graze zone around the heart
-          const grazeOverlap = !(
-            (heartRect.right + grazeBoxSize) < projRect.left ||
-            (heartRect.left - grazeBoxSize) > projRect.right ||
-            (heartRect.bottom + grazeBoxSize) < projRect.top ||
-            (heartRect.top - grazeBoxSize) > projRect.bottom
-          );
+        // --- Graze Check (If close but not overlapping) ---
+        const grazeBoxSize = 25; // 25px graze zone around the heart
+        const isNear = !(
+          (heartRect.right + grazeBoxSize) < projRect.left ||
+          (heartRect.left - grazeBoxSize) > projRect.right ||
+          (heartRect.bottom + grazeBoxSize) < projRect.top ||
+          (heartRect.top - grazeBoxSize) > projRect.bottom
+        );
 
-          if (grazeOverlap) {
+        if (isNear) {
+          isGrazingThisFrame = true;
+          if (!p.grazed) {
             p.grazed = true;
             playSfx("audio/click.mp3"); // Tick sound for audio feedback
             playerHp = Math.min(playerHp + 1, 100);
@@ -771,6 +774,13 @@ function runDeltaruneBattle(config) {
           p.el.remove();
           projectiles.splice(i, 1);
         }
+      }
+
+      // Toggle grazing class on the heart for visual danger warning circle
+      if (isGrazingThisFrame) {
+        heart.classList.add("grazing");
+      } else {
+        heart.classList.remove("grazing");
       }
     }, 16);
 
@@ -793,6 +803,8 @@ function runDeltaruneBattle(config) {
       window.removeEventListener("keyup", handleKeyUp);
       board.removeEventListener("touchmove", handleTouchMove);
       board.removeEventListener("touchstart", handleTouchMove);
+
+      if (heart) heart.classList.remove("grazing");
 
       document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
       projectiles.forEach(p => p.el.remove());
@@ -828,6 +840,8 @@ function runDeltaruneBattle(config) {
     board.removeEventListener("touchmove", handleTouchMove);
     board.removeEventListener("touchstart", handleTouchMove);
 
+    if (heart) heart.classList.remove("grazing");
+
     document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
     projectiles.forEach(p => p.el.remove());
     projectiles = [];
@@ -851,6 +865,9 @@ function runDeltaruneBattle(config) {
     window.removeEventListener("keyup", handleKeyUp);
     board.removeEventListener("touchmove", handleTouchMove);
     board.removeEventListener("touchstart", handleTouchMove);
+    
+    if (heart) heart.classList.remove("grazing");
+
     projectiles.forEach(p => p.el.remove());
     projectiles = [];
 

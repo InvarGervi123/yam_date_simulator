@@ -485,3 +485,32 @@
     opacity: 0;
   }
 }
+
+/* --- Player Heart Graze Warning Indicator (Deltarune Style) --- */
+#playerHeart::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border: 1.5px dashed #f1c40f;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.6) rotate(0deg);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+#playerHeart.grazing::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: rotateDashedDanger 0.8s linear infinite;
+}
+
+#playerHeart.grazing {
+  filter: drop-shadow(0 0 6px rgba(241, 196, 15, 0.8));
+}
+
+@keyframes rotateDashedDanger {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
