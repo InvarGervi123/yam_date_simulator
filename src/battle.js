@@ -18,6 +18,8 @@ function runDeltaruneBattle(config) {
   overlay.style.display = "flex";
 
   let playerHp = 100;
+  let playerTp = 0;
+  let hasShield = false;
   let bossHp = 200;
   let bossMercy = 0;
   let isGameOver = false;
@@ -77,6 +79,22 @@ function runDeltaruneBattle(config) {
       playerHpBar.style.background = "#ff3b30"; // danger warning
     } else {
       playerHpBar.style.background = "#4cd137";
+    }
+
+    // Update TP Bar
+    const tpBar = document.getElementById("playerTpBar");
+    const tpText = document.getElementById("playerTpText");
+    if (tpBar && tpText) {
+      tpBar.style.width = playerTp + "%";
+      tpText.textContent = playerTp + "%";
+      if (playerTp >= 100) {
+        tpBar.style.background = "#ff9f43";
+        tpText.style.color = "#ff9f43";
+        tpText.textContent = "MAX!";
+      } else {
+        tpBar.style.background = "#e67e22";
+        tpText.style.color = "#ff9f43";
+      }
     }
   }
 
@@ -269,6 +287,28 @@ function runDeltaruneBattle(config) {
           }, 1800);
         },
         instantEnd: true
+      },
+      {
+        name: "🛡️ סופר: בורקס מגן (100% TP)",
+        isSuper: true,
+        action: () => {
+          playerTp = 0;
+          updateHpBars();
+          hasShield = true;
+          writeConsole(`* הפעלת בורקס מגן! אתה חסין לחלוטין מכל נזק בתור הבא!`);
+          triggerVibration([100, 50, 100]);
+        }
+      },
+      {
+        name: "🚀 סופר: סאב בוסט (100% TP)",
+        isSuper: true,
+        action: () => {
+          playerTp = 0;
+          updateHpBars();
+          bossMercy = Math.min(bossMercy + 25, 100);
+          writeConsole(`* הפעלת סאב בוסט! העלית את מד הרחמים של ים ב-25%!`);
+          triggerVibration([100, 50, 100]);
+        }
       }
     ];
 
@@ -276,7 +316,16 @@ function runDeltaruneBattle(config) {
       const btn = document.createElement("button");
       btn.className = "subBtn";
       btn.textContent = opt.name;
+      
+      if (opt.isSuper && playerTp < 100) {
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        btn.style.cursor = "not-allowed";
+        btn.textContent += " (טעינה...)";
+      }
+      
       btn.onclick = () => {
+        if (opt.isSuper && playerTp < 100) return;
         triggerVibration(20);
         subMenu.style.display = "none";
         actions.style.pointerEvents = "none";
@@ -555,14 +604,28 @@ function runDeltaruneBattle(config) {
             }
             
             if (hit) {
-              playerHp -= 10;
-              updateHpBars();
-              triggerVibration(50);
-              overlay.classList.add("battle-dmg-flash");
-              setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 100);
-              if (playerHp <= 0) {
-                clearInterval(checkInterval);
-                loseBattle();
+              if (hasShield) {
+                // Shield blocked laser damage!
+                playSfx("audio/healing.mp3");
+                const blockEl = document.createElement("div");
+                blockEl.className = "graze-text";
+                blockEl.style.color = "#ff9f43";
+                blockEl.style.textShadow = "0 0 3px #000, 0 0 6px #ff9f43";
+                blockEl.textContent = "BLOCKED!";
+                blockEl.style.left = heartX + "px";
+                blockEl.style.top = (heartY - 12) + "px";
+                arena.appendChild(blockEl);
+                setTimeout(() => blockEl.remove(), 450);
+              } else {
+                playerHp -= 10;
+                updateHpBars();
+                triggerVibration(50);
+                overlay.classList.add("battle-dmg-flash");
+                setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 100);
+                if (playerHp <= 0) {
+                  clearInterval(checkInterval);
+                  loseBattle();
+                }
               }
             }
             
@@ -740,6 +803,23 @@ function runDeltaruneBattle(config) {
         );
 
         if (overlap) {
+          if (hasShield) {
+            playSfx("audio/healing.mp3");
+            const blockEl = document.createElement("div");
+            blockEl.className = "graze-text";
+            blockEl.style.color = "#ff9f43";
+            blockEl.style.textShadow = "0 0 3px #000, 0 0 6px #ff9f43";
+            blockEl.textContent = "BLOCKED!";
+            blockEl.style.left = heartX + "px";
+            blockEl.style.top = (heartY - 12) + "px";
+            arena.appendChild(blockEl);
+            setTimeout(() => blockEl.remove(), 450);
+
+            p.el.remove();
+            projectiles.splice(i, 1);
+            continue;
+          }
+
           const dmg = p.isBus ? 45 : bossAttackPower;
           playerHp -= dmg;
           updateHpBars();
@@ -774,6 +854,7 @@ function runDeltaruneBattle(config) {
             p.grazed = true;
             playSfx("audio/click.mp3"); // Tick sound for audio feedback
             playerHp = Math.min(playerHp + 1, 100);
+            playerTp = Math.min(playerTp + 15, 100); // Grazing yields 15% TP!
             updateHpBars();
             showGrazeText();
           }
@@ -815,6 +896,7 @@ function runDeltaruneBattle(config) {
       board.removeEventListener("touchstart", handleTouchMove);
 
       if (heart) heart.classList.remove("grazing");
+      hasShield = false; // Reset shield status at turn end
 
       document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
       projectiles.forEach(p => p.el.remove());
@@ -837,6 +919,8 @@ function runDeltaruneBattle(config) {
 
   function loseBattle() {
     isGameOver = true;
+    playerTp = 0;
+    hasShield = false;
     clearInterval(window.battleMoveInterval);
     clearInterval(window.battleSpawnInterval);
     clearInterval(window.battleUpdateInterval);
@@ -863,6 +947,8 @@ function runDeltaruneBattle(config) {
 
   function winBattle(spared) {
     isGameOver = true;
+    playerTp = 0;
+    hasShield = false;
     clearInterval(window.battleMoveInterval);
     clearInterval(window.battleSpawnInterval);
     clearInterval(window.battleUpdateInterval);
