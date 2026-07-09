@@ -28,45 +28,87 @@ function runDeltaruneBattle(config) {
   let currentMood = "lazy";
   let lastTurnHealed = false;
 
-  // Parent scope variables for heart coordinate and touch event tracking
   let heartX = 0;
   let heartY = 0;
-
-  function handleTouchMove(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const rect = board.getBoundingClientRect();
-    const boardWidth = board.clientWidth;
-    const boardHeight = board.clientHeight;
-    heartX = Math.max(0, Math.min(touch.clientX - rect.left - 10, boardWidth - 20));
-    heartY = Math.max(0, Math.min(touch.clientY - rect.top - 10, boardHeight - 20));
-    heart.style.left = heartX + "px";
-    heart.style.top = heartY + "px";
-  }
+  let projectiles = [];
 
   // Modifiers from ACT options
   let playerAttackBonus = 0;
   let bossAttackPower = 20; // damage per hit
 
-  // Audio setup
-  if (soundToggle) soundToggle.style.display = "none";
-  playMusic("audio/boss_fight.mp3"); // Play battle music
+  // Key state placeholder for sharing
+  let keysPressed = {};
 
-  // Console writer helper
-  function writeConsole(message) {
-    consoleEl.textContent = "";
-    let index = 0;
-    if (window.consoleTypeInterval) clearInterval(window.consoleTypeInterval);
+  // Input event handler placeholders to share closures
+  let activeKeyDownHandler = null;
+  let activeKeyUpHandler = null;
+  let activeTouchHandler = null;
+
+  // Getter/setter context bridge to share state with battle_arena.js
+  const battleCtx = {
+    get playerHp() { return playerHp; },
+    set playerHp(v) { playerHp = v; updateHpBars(); },
+    get playerTp() { return playerTp; },
+    set playerTp(v) { playerTp = v; updateHpBars(); },
+    get hasShield() { return hasShield; },
+    set hasShield(v) { hasShield = v; },
+    get bossHp() { return bossHp; },
+    set bossHp(v) { bossHp = v; updateHpBars(); },
+    get bossMercy() { return bossMercy; },
+    set bossMercy(v) { bossMercy = v; },
+    get isGameOver() { return isGameOver; },
+    set isGameOver(v) { isGameOver = v; },
+    get turnCount() { return turnCount; },
+    set turnCount(v) { turnCount = v; },
+    get heartX() { return heartX; },
+    set heartX(v) { heartX = v; },
+    get heartY() { return heartY; },
+    set heartY(v) { heartY = v; },
+    get lastTurnHealed() { return lastTurnHealed; },
+    set lastTurnHealed(v) { lastTurnHealed = v; },
+    get bossAttackPower() { return bossAttackPower; },
     
-    // Typewriter effect
-    window.consoleTypeInterval = setInterval(() => {
-      if (index < message.length) {
-        consoleEl.textContent += message[index];
-        index++;
-      } else {
-        clearInterval(window.consoleTypeInterval);
+    get keysPressed() { return keysPressed; },
+    set keysPressed(v) { keysPressed = v; },
+    get projectiles() { return projectiles; },
+    set projectiles(v) { projectiles = v; },
+    
+    get activeKeyDownHandler() { return activeKeyDownHandler; },
+    set activeKeyDownHandler(v) { activeKeyDownHandler = v; },
+    get activeKeyUpHandler() { return activeKeyUpHandler; },
+    set activeKeyUpHandler(v) { activeKeyUpHandler = v; },
+    get activeTouchHandler() { return activeTouchHandler; },
+    set activeTouchHandler(v) { activeTouchHandler = v; },
+
+    overlay, bossHpBar, bossHpText, playerHpBar, playerHpText,
+    consoleEl, arena, actions, subMenu, subList, closeSub, heart, board,
+    config, soundToggle: document.getElementById("soundToggle"),
+
+    playSfx, triggerVibration,
+    loseBattle, winBattle, updateHpBars, startPlayerTurn
+  };
+
+  function playSfx(src) {
+    if (window.audioEngine && typeof window.audioEngine.playSfx === "function") {
+      window.audioEngine.playSfx(src);
+    }
+  }
+
+  function triggerVibration(pattern) {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+  }
+
+  function writeConsole(msg) {
+    consoleEl.textContent = "";
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i >= msg.length || isGameOver) {
+        clearInterval(interval);
+        return;
       }
-    }, 20);
+      consoleEl.textContent += msg[i];
+      i++;
+    }, 10);
   }
 
   function updateHpBars() {
@@ -76,12 +118,11 @@ function runDeltaruneBattle(config) {
     playerHpText.textContent = `${Math.max(playerHp, 0)} / 100`;
 
     if (playerHp <= 30) {
-      playerHpBar.style.background = "#ff3b30"; // danger warning
+      playerHpBar.style.background = "#ff3b30";
     } else {
       playerHpBar.style.background = "#4cd137";
     }
 
-    // Update TP Bar
     const tpBar = document.getElementById("playerTpBar");
     const tpText = document.getElementById("playerTpText");
     if (tpBar && tpText) {
@@ -105,10 +146,8 @@ function runDeltaruneBattle(config) {
     consoleEl.style.display = "block";
     actions.style.pointerEvents = "auto";
     
-    // Choose a random mood for Yam this turn!
     currentMood = moods[Math.floor(Math.random() * moods.length)];
-
-    // Update boss sprite animation class based on mood
+    
     const bossSprite = document.getElementById("battleBossSprite");
     if (bossSprite) {
       bossSprite.classList.remove("boss-mood-sleepy", "boss-mood-angry", "boss-mood-sad", "boss-mood-happy");
@@ -118,7 +157,6 @@ function runDeltaruneBattle(config) {
       else if (currentMood === "hungry") bossSprite.classList.add("boss-mood-happy");
     }
     
-    // Set speech bubble text based on mood and show it
     let quote = "";
     if (currentMood === "lazy") {
       quote = "זזז...\nאל תעירו אותי\nמחקירות...";
@@ -137,30 +175,40 @@ function runDeltaruneBattle(config) {
 
     let turnMsg = `* ים מביט בך במצב רוח מיוחד. מה תעשה/י?\n(רחמים: ${bossMercy}%)`;
     if (lastTurnHealed) {
-      turnMsg = `* ים אכל טונה עם נוטלה והתרפא ב-45 HP! איכס, איזה שילוב מזעזע.\n(רחמים: ${bossMercy}%)`;
+      turnMsg = `* ים אכל טונה עם נוטלה והחזיר חיים! יאק!\n` + turnMsg;
       lastTurnHealed = false;
-    } else if (bossHp < 80) {
-      turnMsg = `* ים נראה מותש ודי מובס. (רחמים: ${bossMercy}%)`;
     }
     writeConsole(turnMsg);
   }
 
-  // Action Button Listeners
+  function startEnemyTurn() {
+    if (window.battleArena && typeof window.battleArena.startEnemyTurn === "function") {
+      window.battleArena.startEnemyTurn(battleCtx);
+    }
+  }
+
+  // --- UI Action Button Handlers ---
   document.getElementById("btnFight").onclick = () => {
     triggerVibration(15);
     actions.style.pointerEvents = "none";
     
-    // FIGHT Option
-    const damage = Math.round(35 + Math.random() * 15 + playerAttackBonus);
-    bossHp -= damage;
+    const damage = Math.floor(Math.random() * 15) + 15 + playerAttackBonus;
+    bossHp = Math.max(bossHp - damage, 0);
     updateHpBars();
     playSfx("audio/hit.mp3");
+    triggerVibration([80, 50, 80]);
+
+    const container = document.getElementById("battleBossSpriteContainer");
+    if (container) {
+      container.classList.add("boss-dmg-shake");
+      setTimeout(() => container.classList.remove("boss-dmg-shake"), 500);
+    }
 
     writeConsole(`* תקפת את ים עם סקרינשוט נתונים! ים ספג ${damage} נזק!`);
 
     setTimeout(() => {
       if (bossHp <= 0) {
-        winBattle(false); // Win by force
+        winBattle(false);
       } else {
         startEnemyTurn();
       }
@@ -240,12 +288,13 @@ function runDeltaruneBattle(config) {
         }
       },
       {
-        name: isMuted ? "🔊 הפעל מוזיקת רקע" : "🔇 השתק מוזיקת רקע",
+        name: config.soundToggleText || "🔇 השתק מוזיקת רקע",
         action: () => {
-          isMuted = !isMuted;
-          music.muted = isMuted;
-          sfx.muted = isMuted;
-          if (soundToggle) soundToggle.textContent = isMuted ? "🔇" : "🔊";
+          const isMuted = !window.audioEngine.muted;
+          window.audioEngine.muted = isMuted;
+          if (window.audioEngine.bgm) window.audioEngine.bgm.muted = isMuted;
+          const s = document.getElementById("soundToggle");
+          if (s) s.textContent = isMuted ? "🔇" : "🔊";
           writeConsole(isMuted ? `* השתקת את מוזיקת הקרב.` : `* הפעלת את מוזיקת הקרב.`);
         }
       },
@@ -255,6 +304,7 @@ function runDeltaruneBattle(config) {
           writeConsole(`* הזמנת אותו לפתוח תיבות! העיניים של ים בורקות מאושר...`);
           setTimeout(() => {
             isGameOver = true;
+            const soundToggle = document.getElementById("soundToggle");
             if (soundToggle) soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_unboxing_collab");
@@ -268,6 +318,7 @@ function runDeltaruneBattle(config) {
           writeConsole(`* אמרת לו שהחלפת את הסוויץ' שלו בבורקס! ים נכנס לזעם מטורף...`);
           setTimeout(() => {
             isGameOver = true;
+            const soundToggle = document.getElementById("soundToggle");
             if (soundToggle) soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_switch_rage");
@@ -281,6 +332,7 @@ function runDeltaruneBattle(config) {
           writeConsole(`* הצעת לו לחלוק את השמיכה! ים מתלהב מעסקת השינה...`);
           setTimeout(() => {
             isGameOver = true;
+            const soundToggle = document.getElementById("soundToggle");
             if (soundToggle) soundToggle.style.display = "flex";
             overlay.style.display = "none";
             showScene("end_bed_alliance");
@@ -373,7 +425,6 @@ function runDeltaruneBattle(config) {
         playerHp = Math.min(playerHp + item.heal, 100);
         updateHpBars();
         
-        // Play custom heal SFX if configured, otherwise default to healing.mp3
         playSfx(item.sfx || "audio/healing.mp3");
 
         writeConsole(`* אכלת ${item.name.split(' ')[0]}! נרפאת ב-${item.heal} נקודות חיים.`);
@@ -387,7 +438,7 @@ function runDeltaruneBattle(config) {
     triggerVibration(15);
     actions.style.pointerEvents = "none";
     if (bossMercy >= 100 || bossHp <= 40) {
-      winBattle(true); // Win by mercy/spare
+      winBattle(true);
     } else {
       writeConsole(`* ניסית לחוס על ים, אך הוא עדיין רוצה לישון!`);
       setTimeout(startEnemyTurn, 1800);
@@ -399,563 +450,17 @@ function runDeltaruneBattle(config) {
     subMenu.style.display = "none";
   };
 
-  // --- Real-time Bullet Hell Dodging ---
-  let keysPressed = {};
-  const moveSpeed = 4;
-  let projectiles = [];
-  
-  // Track keyboard arrows
-  function handleKeyDown(e) {
-    keysPressed[e.key] = true;
-  }
-  function handleKeyUp(e) {
-    keysPressed[e.key] = false;
-  }
-
-  function startEnemyTurn() {
-    if (isGameOver) return;
-    keysPressed = {}; // Clear any keys held down from previous turns/actions
-    consoleEl.style.display = "none";
-    subMenu.style.display = "none";
-    arena.style.display = "block";
-
-    // --- Yam Tuna & Nutella Healing (Disgusting Hebrew Meme!) ---
-    // 45% chance to heal 45 HP if boss HP is under 150
-    let healTriggered = false;
-    if (bossHp < 150 && Math.random() < 0.45) {
-      healTriggered = true;
-      lastTurnHealed = true;
-      bossHp = Math.min(bossHp + 45, 200);
-      updateHpBars();
-      playSfx("audio/healing.mp3");
-      triggerVibration([100, 100, 100]);
-
-      // Chew animation: food_1 -> food_2 -> food_3 -> food_2 -> food_3 -> default
-      const bossSprite = document.getElementById("battleBossSprite");
-      if (bossSprite) {
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_1.png"; }, 0);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 350);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 700);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 1050);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 1400);
-        setTimeout(() => { bossSprite.src = "images/Boss_fight.png"; }, 2000);
-      }
-    }
-
-    const bubble = document.getElementById("bossSpeechBubble");
-    if (bubble) {
-      if (healTriggered) {
-        bubble.textContent = "יאמי!\nטונה עם\nנוטלה!!";
-        bubble.style.display = "block";
-        setTimeout(() => { bubble.style.display = "none"; }, 2500);
-      } else {
-        // Yam Speaks next to his animated sprite! (Broken with \n for perfect bubble fit!)
-        const quotes = [
-          "אתה לא תנצח\nאת כוח השינה\nשלי!",
-          "אני עייף מדי\nבשביל הנזק\nהזה...",
-          "עוד מילה אחת\nואני מוחק את\nשרת הדיסקורד!",
-          "הקליקים האלה\nכואבים לי!",
-          "מישהו אמר\nבורקס חם?!",
-          "אני רק רוצה\nלחזור לישון..."
-        ];
-        bubble.textContent = quotes[Math.floor(Math.random() * quotes.length)];
-        bubble.style.display = "block";
-        setTimeout(() => { bubble.style.display = "none"; }, 2500);
-      }
-    }
-
-    // Reset heart position to center of board
-    const boardWidth = board.clientWidth;
-    const boardHeight = board.clientHeight;
-    heartX = boardWidth / 2 - 10;
-    heartY = boardHeight / 2 - 10;
-    heart.style.left = heartX + "px";
-    heart.style.top = heartY + "px";
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-
-    // Dynamic keyboard movement loop
-    window.battleMoveInterval = setInterval(() => {
-      if (keysPressed["ArrowUp"] || keysPressed["w"]) heartY = Math.max(heartY - moveSpeed, 0);
-      if (keysPressed["ArrowDown"] || keysPressed["s"]) heartY = Math.min(heartY + moveSpeed, boardHeight - 20);
-      if (keysPressed["ArrowLeft"] || keysPressed["a"]) heartX = Math.max(heartX - moveSpeed, 0);
-      if (keysPressed["ArrowRight"] || keysPressed["d"]) heartX = Math.min(heartX + moveSpeed, boardWidth - 20);
-
-      heart.style.left = heartX + "px";
-      heart.style.top = heartY + "px";
-    }, 16);
-
-    board.addEventListener("touchmove", handleTouchMove, { passive: false });
-    board.addEventListener("touchstart", handleTouchMove, { passive: false });
-
-    // --- Dynamic Strategic Attack Phases ---
-    turnCount++;
-    const currentPattern = turnCount % 4; // Cycled through 4 distinct patterns!
-
-    function spawnRandomProjectile() {
-      const emojis = ["🥫", "🥐", "😴", "💤"];
-      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-      const proj = document.createElement("div");
-      proj.className = "projectile";
-      proj.textContent = emoji;
-
-      const edge = Math.floor(Math.random() * 4);
-      let x, y;
-      if (edge === 0) { // Top
-        x = Math.random() * boardWidth;
-        y = -20;
-      } else if (edge === 1) { // Bottom
-        x = Math.random() * boardWidth;
-        y = boardHeight + 20;
-      } else if (edge === 2) { // Left
-        x = -20;
-        y = Math.random() * boardHeight;
-      } else { // Right
-        x = boardWidth + 20;
-        y = Math.random() * boardHeight;
-      }
-
-      proj.style.left = x + "px";
-      proj.style.top = y + "px";
-      arena.appendChild(proj);
-
-      const angle = Math.atan2(heartY - y, heartX - x);
-      const speed = 3.0 + Math.random() * 2; // Slightly faster to increase difficulty
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      projectiles.push({
-        el: proj,
-        x: x,
-        y: y,
-        vx: vx,
-        vy: vy
-      });
-    }
-
-    function spawnProjectileAt(x, y, vx, vy) {
-      const proj = document.createElement("div");
-      proj.className = "projectile";
-      proj.textContent = "🥫";
-      proj.style.left = x + "px";
-      proj.style.top = y + "px";
-      arena.appendChild(proj);
-      projectiles.push({
-        el: proj,
-        x: x,
-        y: y,
-        vx: vx,
-        vy: vy
-      });
-    }
-
-    if (currentPattern === 0) {
-      // Pattern 0: Warning Lasers! Dashed warning line -> massive glowing beam
-      const spawnLaser = (dir) => {
-        if (isGameOver) return;
-        const targetX = heartX + 10;
-        const targetY = heartY + 10;
-        const warn = document.createElement("div");
-        warn.className = "laser-warning";
-        
-        if (dir === "vertical") {
-          warn.style.left = (targetX - 3) + "px";
-          warn.style.top = "0px";
-          warn.style.width = "6px";
-          warn.style.height = boardHeight + "px";
-        } else {
-          warn.style.left = "0px";
-          warn.style.top = (targetY - 3) + "px";
-          warn.style.width = boardWidth + "px";
-          warn.style.height = "6px";
-        }
-        board.appendChild(warn);
-        playSfx("audio/hit.mp3");
-        
-        setTimeout(() => {
-          if (isGameOver) {
-            warn.remove();
-            return;
-          }
-          warn.remove();
-          
-          const beam = document.createElement("div");
-          beam.className = "laser-beam";
-          
-          if (dir === "vertical") {
-            beam.style.left = (targetX - 25) + "px";
-            beam.style.top = "0px";
-            beam.style.width = "50px";
-            beam.style.height = boardHeight + "px";
-          } else {
-            beam.style.left = "0px";
-            beam.style.top = (targetY - 25) + "px";
-            beam.style.width = boardWidth + "px";
-            beam.style.height = "50px";
-          }
-          board.appendChild(beam);
-          playSfx("audio/hit.mp3");
-          
-          let checkCount = 0;
-          const checkInterval = setInterval(() => {
-            if (isGameOver) {
-              clearInterval(checkInterval);
-              beam.remove();
-              return;
-            }
-            
-            const heartCenterX = heartX + 10;
-            const heartCenterY = heartY + 10;
-            let hit = false;
-            if (dir === "vertical") {
-              const minX = targetX - 25;
-              const maxX = targetX + 25;
-              if (heartCenterX >= minX && heartCenterX <= maxX) hit = true;
-            } else {
-              const minY = targetY - 25;
-              const maxY = targetY + 25;
-              if (heartCenterY >= minY && heartCenterY <= maxY) hit = true;
-            }
-            
-            if (hit) {
-              if (hasShield) {
-                // Shield blocked laser damage!
-                playSfx("audio/healing.mp3");
-                const blockEl = document.createElement("div");
-                blockEl.className = "graze-text";
-                blockEl.style.color = "#ff9f43";
-                blockEl.style.textShadow = "0 0 3px #000, 0 0 6px #ff9f43";
-                blockEl.textContent = "BLOCKED!";
-                blockEl.style.left = heartX + "px";
-                blockEl.style.top = (heartY - 12) + "px";
-                arena.appendChild(blockEl);
-                setTimeout(() => blockEl.remove(), 450);
-              } else {
-                playerHp -= 10;
-                updateHpBars();
-                triggerVibration(50);
-                overlay.classList.add("battle-dmg-flash");
-                setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 100);
-                if (playerHp <= 0) {
-                  clearInterval(checkInterval);
-                  loseBattle();
-                }
-              }
-            }
-            
-            checkCount++;
-            if (checkCount >= 8) {
-              clearInterval(checkInterval);
-              beam.remove();
-            }
-          }, 100);
-        }, 850); // Warning time decreased from 1000ms to 850ms for higher difficulty!
-      };
-      
-      window.laser1Timeout = setTimeout(() => spawnLaser("vertical"), 500);
-      window.laser2Timeout = setTimeout(() => spawnLaser("horizontal"), 2800);
-
-      let spawnCount = 0;
-      window.battleSpawnInterval = setInterval(() => {
-        if (spawnCount >= 5) return;
-        spawnRandomProjectile();
-        spawnCount++;
-      }, 900);
-      
-    } else if (currentPattern === 1) {
-      // Pattern 1: Burek Orbiters (rotating shield around center)
-      for (let j = 0; j < 4; j++) {
-        const orb = document.createElement("div");
-        orb.className = "projectile";
-        orb.textContent = "🥐";
-        orb.style.fontSize = "24px";
-        arena.appendChild(orb);
-        projectiles.push({
-          el: orb,
-          isOrbiter: true,
-          angleOffset: (j * Math.PI / 2),
-          radius: 85,
-          x: 0,
-          y: 0
-        });
-      }
-      
-      window.battleSpawnInterval = setInterval(() => {
-        const proj = document.createElement("div");
-        proj.className = "projectile";
-        proj.textContent = "😴";
-        const x = Math.random() * (boardWidth - 20);
-        const y = -20;
-        proj.style.left = x + "px";
-        proj.style.top = y + "px";
-        arena.appendChild(proj);
-        
-        projectiles.push({
-          el: proj,
-          x: x,
-          y: y,
-          vx: 0,
-          vy: 2.8 // Increased speed from 2.2 to 2.8 for higher difficulty!
-        });
-      }, 600); // Spawn interval decreased from 700ms to 600ms
-      
-    } else if (currentPattern === 2) {
-      // Pattern 2: Targeted Crossfire (Cans Converge on Heart Location!)
-      let round = 0;
-      const spawnTargetedProj = (startX, startY) => {
-        if (isGameOver) return;
-        const proj = document.createElement("div");
-        proj.className = "projectile";
-        proj.textContent = "🥫";
-        proj.style.left = startX + "px";
-        proj.style.top = startY + "px";
-        arena.appendChild(proj);
-        
-        const angle = Math.atan2(heartY - startY, heartX - startX);
-        const speed = 3.6;
-        projectiles.push({
-          el: proj,
-          x: startX,
-          y: startY,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed
-        });
-      };
-
-      window.battleSpawnInterval = setInterval(() => {
-        if (round >= 5) return;
-        spawnTargetedProj(Math.random() * boardWidth, -20);
-        spawnTargetedProj(Math.random() * boardWidth, boardHeight + 20);
-        spawnTargetedProj(-20, Math.random() * boardHeight);
-        spawnTargetedProj(boardWidth + 20, Math.random() * boardHeight);
-        round++;
-      }, 1000);
-    } else {
-      // Pattern 3: Angry Bus Attack! Giant 🚌 warns and sweeps the screen.
-      const spawnBus = (yPosition, delay) => {
-        if (isGameOver) return;
-        
-        const warn = document.createElement("div");
-        warn.className = "bus-warning";
-        warn.style.left = "0px";
-        warn.style.top = yPosition + "px";
-        warn.style.width = boardWidth + "px";
-        warn.style.height = "55px";
-        board.appendChild(warn);
-        playSfx("audio/hit.mp3");
-        
-        setTimeout(() => {
-          if (isGameOver) {
-            warn.remove();
-            return;
-          }
-          warn.remove();
-          
-          const bus = document.createElement("div");
-          bus.className = "bus-projectile";
-          bus.textContent = "🚌";
-          bus.style.left = "-80px";
-          bus.style.top = yPosition + "px";
-          bus.style.width = "70px";
-          bus.style.height = "50px";
-          arena.appendChild(bus);
-          playSfx("audio/hit.mp3");
-          
-          projectiles.push({
-            el: bus,
-            x: -80,
-            y: yPosition,
-            vx: 8.5, // Extremely fast!
-            vy: 0,
-            isBus: true
-          });
-        }, delay);
-      };
-      
-      window.bus1Timeout = setTimeout(() => spawnBus(boardHeight / 2 - 25, 900), 500);
-      window.bus2Timeout = setTimeout(() => spawnBus(boardHeight - 65, 900), 2800);
-      
-      let spawnCount = 0;
-      window.battleSpawnInterval = setInterval(() => {
-        if (spawnCount >= 4) return;
-        spawnRandomProjectile();
-        spawnCount++;
-      }, 1000);
-    }
-
-    // Projectile position update and collision loop
-    window.battleUpdateInterval = setInterval(() => {
-      let isGrazingThisFrame = false;
-      const heartRect = heart.getBoundingClientRect();
-
-      for (let i = projectiles.length - 1; i >= 0; i--) {
-        const p = projectiles[i];
-        
-        if (p.isOrbiter) {
-          p.angleOffset += 0.045; // Orbit speed increased from 0.035 to 0.045!
-          // Oscillate radius between 20px (sweeps center) and 110px over time to crush the center!
-          const currentRadius = 65 + Math.sin(Date.now() / 250) * 45;
-          p.x = boardWidth / 2 - 10 + Math.cos(p.angleOffset) * currentRadius;
-          p.y = boardHeight / 2 - 10 + Math.sin(p.angleOffset) * currentRadius;
-          p.el.style.left = p.x + "px";
-          p.el.style.top = p.y + "px";
-        } else {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.el.style.left = p.x + "px";
-          p.el.style.top = p.y + "px";
-        }
-
-        // Collision Check (AABB)
-        const projRect = p.el.getBoundingClientRect();
-
-        const overlap = !(
-          heartRect.right < projRect.left ||
-          heartRect.left > projRect.right ||
-          heartRect.bottom < projRect.top ||
-          heartRect.top > projRect.bottom
-        );
-
-        if (overlap) {
-          if (hasShield) {
-            playSfx("audio/healing.mp3");
-            const blockEl = document.createElement("div");
-            blockEl.className = "graze-text";
-            blockEl.style.color = "#ff9f43";
-            blockEl.style.textShadow = "0 0 3px #000, 0 0 6px #ff9f43";
-            blockEl.textContent = "BLOCKED!";
-            blockEl.style.left = heartX + "px";
-            blockEl.style.top = (heartY - 12) + "px";
-            arena.appendChild(blockEl);
-            setTimeout(() => blockEl.remove(), 450);
-
-            p.el.remove();
-            projectiles.splice(i, 1);
-            continue;
-          }
-
-          const dmg = p.isBus ? 45 : bossAttackPower;
-          playerHp -= dmg;
-          updateHpBars();
-          playSfx("audio/hit.mp3");
-          triggerVibration(p.isBus ? [200, 100, 200] : 120);
-
-          overlay.classList.add("battle-dmg-flash");
-          setTimeout(() => overlay.classList.remove("battle-dmg-flash"), 200);
-
-          p.el.remove();
-          projectiles.splice(i, 1);
-
-          if (playerHp <= 0) {
-            loseBattle();
-            return;
-          }
-          continue;
-        }
-
-        // --- Graze Check (If close but not overlapping) ---
-        const grazeBoxSize = 25; // 25px graze zone around the heart
-        const isNear = !(
-          (heartRect.right + grazeBoxSize) < projRect.left ||
-          (heartRect.left - grazeBoxSize) > projRect.right ||
-          (heartRect.bottom + grazeBoxSize) < projRect.top ||
-          (heartRect.top - grazeBoxSize) > projRect.bottom
-        );
-
-        if (isNear) {
-          isGrazingThisFrame = true;
-          if (!p.grazed) {
-            p.grazed = true;
-            playSfx("audio/click.mp3"); // Tick sound for audio feedback
-            playerHp = Math.min(playerHp + 1, 100);
-            playerTp = Math.min(playerTp + 15, 100); // Grazing yields 15% TP!
-            updateHpBars();
-            showGrazeText();
-          }
-        }
-
-        // Clean up out of bounds projectiles
-        if (!p.isOrbiter && (p.x < -100 || p.x > boardWidth + 100 || p.y < -100 || p.y > boardHeight + 100)) {
-          p.el.remove();
-          projectiles.splice(i, 1);
-        }
-      }
-
-      // Toggle grazing class on the heart for visual danger warning circle
-      if (isGrazingThisFrame) {
-        heart.classList.add("grazing");
-      } else {
-        heart.classList.remove("grazing");
-      }
-    }, 16);
-
-    // End enemy turn after 6 seconds
-    window.battleTurnTimeout = setTimeout(() => {
-      cleanupEnemyTurn();
-      startPlayerTurn();
-    }, 6000);
-
-    function cleanupEnemyTurn() {
-      clearInterval(window.battleMoveInterval);
-      clearInterval(window.battleSpawnInterval);
-      clearInterval(window.battleUpdateInterval);
-      clearTimeout(window.battleTurnTimeout);
-      clearTimeout(window.laser1Timeout);
-      clearTimeout(window.laser2Timeout);
-      clearTimeout(window.bus1Timeout);
-      clearTimeout(window.bus2Timeout);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      board.removeEventListener("touchmove", handleTouchMove);
-      board.removeEventListener("touchstart", handleTouchMove);
-
-      if (heart) heart.classList.remove("grazing");
-      hasShield = false; // Reset shield status at turn end
-
-      document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
-      projectiles.forEach(p => p.el.remove());
-      projectiles = [];
-    }
-  }
-
-  function showGrazeText() {
-    const grazeEl = document.createElement("div");
-    grazeEl.className = "graze-text";
-    grazeEl.textContent = "+1 HP";
-    grazeEl.style.left = (heartX + Math.random() * 16 - 8) + "px";
-    grazeEl.style.top = (heartY - 12) + "px";
-    arena.appendChild(grazeEl);
-
-    setTimeout(() => {
-      grazeEl.remove();
-    }, 450);
-  }
-
   function loseBattle() {
     isGameOver = true;
     playerTp = 0;
     hasShield = false;
-    clearInterval(window.battleMoveInterval);
-    clearInterval(window.battleSpawnInterval);
-    clearInterval(window.battleUpdateInterval);
-    clearTimeout(window.battleTurnTimeout);
-    clearTimeout(window.laser1Timeout);
-    clearTimeout(window.laser2Timeout);
-    clearTimeout(window.bus1Timeout);
-    clearTimeout(window.bus2Timeout);
-    window.removeEventListener("keydown", handleKeyDown);
-    window.removeEventListener("keyup", handleKeyUp);
-    board.removeEventListener("touchmove", handleTouchMove);
-    board.removeEventListener("touchstart", handleTouchMove);
+    
+    if (window.battleArena && typeof window.battleArena.cleanupEnemyTurn === "function") {
+      window.battleArena.cleanupEnemyTurn(battleCtx);
+    }
 
-    if (heart) heart.classList.remove("grazing");
-
-    document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
-    projectiles.forEach(p => p.el.remove());
-    projectiles = [];
-
-    if (soundToggle) soundToggle.style.display = "flex";
+    const s = document.getElementById("soundToggle");
+    if (s) s.style.display = "flex";
     overlay.style.display = "none";
     showScene(config.nextFail);
   }
@@ -964,30 +469,17 @@ function runDeltaruneBattle(config) {
     isGameOver = true;
     playerTp = 0;
     hasShield = false;
-    clearInterval(window.battleMoveInterval);
-    clearInterval(window.battleSpawnInterval);
-    clearInterval(window.battleUpdateInterval);
-    clearTimeout(window.battleTurnTimeout);
-    clearTimeout(window.laser1Timeout);
-    clearTimeout(window.laser2Timeout);
-    clearTimeout(window.bus1Timeout);
-    clearTimeout(window.bus2Timeout);
-    window.removeEventListener("keydown", handleKeyDown);
-    window.removeEventListener("keyup", handleKeyUp);
-    board.removeEventListener("touchmove", handleTouchMove);
-    board.removeEventListener("touchstart", handleTouchMove);
-    
-    if (heart) heart.classList.remove("grazing");
 
-    projectiles.forEach(p => p.el.remove());
-    projectiles = [];
+    if (window.battleArena && typeof window.battleArena.cleanupEnemyTurn === "function") {
+      window.battleArena.cleanupEnemyTurn(battleCtx);
+    }
 
     if (spared) {
-      if (soundToggle) soundToggle.style.display = "flex";
+      const s = document.getElementById("soundToggle");
+      if (s) s.style.display = "flex";
       overlay.style.display = "none";
       showScene("boss_fight_spare");
     } else {
-      // Play dramatic death animation!
       const bossSprite = document.getElementById("battleBossSprite");
       if (bossSprite) bossSprite.classList.add("boss-death-animation");
       playSfx("audio/hit.mp3");
@@ -995,14 +487,15 @@ function runDeltaruneBattle(config) {
 
       setTimeout(() => {
         if (bossSprite) bossSprite.classList.remove("boss-death-animation");
-        if (soundToggle) soundToggle.style.display = "flex";
+        const s = document.getElementById("soundToggle");
+        if (s) s.style.display = "flex";
         overlay.style.display = "none";
         showScene(config.nextSuccess);
       }, 3500);
     }
   }
 
-  // Start the first turn
+  // Start battle
   updateHpBars();
   startPlayerTurn();
 }
