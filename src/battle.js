@@ -89,6 +89,16 @@ function runDeltaruneBattle(config) {
     
     // Choose a random mood for Yam this turn!
     currentMood = moods[Math.floor(Math.random() * moods.length)];
+
+    // Update boss sprite animation class based on mood
+    const bossSprite = document.getElementById("battleBossSprite");
+    if (bossSprite) {
+      bossSprite.classList.remove("boss-mood-sleepy", "boss-mood-angry", "boss-mood-sad", "boss-mood-happy");
+      if (currentMood === "lazy") bossSprite.classList.add("boss-mood-sleepy");
+      else if (currentMood === "stressed") bossSprite.classList.add("boss-mood-angry");
+      else if (currentMood === "bored") bossSprite.classList.add("boss-mood-sad");
+      else if (currentMood === "hungry") bossSprite.classList.add("boss-mood-happy");
+    }
     
     // Set speech bubble text based on mood and show it
     let quote = "";
