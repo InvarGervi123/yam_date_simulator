@@ -127,6 +127,7 @@ function runBaldiMinigame(config) {
   let isMinigameActive = true;
   let activePadSession = false;
   let jumpScareActive = false;
+  let invincibilityTime = 0;
 
   // Sound slaps loop
   let yamLastSlap = 0;
@@ -243,6 +244,15 @@ function runBaldiMinigame(config) {
     }
   }
 
+  function checkAndActivateYam() {
+    if (mistakesCount >= 1 && !yamRef.active) {
+      yamRef.active = true;
+      promptText.textContent = "ים כועס! מצא את כל המחברות והימלט מדלת היציאה 🚪!";
+      promptText.style.color = "#ff3333";
+      playSfx("audio/hit.mp3");
+    }
+  }
+
   // --- You Can Think! Pad Math Session ---
   function startPadSession() {
     activePadSession = true;
@@ -293,6 +303,7 @@ function runBaldiMinigame(config) {
           correctAnswers++;
         } else {
           mistakesCount++;
+          checkAndActivateYam();
         }
         step = 2;
         padInput.value = "";
@@ -304,6 +315,7 @@ function runBaldiMinigame(config) {
           correctAnswers++;
         } else {
           mistakesCount++;
+          checkAndActivateYam();
         }
         step = 3;
         padInput.value = "";
@@ -318,6 +330,7 @@ function runBaldiMinigame(config) {
         padInput.focus();
       } else if (step === 3) {
         mistakesCount++; // Q3 glitch is always wrong
+        checkAndActivateYam();
         playSfx("audio/crack.mp3");
         triggerVibration([400, 100, 400]);
 
@@ -328,14 +341,6 @@ function runBaldiMinigame(config) {
 
         padModal.style.display = "none";
         activePadSession = false;
-
-        // Trigger Yam chase!
-        if (!yamRef.active) {
-          yamRef.active = true;
-          promptText.textContent = "ים כועס! מצא את כל המחברות והימלט מדלת היציאה 🚪!";
-          promptText.style.color = "#ff3333";
-          playSfx("audio/hit.mp3");
-        }
 
         if (collectedNotebooksCount >= 3) {
           exitRef.active = true;
@@ -350,6 +355,7 @@ function runBaldiMinigame(config) {
   function updateGameLoop() {
     if (!isMinigameActive || isGameOver) return;
     
+    // 1. Player movement and exit checks (ONLY when pad is closed and no jumpscare)
     if (!activePadSession && !jumpScareActive) {
       // Rotation
       if (keys.a) {
@@ -370,9 +376,9 @@ function runBaldiMinigame(config) {
         let nextX = px + Math.cos(pa) * moveDir;
         let nextY = py + Math.sin(pa) * moveDir;
 
-        // Collision bounds checking
-        if (map[Math.floor(py)][Math.floor(nextX)] === 0) px = nextX;
-        if (map[Math.floor(nextY)][Math.floor(px)] === 0) py = nextY;
+        // Collision bounds checking (allow walking on corridors 0 and doors 2)
+        if (map[Math.floor(py)][Math.floor(nextX)] !== 1) px = nextX;
+        if (map[Math.floor(nextY)][Math.floor(px)] !== 1) py = nextY;
       }
 
       // Check exit collision
@@ -386,7 +392,30 @@ function runBaldiMinigame(config) {
         }
       }
 
-      // --- Yam Slapping / Movement Logic ---
+      // Check near notebook prompt
+      let showPrompt = false;
+      sprites.forEach(s => {
+        if (s.type === "notebook" && !s.collected) {
+          let dx = s.x - px;
+          let dy = s.y - py;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 0.8) {
+            showPrompt = true;
+          }
+        }
+      });
+
+      if (showPrompt) {
+        promptText.textContent = "הקש [E] או כפתור האקשן כדי לאסוף מחברת!";
+        promptText.style.color = "#00ffff";
+      } else if (!yamRef.active) {
+        promptText.textContent = "מצא 3 מחברות 📘 בתוך הכיתות!";
+        promptText.style.color = "#ffffff";
+      }
+    }
+
+    // 2. Yam Chasing, Slapping, and Catch Checks (Runs always, even with open pad)
+    if (!jumpScareActive) {
       if (yamRef.active) {
         let timeNow = Date.now();
         
@@ -408,15 +437,42 @@ function runBaldiMinigame(config) {
           let nextYamX = yamRef.x + gridDirX * stepAmount;
           let nextYamY = yamRef.y + gridDirY * stepAmount;
 
-          if (map[Math.floor(yamRef.y)][Math.floor(nextYamX)] === 0) yamRef.x = nextYamX;
-          if (map[Math.floor(nextYamY)][Math.floor(yamRef.x)] === 0) yamRef.y = nextYamY;
+          let prevX = yamRef.x;
+          let prevY = yamRef.y;
+
+          if (map[Math.floor(yamRef.y)][Math.floor(nextYamX)] !== 1) yamRef.x = nextYamX;
+          if (map[Math.floor(nextYamY)][Math.floor(yamRef.x)] !== 1) yamRef.y = nextYamY;
+
+          // Unstick pathfinding fallback: if Yam gets blocked by a corner/wall, find the best neighbor cell
+          if (yamRef.x === prevX && yamRef.y === prevY) {
+            let neighbors = [
+              {x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: 1}, {x: 0, y: -1}
+            ];
+            neighbors.sort((a, b) => {
+              let distA = Math.hypot(px - (yamRef.x + a.x), py - (yamRef.y + a.y));
+              let distB = Math.hypot(px - (yamRef.x + b.x), py - (yamRef.y + b.y));
+              return distA - distB;
+            });
+            for (let n of neighbors) {
+              let targetX = yamRef.x + n.x * stepAmount;
+              let targetY = yamRef.y + n.y * stepAmount;
+              if (targetX >= 1 && targetX < mapSize - 1 && targetY >= 1 && targetY < mapSize - 1) {
+                if (map[Math.floor(targetY)][Math.floor(targetX)] !== 1) {
+                  yamRef.x = targetX;
+                  yamRef.y = targetY;
+                  break;
+                }
+              }
+            }
+          }
         }
 
         // Catch check
-        if (dist < 0.6 && !jumpScareActive) {
+        if (dist < 0.6 && !jumpScareActive && Date.now() > invincibilityTime) {
           lives--;
           jumpScareActive = true;
           mistakesCount++;
+          invincibilityTime = Date.now() + 2000; // 2 seconds of invincibility to prevent instant death loops
           
           playSfx("audio/hit.mp3");
           triggerVibration([500, 150, 500]);
@@ -426,6 +482,10 @@ function runBaldiMinigame(config) {
             gc.classList.add("effect-redflash");
             setTimeout(() => gc.classList.remove("effect-redflash"), 300);
           }
+
+          // Force close the pad if caught while solving math questions!
+          padModal.style.display = "none";
+          activePadSession = false;
 
           if (lives <= 0) {
             promptText.textContent = "נתפסת על ידי ים!";
@@ -449,34 +509,13 @@ function runBaldiMinigame(config) {
                 let nextY = yamRef.y + pushDirY;
                 
                 if (nextX >= 1 && nextX < mapSize - 1 && nextY >= 1 && nextY < mapSize - 1) {
-                  if (map[Math.floor(yamRef.y)][Math.floor(nextX)] === 0) yamRef.x = nextX;
-                  if (map[Math.floor(nextY)][Math.floor(yamRef.x)] === 0) yamRef.y = nextY;
+                  if (map[Math.floor(yamRef.y)][Math.floor(nextX)] !== 1) yamRef.x = nextX;
+                  if (map[Math.floor(nextY)][Math.floor(yamRef.x)] !== 1) yamRef.y = nextY;
                 }
               }
             }, 600);
           }
         }
-      }
-
-      // Check near notebook prompt
-      let showPrompt = false;
-      sprites.forEach(s => {
-        if (s.type === "notebook" && !s.collected) {
-          let dx = s.x - px;
-          let dy = s.y - py;
-          let dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 0.8) {
-            showPrompt = true;
-          }
-        }
-      });
-
-      if (showPrompt) {
-        promptText.textContent = "הקש [E] או כפתור האקשן כדי לאסוף מחברת!";
-        promptText.style.color = "#00ffff";
-      } else if (!yamRef.active) {
-        promptText.textContent = "מצא 3 מחברות 📘 בתוך הכיתות!";
-        promptText.style.color = "#ffffff";
       }
     }
 
