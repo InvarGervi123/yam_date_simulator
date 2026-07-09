@@ -557,3 +557,22 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* --- Boss Damage Screen Shake --- */
+.boss-dmg-shake {
+  animation: containerShake 0.4s ease-in-out;
+}
+
+@keyframes containerShake {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-8px, -5px); }
+  20% { transform: translate(8px, 5px); }
+  30% { transform: translate(-10px, 0); }
+  40% { transform: translate(10px, -3px); }
+  50% { transform: translate(-5px, 5px); }
+  60% { transform: translate(5px, -5px); }
+  70% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  90% { transform: translate(-1px, 1px); }
+  100% { transform: translate(0, 0); }
+}

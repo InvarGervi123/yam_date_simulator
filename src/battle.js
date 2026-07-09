@@ -302,12 +302,27 @@ function runDeltaruneBattle(config) {
       {
         name: "🚀 סופר: סאב בוסט (100% TP)",
         isSuper: true,
+        instantEnd: true,
         action: () => {
           playerTp = 0;
           updateHpBars();
-          bossMercy = Math.min(bossMercy + 25, 100);
-          writeConsole(`* הפעלת סאב בוסט! העלית את מד הרחמים של ים ב-25%!`);
-          triggerVibration([100, 50, 100]);
+          const dmg = 85;
+          bossHp = Math.max(bossHp - dmg, 0);
+          updateHpBars();
+          writeConsole(`* הפעלת סאב בוסט! ערוץ יוטיוב קיבל גל סאבים מטורף! ים ספג ${dmg} נזק!`);
+          triggerVibration([300, 100, 300]);
+
+          const container = document.getElementById("battleBossSpriteContainer");
+          if (container) {
+            container.classList.add("boss-dmg-shake");
+            setTimeout(() => container.classList.remove("boss-dmg-shake"), 500);
+          }
+
+          if (bossHp <= 0) {
+            setTimeout(() => winBattle(false), 1800);
+          } else {
+            setTimeout(startEnemyTurn, 1800);
+          }
         }
       }
     ];
