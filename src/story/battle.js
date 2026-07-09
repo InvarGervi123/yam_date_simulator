@@ -2,6 +2,7 @@
 Object.assign(window.story, {
   boss_fight_intro: {
     speaker: "המספר",
+    music: "audio/boss_fight.mp3",
     text: "אתה נעמד באמצע החדר.\nמוזיקה אלקטרונית מוזרה מתחילה להתנגן באוויר.\nשם למטה, בתוך המיטה, ים פותח עין אחת זוהרת.\n'רצית קרב? קיבלת!'\nהעולם מסביב מוחשך, והלב האדום שלך נחשף!",
     choices: [
       { text: "להתחיל בקרב!", next: "boss_fight_start" }
@@ -28,6 +29,8 @@ Object.assign(window.story, {
     speaker: "ים",
     characterAnimation: "shake",
     effect: "shake",
+    music: "audio/main.mp3",
+    sfx: "audio/truimph.mp3",
     text: "ים קורס על המיטה, מתנשף.\n'בסדר... בסדר! ניצחת! המיטה שלך חזקה יותר...\nאני אקום, אני אצא איתך לדייט. רק תפסיק לתקוף אותי עם הנתונים האנליטיים האלה!'",
     choices: [
       { text: "לגרור אותו לדייט הניצחון בפתח תקווה!", next: "end_boss_victory_force" }
