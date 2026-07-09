@@ -350,7 +350,7 @@ function runBaldiMinigame(config) {
   function updateGameLoop() {
     if (!isMinigameActive || isGameOver) return;
     
-    if (!activePadSession) {
+    if (!activePadSession && !jumpScareActive) {
       // Rotation
       if (keys.a) {
         pa -= rotSpeed;
@@ -440,8 +440,19 @@ function runBaldiMinigame(config) {
             promptText.style.color = "#ff3333";
             setTimeout(() => {
               jumpScareActive = false;
-              yamRef.x = Math.max(1.5, Math.min(14.5, yamRef.x - Math.sign(px - yamRef.x) * 4.5));
-              yamRef.y = Math.max(1.5, Math.min(14.5, yamRef.y - Math.sign(py - yamRef.y) * 4.5));
+              // Push Yam back step-by-step checking for wall collisions to prevent clipping
+              let pushDirX = -Math.sign(px - yamRef.x);
+              let pushDirY = -Math.sign(py - yamRef.y);
+              
+              for (let step = 0; step < 4; step++) {
+                let nextX = yamRef.x + pushDirX;
+                let nextY = yamRef.y + pushDirY;
+                
+                if (nextX >= 1 && nextX < mapSize - 1 && nextY >= 1 && nextY < mapSize - 1) {
+                  if (map[Math.floor(yamRef.y)][Math.floor(nextX)] === 0) yamRef.x = nextX;
+                  if (map[Math.floor(nextY)][Math.floor(yamRef.x)] === 0) yamRef.y = nextY;
+                }
+              }
             }, 600);
           }
         }
