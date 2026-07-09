@@ -457,3 +457,31 @@
   align-items: center;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
 }
+
+/* --- Graze Mechanic Styles --- */
+.graze-text {
+  position: absolute;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  color: #f1c40f;
+  text-shadow: 0 0 3px #000, 0 0 6px #f1c40f;
+  z-index: 100;
+  pointer-events: none;
+  animation: floatUpFade 0.45s ease-out forwards;
+}
+
+@keyframes floatUpFade {
+  0% {
+    transform: translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(-5px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-18px) scale(0.85);
+    opacity: 0;
+  }
+}

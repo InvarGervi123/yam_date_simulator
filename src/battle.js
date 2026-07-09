@@ -747,6 +747,25 @@ function runDeltaruneBattle(config) {
           continue;
         }
 
+        // --- Graze Check (If close but not overlapping, and not grazed yet) ---
+        if (!p.grazed) {
+          const grazeBoxSize = 25; // 25px graze zone around the heart
+          const grazeOverlap = !(
+            (heartRect.right + grazeBoxSize) < projRect.left ||
+            (heartRect.left - grazeBoxSize) > projRect.right ||
+            (heartRect.bottom + grazeBoxSize) < projRect.top ||
+            (heartRect.top - grazeBoxSize) > projRect.bottom
+          );
+
+          if (grazeOverlap) {
+            p.grazed = true;
+            playSfx("audio/click.mp3"); // Tick sound for audio feedback
+            playerHp = Math.min(playerHp + 1, 100);
+            updateHpBars();
+            showGrazeText();
+          }
+        }
+
         // Clean up out of bounds projectiles
         if (!p.isOrbiter && (p.x < -100 || p.x > boardWidth + 100 || p.y < -100 || p.y > boardHeight + 100)) {
           p.el.remove();
@@ -779,6 +798,19 @@ function runDeltaruneBattle(config) {
       projectiles.forEach(p => p.el.remove());
       projectiles = [];
     }
+  }
+
+  function showGrazeText() {
+    const grazeEl = document.createElement("div");
+    grazeEl.className = "graze-text";
+    grazeEl.textContent = "+1 HP";
+    grazeEl.style.left = (heartX + Math.random() * 16 - 8) + "px";
+    grazeEl.style.top = (heartY - 12) + "px";
+    arena.appendChild(grazeEl);
+
+    setTimeout(() => {
+      grazeEl.remove();
+    }, 450);
   }
 
   function loseBattle() {
