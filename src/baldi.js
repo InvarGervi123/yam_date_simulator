@@ -130,10 +130,34 @@ function runBaldiMinigame(config) {
 
   // Sound slaps loop
   let yamLastSlap = 0;
-  let yamSlapInterval = 1400; // drops as Yam gets closer
 
   // Keys pressed
   let keys = { w: false, s: false, a: false, d: false };
+
+  // Context broker for renderer access
+  const baldiCtx = {
+    get px() { return px; },
+    get py() { return py; },
+    get pa() { return pa; },
+    get fov() { return fov; },
+    get mapSize() { return mapSize; },
+    get map() { return map; },
+    get sprites() { return sprites; },
+    get yamRef() { return yamRef; },
+    get hudAlert() { return hudAlert; },
+    get jumpScareActive() { return jumpScareActive; },
+    get jumpscareYamImg() { return jumpscareYamImg; }
+  };
+
+  function playSfx(src) {
+    if (window.audioEngine && typeof window.audioEngine.playSfx === "function") {
+      window.audioEngine.playSfx(src);
+    }
+  }
+
+  function triggerVibration(pattern) {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+  }
 
   function handleKeyDown(e) {
     if (activePadSession) return;
@@ -164,8 +188,6 @@ function runBaldiMinigame(config) {
   const cForward = document.getElementById("ctrlForward");
   const cBackward = document.getElementById("ctrlBackward");
   const cAction = document.getElementById("ctrlAction");
-
-  let touchIntervals = [];
 
   function setupTouch(btn, keyState) {
     btn.ontouchstart = (e) => {
@@ -200,7 +222,6 @@ function runBaldiMinigame(config) {
   function triggerInteract() {
     if (activePadSession || isGameOver) return;
     
-    // Find closest uncollected notebook
     let nearNotebook = null;
     let minDist = 0.8;
     
@@ -238,12 +259,10 @@ function runBaldiMinigame(config) {
     let b2 = Math.floor(Math.random() * 4) + 2;
     let ans2 = a2 * b2;
 
-    // Reset styles
     padScreen.classList.remove("baldi-red-alert");
     padTeacherImg.classList.remove("baldi-glitch-face");
     padInput.value = "";
     
-    // Numeric input filters to prevent letters like 'e'
     padInput.onkeypress = (e) => {
       if (!/[0-9\-]/.test(e.key)) {
         e.preventDefault();
@@ -289,7 +308,6 @@ function runBaldiMinigame(config) {
         step = 3;
         padInput.value = "";
         
-        // Problem 3 is ALWAYS GLITCHY
         playSfx("audio/rip.mp3");
         triggerVibration([200, 100, 200]);
         padScreen.classList.add("baldi-red-alert");
@@ -299,18 +317,15 @@ function runBaldiMinigame(config) {
         padQText.textContent = `${Math.floor(Math.random() * 9000) + 1000} + ▓░▒█ × ░▒ = ?`;
         padInput.focus();
       } else if (step === 3) {
-        mistakesCount++; // Q3 glitch is always a mistake
-        // Submit glitch answer -> Yam goes angry!
+        mistakesCount++; // Q3 glitch is always wrong
         playSfx("audio/crack.mp3");
         triggerVibration([400, 100, 400]);
 
-        // Mark notebook collected
         currentNotebookRef.collected = true;
-        currentNotebookRef.label = "📖"; // Open book emoji when collected
+        currentNotebookRef.label = "📖";
         collectedNotebooksCount++;
         notebookCounter.textContent = `Notebooks: ${collectedNotebooksCount}/3`;
 
-        // Hide pad
         padModal.style.display = "none";
         activePadSession = false;
 
@@ -329,193 +344,6 @@ function runBaldiMinigame(config) {
         }
       }
     };
-  }
-
-  // Raycaster 1D Z-Buffer
-  let zBuffer = new Array(320);
-
-  // Render 3D Frame
-  function render3D() {
-    if (jumpScareActive) {
-      // Flashing screen
-      ctx.fillStyle = (Math.floor(Date.now() / 80) % 2 === 0) ? "#7a1111" : "#000000";
-      ctx.fillRect(0, 0, 320, 240);
-
-      // Shaking giant image of Yam
-      let shakeX = Math.random() * 16 - 8;
-      let shakeY = Math.random() * 16 - 8;
-
-      let imgW = 160;
-      let imgH = 160;
-      ctx.drawImage(jumpscareYamImg, 160 - imgW / 2 + shakeX, 120 - imgH / 2 + shakeY, imgW, imgH);
-      return;
-    }
-
-    // Clear screen with ceiling & floor colors
-    ctx.fillStyle = "#d2d2a6"; // Ceiling
-    ctx.fillRect(0, 0, 320, 120);
-    ctx.fillStyle = "#5b7b9c"; // Blue floor
-    ctx.fillRect(0, 120, 320, 120);
-
-    // Wall Raycasting
-    for (let col = 0; col < 320; col++) {
-      let rayAngle = pa - fov / 2 + (col / 320) * fov;
-      let dx = Math.cos(rayAngle);
-      let dy = Math.sin(rayAngle);
-
-      let mapX = Math.floor(px);
-      let mapY = Math.floor(py);
-
-      let deltaDistX = Math.abs(1 / dx);
-      let deltaDistY = Math.abs(1 / dy);
-
-      let stepX, stepY;
-      let sideDistX, sideDistY;
-
-      if (dx < 0) {
-        stepX = -1;
-        sideDistX = (px - mapX) * deltaDistX;
-      } else {
-        stepX = 1;
-        sideDistX = (mapX + 1.0 - px) * deltaDistX;
-      }
-
-      if (dy < 0) {
-        stepY = -1;
-        sideDistY = (py - mapY) * deltaDistY;
-      } else {
-        stepY = 1;
-        sideDistY = (mapY + 1.0 - py) * deltaDistY;
-      }
-
-      let hit = false;
-      let side = 0; // NS or EW wall
-      let distance = 0;
-
-      while (!hit && distance < 18) {
-        if (sideDistX < sideDistY) {
-          sideDistX += deltaDistX;
-          mapX += stepX;
-          side = 0;
-        } else {
-          sideDistY += deltaDistY;
-          mapY += stepY;
-          side = 1;
-        }
-
-        if (mapX < 0 || mapX >= mapSize || mapY < 0 || mapY >= mapSize) {
-          distance = 18;
-          break;
-        }
-
-        if (map[mapY][mapX] > 0) {
-          hit = true;
-        }
-      }
-
-      if (side === 0) distance = (mapX - px + (1 - stepX) / 2) / dx;
-      else distance = (mapY - py + (1 - stepY) / 2) / dy;
-
-      // Correct fish-eye
-      let correctedDist = distance * Math.cos(rayAngle - pa);
-      if (correctedDist <= 0.05) correctedDist = 0.05;
-
-      zBuffer[col] = correctedDist;
-
-      // Height of wall slice
-      let sliceHeight = Math.floor(240 / correctedDist);
-      let drawStart = Math.max(0, 120 - sliceHeight / 2);
-      let drawEnd = Math.min(240, 120 + sliceHeight / 2);
-
-      // Shading based on wall type and side
-      let wallType = map[mapY][mapX];
-      let wallColor = "#ffd447"; // Yellow brick default
-      if (wallType === 2) {
-        wallColor = "#9c3c3c"; // Red classroom door
-      }
-
-      ctx.fillStyle = wallColor;
-      ctx.fillRect(col, drawStart, 1, drawEnd - drawStart);
-
-      // Shadow overlay to create depth
-      let shadow = Math.min(1.0, correctedDist / 12);
-      if (side === 1) shadow = shadow * 0.7 + 0.3; // shade sides differently
-      ctx.fillStyle = `rgba(0,0,0,${shadow.toFixed(2)})`;
-      ctx.fillRect(col, drawStart, 1, drawEnd - drawStart);
-    }
-
-    // Render sprites sorted by distance
-    let spritesCopy = sprites.map(s => {
-      let dx = s.x - px;
-      let dy = s.y - py;
-      return {
-        sprite: s,
-        dist: Math.sqrt(dx*dx + dy*dy),
-        dx: dx,
-        dy: dy
-      };
-    });
-
-    spritesCopy.sort((a, b) => b.dist - a.dist);
-
-    spritesCopy.forEach(sc => {
-      let s = sc.sprite;
-      if (s.type === "notebook" && s.collected) return;
-      if (s.type === "exit" && !s.active) return;
-      if (s.type === "yam" && !s.active) return;
-
-      // Sprite angle relative to player direction
-      let spriteAngle = Math.atan2(sc.dy, sc.dx) - pa;
-      while (spriteAngle < -Math.PI) spriteAngle += Math.PI * 2;
-      while (spriteAngle > Math.PI) spriteAngle -= Math.PI * 2;
-
-      // Render if in FOV
-      if (Math.abs(spriteAngle) < fov) {
-        let screenX = 160 + Math.tan(spriteAngle) * 160 / Math.tan(fov / 2);
-        let dist = sc.dist;
-        if (dist < 0.1) dist = 0.1;
-
-        // Check center column Z-Buffer to avoid rendering sprites behind walls
-        let centerCol = Math.floor(screenX);
-        if (centerCol >= 0 && centerCol < 320 && dist < zBuffer[centerCol]) {
-          let size = Math.floor(200 / dist);
-          if (size > 150) size = 150;
-          if (size < 6) size = 6;
-
-          if (s.type === "yam") {
-            // Draw Yam image as a billboard sprite instead of emoji!
-            let imgW = size;
-            let imgH = size;
-            ctx.drawImage(jumpscareYamImg, screenX - imgW / 2, 120 - imgH / 2, imgW, imgH);
-          } else {
-            ctx.font = `${size}px Courier New`;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-
-            // Text shadow
-            ctx.fillStyle = "#000000";
-            ctx.fillText(s.label, screenX + 1, 120 + 1);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(s.label, screenX, 120);
-          }
-        }
-      }
-    });
-
-    // Draw Map HUD overlays (Red light flashing if Yam is close)
-    if (yamRef.active) {
-      let dx = yamRef.x - px;
-      let dy = yamRef.y - py;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 3.0) {
-        hudAlert.className = "baldi-hud-alert";
-        hudAlert.style.display = "block";
-      } else {
-        hudAlert.style.display = "none";
-      }
-    } else {
-      hudAlert.style.display = "none";
-    }
   }
 
   // --- Real-time Main Loop ---
@@ -562,12 +390,10 @@ function runBaldiMinigame(config) {
       if (yamRef.active) {
         let timeNow = Date.now();
         
-        // Calculate slap rhythm based on distance (closer = faster!)
         let dx = px - yamRef.x;
         let dy = py - yamRef.y;
         let dist = Math.sqrt(dx*dx + dy*dy);
         
-        // Speed up the slapping interval based on mistake count
         let targetInterval = Math.max(180, Math.min(1300, (dist * 250) - (mistakesCount * 120)));
         
         if (timeNow - yamLastSlap > targetInterval) {
@@ -575,11 +401,9 @@ function runBaldiMinigame(config) {
           playSfx("audio/crack.mp3"); // Slap ruler!
           triggerVibration(20);
 
-          // Slap walk Yam one tile closer using grid slide vectors
           let gridDirX = Math.sign(px - yamRef.x);
           let gridDirY = Math.sign(py - yamRef.y);
 
-          // Step size increases with mistakes!
           let stepAmount = 0.55 + mistakesCount * 0.12;
           let nextYamX = yamRef.x + gridDirX * stepAmount;
           let nextYamY = yamRef.y + gridDirY * stepAmount;
@@ -588,42 +412,39 @@ function runBaldiMinigame(config) {
           if (map[Math.floor(nextYamY)][Math.floor(yamRef.x)] === 0) yamRef.y = nextYamY;
         }
 
-      // Catch check
-      if (dist < 0.6 && !jumpScareActive) {
-        lives--;
-        jumpScareActive = true;
-        mistakesCount++; // Getting hit also counts as a mistake and speeds him up!
-        
-        playSfx("audio/hit.mp3");
-        triggerVibration([500, 150, 500]);
+        // Catch check
+        if (dist < 0.6 && !jumpScareActive) {
+          lives--;
+          jumpScareActive = true;
+          mistakesCount++;
+          
+          playSfx("audio/hit.mp3");
+          triggerVibration([500, 150, 500]);
 
-        const gc = document.getElementById("game");
-        if (gc) {
-          gc.classList.add("effect-redflash");
-          setTimeout(() => gc.classList.remove("effect-redflash"), 300);
-        }
+          const gc = document.getElementById("game");
+          if (gc) {
+            gc.classList.add("effect-redflash");
+            setTimeout(() => gc.classList.remove("effect-redflash"), 300);
+          }
 
-        if (lives <= 0) {
-          // Giant game over jumpscare
-          promptText.textContent = "נתפסת על ידי ים!";
-          promptText.style.color = "#ff0000";
-          setTimeout(() => {
-            jumpScareActive = false;
-            endGame(false);
-          }, 1200);
-          return;
-        } else {
-          // Regular hit jumpscare
-          promptText.textContent = `נפגעת! נשארו לך ${lives} חיים!`;
-          promptText.style.color = "#ff3333";
-          setTimeout(() => {
-            jumpScareActive = false;
-            // Push Yam away
-            yamRef.x = Math.max(1.5, Math.min(14.5, yamRef.x - Math.sign(px - yamRef.x) * 4.5));
-            yamRef.y = Math.max(1.5, Math.min(14.5, yamRef.y - Math.sign(py - yamRef.y) * 4.5));
-          }, 600);
+          if (lives <= 0) {
+            promptText.textContent = "נתפסת על ידי ים!";
+            promptText.style.color = "#ff0000";
+            setTimeout(() => {
+              jumpScareActive = false;
+              endGame(false);
+            }, 1200);
+            return;
+          } else {
+            promptText.textContent = `נפגעת! נשארו לך ${lives} חיים!`;
+            promptText.style.color = "#ff3333";
+            setTimeout(() => {
+              jumpScareActive = false;
+              yamRef.x = Math.max(1.5, Math.min(14.5, yamRef.x - Math.sign(px - yamRef.x) * 4.5));
+              yamRef.y = Math.max(1.5, Math.min(14.5, yamRef.y - Math.sign(py - yamRef.y) * 4.5));
+            }, 600);
+          }
         }
-      }
       }
 
       // Check near notebook prompt
@@ -648,7 +469,11 @@ function runBaldiMinigame(config) {
       }
     }
 
-    render3D();
+    // Call outsourced 3D Raycasting Renderer
+    if (window.baldiRenderer && typeof window.baldiRenderer.render3D === "function") {
+      window.baldiRenderer.render3D(baldiCtx, ctx);
+    }
+
     requestAnimationFrame(updateGameLoop);
   }
 
