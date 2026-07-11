@@ -1,5 +1,13 @@
 # 🎮 ים דייט סימולטור (Yam Date Simulator) - Enterprise Static Architecture
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Made%20With-Vanilla%20JS-yellow?style=for-the-badge&logo=javascript" alt="Made With Vanilla JS" />
+  <img src="https://img.shields.io/badge/Platform-PC%20%7C%20Mobile-orange?style=for-the-badge" alt="Platform Compatibility" />
+  <img src="https://img.shields.io/badge/Offline--First-PWA-red?style=for-the-badge&logo=pwa" alt="PWA Offline First" />
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License MIT" />
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome" />
+</p>
+
 [English System Architecture](#-system-architecture-english-summary) | [תיעוד ארכיטקטורה בעברית](#hebrew-architecture)
 
 ---
@@ -14,6 +22,14 @@
 * **No-Framework, Zero-Dependency Core:** Developed entirely in Vanilla JS and highly optimized CSS variables. Eliminates modern framework bloat (React, Vue, etc.), resulting in a tiny static bundle size and a near-zero initial load footprint.
 * **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
 * **State Serialization & Cache Durability:** System endings (90 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
+
+### 📸 Visual Previews
+
+<p align="center">
+  <img src="images/Boss_fight.png" width="600" alt="Deltarune Battle Arena Gameplay" />
+  <br>
+  <em>Deltarune-style Bullet Hell Battle Arena in action (PC & Mobile joystick overlay)</em>
+</p>
 
 ### 🔧 Boilerplate & Engine Reusability (For Developers)
 
