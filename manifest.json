@@ -1,0 +1,17 @@
+{
+  "name": "ים דייט סימולטור",
+  "short_name": "ים דייט",
+  "description": "סימולטור דייטים משוגע ומלא בהומור פנימי עם מיני-משחקים מורכבים!",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#e74c3c",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "images/yam.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
