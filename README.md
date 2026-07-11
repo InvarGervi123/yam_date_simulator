@@ -17,6 +17,19 @@ Built with clean modular vanilla Javascript and CSS, featuring a 3D raycasting m
 * **PWA & Offline Support:** Playable fully offline with Service Worker caching and installable directly on Android, iOS, and desktop home screens.
 * **Zero Dependencies:** Pure vanilla JS/CSS/HTML - extremely lightweight, zero framework overhead, and instant load times.
 
+### 📊 Game Features Matrix
+
+| Feature / Component | Description | Tech Stack / Mechanics |
+|---|---|---|
+| **Visual Novel Engine** | Interactive narrative with branching paths, speaker names, choices, and background switches. | Custom state engine, pure HTML/CSS |
+| **Dynamic Mood Expressions** | Yam (boss) reacts visually to dialogues based on mood tags (10 states). | Automatic regex text analyzer, CSS transition classes |
+| **Endings Tracker Gallery** | Standalone dashboard showing all unlocked endings out of 90. | Local storage, `document.cookie`, reset actions |
+| **Deltarune Battle Arena** | Real-time bullet hell combat with heart movement, grazing mechanics, and specials. | Canvas 2D engine, grazing warning ring, TP energy |
+| **3D Baldi's Basics Maze** | 3D raycasted labyrinth, notebook collection, math quiz pad, and dynamic teacher chase. | Wolfenstein-style raycaster, unstick fallback pathfinding, i-frames |
+| **PWA & Offline Support** | Standalone application installation, instant loading and full offline gameplay. | `sw.js` (Stale-While-Revalidate cache), `manifest.json` |
+| **Vibration & Haptics** | Real-time physical haptic feedback when taking damage or hitting key endings. | HTML5 `navigator.vibrate` API |
+| **Asset Optimization** | Minimal package size and low memory usage for mobile compatibility. | Compressed WebP sprites, optimized MP3 bitrates |
+
 ---
 
 <a id="hebrew-version"></a>
@@ -50,6 +63,19 @@ Built with clean modular vanilla Javascript and CSS, featuring a 3D raycasting m
 5. **תמיכה מלאה במובייל ורטט (Haptics):**
    * ממשק מותאם למסכי מגע עם ג'ויסטיק וכפתורים וירטואליים.
    * רטט פיזי במכשירים תומכים בעת קבלת מכות, הצלחות או סופים דרמטיים.
+
+### 📊 מטריצת רכיבים ותכונות
+
+| רכיב / תכונה | תיאור | טכנולוגיה / מכניקה |
+|---|---|---|
+| **מנוע נובל ויזואלי** | עלילה אינטראקטיבית עם פיצולי דרכים, תיבות דו-שיח, שינוי רקעים ובחירות. | מנוע מצבים עצמאי, HTML/CSS נקי |
+| **מערכת הבעות דינמית** | ים (הבוס) משנה הבעת פנים בהתאם לטקסט ולסצנה (10 מצבי רוח שונים). | ניתוח טקסט אוטומטי, מחלקות CSS מונפשות |
+| **לוח מעקב סופים** | גלריה פנימית המציגה ושומרת את כל הסופים שפתחת מתוך 90. | שמירה מקומית בדפדפן (`localStorage` / `Cookies`) |
+| **זירת קרב Deltarune** | קרב קליעים (Bullet Hell) בזמן אמת, מכניקת ACT, טעינת TP וסופרים מיוחדים. | קנבס דו-מימד, הילת מגע (Graze), מגן בורקס וסאב-בוסט |
+| **מבוך תלת-מימד Baldi** | מבוך קירות ואיסוף מחברות, פתרון מתמטיקה בטאבלט ומרדף מאיץ של באלדי. | מנוע Raycasting (Wolfenstein 3D), בינה מלאכותית חסינת היתקעות, חסינות פגיעה (I-Frames) |
+| **תמיכת PWA ואופליין** | התקנת המשחק כאפליקציה בנייד ובמחשב וטעינה מיידית ללא חיבור לאינטרנט. | `sw.js` (מטמון Stale-While-Revalidate), `manifest.json` |
+| **רטט ומגע (Haptics)** | רטט פיזי בנייד בעת פגיעה, הצלחה או הגעה לסופים דרמטיים. | ממשק HTML5 `navigator.vibrate` |
+| **אופטימיזציית משאבים** | נפח הורדה מזערי וצריכת זיכרון (RAM) נמוכה לריצה חלקה בניידים חלשים. | דחיסת תמונות ל-WebP, סאונד בפורמט MP3 ממוטב |
 
 ---
 
