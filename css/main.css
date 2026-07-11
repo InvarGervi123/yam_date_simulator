@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+/* Accessibility focus styles for Tab/Shift-Tab keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #e74c3c !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.8) !important;
+}
+
 html, body {
   margin: 0;
   width: 100%;
