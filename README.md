@@ -22,6 +22,7 @@
 * **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
 * **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
 * **State Serialization & Cache Durability:** System endings (90 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
+* **Full Keyboard Navigation (Laptop-friendly):** Enables a complete mouse-free playthrough. Advance story dialogues with `Space` / `Enter`, select choices with numeric keys `1`-`9`, use numbers `1`-`4` for Deltarune battle actions, and `Backspace` / `Escape` to close sub-menus.
 
 ### 📸 Visual Previews
 
@@ -133,6 +134,14 @@ Contributions, bug reports, and suggestions are welcome!
 1. הורד את קוד המקור למחשב.
 2. לחץ דאבל-קליק על הקובץ `index.html`.
 3. המשחק ייפתח מיידית בדפדפן ויעקוף את מגבלות ה-CORS ללא שום שגיאות אבטחה בקונסול!
+
+#### ⌨️ מקשי ניווט ומקלדת (Laptop Keyboard Controls)
+המשחק תומך במלואו במשחק ללא עכבר (מיועד ללפטופים):
+* **העברת דיאלוגים:** מקש **רווח (Space)** או **אנטר (Enter)**.
+* **בחירת אפשרויות בסיפור:** מקשי מספרים **`1` עד `9`**.
+* **בחירת פעולה בקרב הבוס:** מקשים **`1`** (Fight), **`2`** (Act), **`3`** (Item), **`4`** (Spare).
+* **בחירת פריטים/מיומנויות בקרב:** מקשי מספרים **`1` עד `9`**.
+* **סגירת תפריטי קרב:** מקש **Escape** או **Backspace (מחיקה)**.
 
 ---
 

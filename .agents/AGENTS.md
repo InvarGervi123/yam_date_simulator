@@ -40,3 +40,7 @@ To write highly readable, glitch-free code, follow this plan-first checklist:
 - Avoid raw heavy formats like BMP, high-res TIFF, or uncompressed WAV.
 - Use optimized formats (e.g. WebP/compressed PNG for images, and standard MP3 with moderate bitrates for audio) to ensure the game maintains a very low memory (RAM) footprint and minimal download size.
 
+## 7. Keyboard Navigation & Accessibility Support (תמיכת מקלדת רציפה)
+- Always maintain and preserve keyboard fallback inputs for visual novel scenes (`src/engine.js`) and turn-based battle scenes (`src/battle.js`).
+- If you modify next-dialogue flows or add menu buttons, ensure they remain fully operable via key binds (Space/Enter for dialogues, 1-9 for choices and actions, Escape/Backspace for submenu closure) to keep the game completely playable on laptops without a mouse.
+
