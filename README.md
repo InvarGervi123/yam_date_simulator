@@ -44,6 +44,10 @@ Contributions, bug reports, and suggestions are welcome!
 * **Want to contribute?** Feel free to fork the repository, make changes, and open a Pull Request.
 * **Support the project:** If you find this codebase or its engines helpful, please give it a ⭐ **Star** on GitHub to support free open-source game development!
 
+### 🏷️ Repository Tags & Topics
+
+`javascript` | `html5-canvas` | `raycaster` | `wolfenstein-3d` | `deltarune` | `bullet-hell` | `pwa` | `offline-first` | `gamedev` | `web-game` | `boilerplate` | `open-source`
+
 ---
 
 <a id="hebrew-architecture"></a>
