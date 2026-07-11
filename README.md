@@ -19,7 +19,7 @@
 ### ⚡ Architectural Highlights:
 * **Offline-First & PWA Compliance:** Powered by a customized Service Worker (`sw.js`) implementing a **Stale-While-Revalidate** network cache strategy. Bypasses internet network round-trips for instant start-ups.
 * **Wolfenstein-Style 3D Engine (CPU-Optimized):** Custom-built Wolfenstein 3D Raycaster using HTML5 2D Canvas context rendering. Avoids heavy WebGL overhead, reducing GPU temperatures and memory consumption on low-end mobile hardware. Includes a localized unstick fallback heuristic pathfinder.
-* **No-Framework, Zero-Dependency Core:** Developed entirely in Vanilla JS and highly optimized CSS variables. Eliminates modern framework bloat (React, Vue, etc.), resulting in a tiny static bundle size and a near-zero initial load footprint.
+* **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
 * **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
 * **State Serialization & Cache Durability:** System endings (90 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
 
@@ -62,8 +62,8 @@ Contributions, bug reports, and suggestions are welcome!
 > **🖥️ תאימות חוצת-פלטפורמות מלאה (Cross-Platform Optimization):**
 > המשחק מותאם למשאבי קצה מוגבלים ומריץ לולאות עיבוד מותאמות למסכי מגע בניידים (כולל שימוש ב-Haptic Feedback דרך ה-vibrate API של HTML5) ומחשבי PC (בעזרת ממשקי מקלדת ועכבר אסינכרוניים).
 
-1. **אפס תלויות חיצוניות (Zero-Dependency Engine):**
-   המשחק אינו מסתמך על שום Framework (ללא React, Vue או Angular) או ספריות צד-שלישי. כל הממשקים, כולל מנוע ה-Visual Novel, מנוע הקרב הדו-מימדי ומנוע התלת-מימד, נכתבו ב-Vanilla JS ו-Vanilla CSS טהור. הדבר מאפשר גודל חבילה (Bundle) מזערי וזמן פענוח (Compile Time) אפסי בדפדפן.
+1. **החלטה ארכיטקטונית - ללא Frameworks (כמו React/Vue/Angular):**
+   המשחק נבנה בכוונה תחילה **ללא שימוש ב-React, Vue או Angular** על מנת למנוע קבצי JavaScript כבדים, עומס על זיכרון המכשיר (RAM) ועיבוד מיותר של Virtual DOM. כל רכיבי המשחק נכתבו ב-Vanilla JS ו-CSS טהור, מה שמבטיח שקובצי המשחק יישארו קלים במיוחד, יטענו באופן מיידי ויחסכו בסוללה במכשירי קצה חלשים.
 2. **אסטרטגיית מטמון אופליין חכמה (Offline-First / PWA):**
    בעזרת ה-Service Worker המקומי (`sw.js`), המשחק מבצע קאשינג מקומי אקטיבי של כל הנכסים הסטטיים בעת העלייה הראשונה. השימוש באסטרטגיית **Stale-While-Revalidate** מאפשר לטעון את המשחק באופן מיידי מזיכרון המטמון המקומי, תוך בדיקת עדכונים ברקע משרתי Edge (כמו Render CDN).
 3. **מנוע גרפי תלת-מימדי קל-משקל (3D Raycasting Engine):**
