@@ -8,6 +8,9 @@
 
 **Yam Date Simulator** is a hilarious, meme-filled interactive visual novel dating simulator where you attempt the impossible mission: convincing Yam to get out of bed and go on a date with you! 
 
+> [!IMPORTANT]
+> **🖥️ Cross-Platform Compatibility:** The game is fully optimized and playable on both **PC** (using mouse & keyboard controls) and **Mobile devices** (using touch screens, virtual joysticks, action buttons, and physical vibrations).
+
 Built with clean modular vanilla Javascript and CSS, featuring a 3D raycasting minigame, a real-time Deltarune-style bullet hell boss fight, dynamic facial expressions, mobile touch controls, and full offline caching support (PWA).
 
 ### Key Features:
@@ -39,6 +42,9 @@ Built with clean modular vanilla Javascript and CSS, featuring a 3D raycasting m
 סימולטור דייטים אינטראקטיבי (Visual Novel) משוגע ומלא בהומור פנימי, המדמה את המשימה הבלתי אפשרית: לשכנע את ים לקום מהמיטה ולצאת איתך לדייט!
 
 המשחק נבנה בצורה מודולרית ומעוצב בסגנון רטרו מודרני מרהיב, הכולל אפקטים מיוחדים, מוזיקה דינמית, משחקי מיני-גיימס מורכבים (כמו Baldi's Basics בדו-מימד וקרב בוס בסגנון Deltarune), ומעקב אחרי גלריית סופים ענקית.
+
+> [!IMPORTANT]
+> **🖥️ תאימות מלאה וחוצה פלטפורמות:** המשחק מותאם ועובד בצורה מושלמת הן על **מחשבים אישיים (PC)** (באמצעות עכבר ומקלדת) והן על **טלפונים ניידים (Mobile)** (באמצעות מסכי מגע, ג'ויסטיק וירטואלי, כפתורי פעולה ורטט פיזי בנייד).
 
 ---
 
