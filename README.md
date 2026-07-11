@@ -1,5 +1,28 @@
 # 🎮 ים דייט סימולטור (Yam Date Simulator) - גרסת האסון הרומנטי המלאה
 
+[English Overview](#-quick-overview-english) | [גרסה בעברית](#hebrew-version)
+
+---
+
+## 🌎 Quick Overview (English)
+
+**Yam Date Simulator** is a hilarious, meme-filled interactive visual novel dating simulator where you attempt the impossible mission: convincing Yam to get out of bed and go on a date with you! 
+
+Built with clean modular vanilla Javascript and CSS, featuring a 3D raycasting minigame, a real-time Deltarune-style bullet hell boss fight, dynamic facial expressions, mobile touch controls, and full offline caching support (PWA).
+
+### Key Features:
+* **90 Unique Endings:** Unlock and track endings in a built-in endings gallery saved locally via cookies.
+* **Deltarune-style Boss Fight:** Dodge buses, warning lasers, and nutrition slop in a real-time bullet hell arena using keyboard or touch joystick controls.
+* **3D Baldi's Basics Maze:** Explore a 3D Wolfenstein-style raycasted maze, solve math problems on a virtual tablet, and evade Yam's slapping ruler.
+* **PWA & Offline Support:** Playable fully offline with Service Worker caching and installable directly on Android, iOS, and desktop home screens.
+* **Zero Dependencies:** Pure vanilla JS/CSS/HTML - extremely lightweight, zero framework overhead, and instant load times.
+
+---
+
+<a id="hebrew-version"></a>
+
+## 🎮 ים דייט סימולטור (Yam Date Simulator) - תיאור בעברית
+
 סימולטור דייטים אינטראקטיבי (Visual Novel) משוגע ומלא בהומור פנימי, המדמה את המשימה הבלתי אפשרית: לשכנע את ים לקום מהמיטה ולצאת איתך לדייט!
 
 המשחק נבנה בצורה מודולרית ומעוצב בסגנון רטרו מודרני מרהיב, הכולל אפקטים מיוחדים, מוזיקה דינמית, משחקי מיני-גיימס מורכבים (כמו Baldi's Basics בדו-מימד וקרב בוס בסגנון Deltarune), ומעקב אחרי גלריית סופים ענקית.
