@@ -450,11 +450,54 @@ function runDeltaruneBattle(config) {
     subMenu.style.display = "none";
   };
 
+  function handleBattleKeyDown(e) {
+    if (isGameOver) return;
+
+    // If sub-menu is open
+    if (subMenu.style.display === "flex") {
+      // Backspace or Escape closes sub-menu
+      if (e.key === "Backspace" || e.key === "Escape") {
+        e.preventDefault();
+        closeSub.click();
+        return;
+      }
+      
+      // Numbers 1-9 select sub-menu items
+      if (e.key >= "1" && e.key <= "9") {
+        const index = parseInt(e.key) - 1;
+        if (subList.children[index]) {
+          e.preventDefault();
+          subList.children[index].click();
+        }
+      }
+      return;
+    }
+
+    // Main Menu navigation (only when pointerEvents is not none)
+    if (actions.style.pointerEvents !== "none") {
+      if (e.key === "1") {
+        e.preventDefault();
+        document.getElementById("btnFight").click();
+      } else if (e.key === "2") {
+        e.preventDefault();
+        document.getElementById("btnAct").click();
+      } else if (e.key === "3") {
+        e.preventDefault();
+        document.getElementById("btnItem").click();
+      } else if (e.key === "4") {
+        e.preventDefault();
+        document.getElementById("btnSpare").click();
+      }
+    }
+  }
+
   function loseBattle() {
     isGameOver = true;
     playerTp = 0;
     hasShield = false;
     
+    window.removeEventListener("keydown", handleBattleKeyDown);
+
     if (window.battleArena && typeof window.battleArena.cleanupEnemyTurn === "function") {
       window.battleArena.cleanupEnemyTurn(battleCtx);
     }
@@ -469,6 +512,8 @@ function runDeltaruneBattle(config) {
     isGameOver = true;
     playerTp = 0;
     hasShield = false;
+
+    window.removeEventListener("keydown", handleBattleKeyDown);
 
     if (window.battleArena && typeof window.battleArena.cleanupEnemyTurn === "function") {
       window.battleArena.cleanupEnemyTurn(battleCtx);
@@ -494,6 +539,8 @@ function runDeltaruneBattle(config) {
       }, 3500);
     }
   }
+
+  window.addEventListener("keydown", handleBattleKeyDown);
 
   // Start battle
   updateHpBars();

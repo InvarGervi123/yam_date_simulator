@@ -291,5 +291,30 @@ if (closeGallery) {
   };
 }
 
+// Keyboard shortcuts for visual novel progression (Laptops / No-Mouse support)
+window.addEventListener("keydown", (e) => {
+  // Ignore key shortcuts if gallery or minigame overlays are open
+  if (galleryModal && galleryModal.style.display === "flex") return;
+  if (minigameOverlay && minigameOverlay.style.display === "flex") return;
+
+  // Space or Enter advances dialogue
+  if (e.key === " " || e.key === "Enter") {
+    if (nextBtn && nextBtn.style.display !== "none" && typeof nextBtn.onclick === "function") {
+      e.preventDefault();
+      nextBtn.click();
+    }
+  }
+
+  // Numbers 1-9 choose visual novel story choices
+  if (e.key >= "1" && e.key <= "9") {
+    const choiceBtns = choices.getElementsByClassName("choiceBtn");
+    const index = parseInt(e.key) - 1;
+    if (choiceBtns && choiceBtns[index]) {
+      e.preventDefault();
+      choiceBtns[index].click();
+    }
+  }
+});
+
 // Start Simulator
 showScene("start");
