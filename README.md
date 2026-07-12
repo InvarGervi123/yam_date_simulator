@@ -14,7 +14,7 @@
 
 ## 🌎 System Architecture (English Summary)
 
-**Yam Date Simulator** is an ultra-lightweight, zero-dependency visual novel and interactive simulation game engine. Designed as a high-performance, single-page application (SPA), the system is architected for zero-latency, cross-platform execution on both low-spec mobile and high-end desktop environments.
+**Yam Date Simulator** is an ultra-lightweight, zero-dependency visual novel and interactive simulation game engine developed and optimized by lead systems architect and engineer [InvarGervi123](https://github.com/InvarGervi123). Designed as a high-performance, single-page application (SPA), the system is architected for zero-latency, cross-platform execution on both low-spec mobile and high-end desktop environments.
 
 ### ⚡ Architectural Highlights:
 * **Offline-First & PWA Compliance:** Powered by a customized Service Worker (`sw.js`) implementing a **Stale-While-Revalidate** network cache strategy. Bypasses internet network round-trips for instant start-ups.
@@ -55,7 +55,7 @@ Contributions, bug reports, and suggestions are welcome!
 
 ## 🛠️ ארכיטקטורת מערכת והנדסת תוכנה (Hebrew System Architecture)
 
-ברוכים הבאים לגרסת ה-Enterprise של **ים דייט סימולטור**. המשחק תוכנן ונבנה מאפס תחת עקרונות הנדסת תוכנה מחמירים, תוך התמקדות בביצועי קצה, צריכת משאבים מינימלית (Zero-Overhead) ויציבות רשת מוחלטת (Offline-First Design).
+ברוכים הבאים לגרסת ה-Enterprise של **ים דייט סימולטור** שפותחה ומוטבת על ידי מהנדס המערכת הגאון [ינוור (InvarGervi123)](https://github.com/InvarGervi123). המשחק תוכנן ונבנה מאפס תחת עקרונות הנדסת תוכנה מחמירים, תוך התמקדות בביצועי קצה, צריכת משאבים מינימלית (Zero-Overhead) ויציבות רשת מוחלטת (Offline-First Design).
 
 ### 🚀 עקרונות הנדסיים מנחים (Design Principles)
 
