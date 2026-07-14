@@ -114,8 +114,8 @@ html, body {
   left: 6%;
   right: 6%;
   bottom: 5%;
-  min-height: 190px;
-  max-height: 35dvh;
+  min-height: 200px;
+  max-height: 40dvh;
   display: flex;
   flex-direction: column;
   background: rgba(15, 15, 22, 0.78);
@@ -144,7 +144,7 @@ html, body {
   overflow-y: auto;
   white-space: pre-line;
   line-height: 1.55;
-  font-size: 22px;
+  font-size: 20px; /* Optimized from 22px to prevent easy truncation */
   margin-bottom: 12px;
   color: #e5e7eb;
   padding-left: 8px;
@@ -169,15 +169,34 @@ html, body {
 #choices {
   position: absolute;
   left: 50%;
-  top: 38%;
+  top: 35%; /* Moved up from 38% to prevent overlap with dialog box */
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 520px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   z-index: 10;
-  pointer-events: none;
+  max-height: 46dvh; /* Max height to prevent overlapping bottom box */
+  overflow-y: auto; /* Scrollable list when there are many options */
+  pointer-events: auto; /* Enables scrolling interaction */
+  padding: 8px;
+}
+
+/* Custom Scrollbar for Choices container */
+#choices::-webkit-scrollbar {
+  width: 6px;
+}
+#choices::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+#choices::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+#choices::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 212, 71, 0.4);
 }
 
 button {

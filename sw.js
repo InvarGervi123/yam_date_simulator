@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v2-dialogue-expansions';
+const CACHE_NAME = 'yam-date-sim-v3-layout-fix';
 const ASSETS = [
   './',
   './index.html',
