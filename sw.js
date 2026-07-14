@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v1';
+const CACHE_NAME = 'yam-date-sim-v2-dialogue-expansions';
 const ASSETS = [
   './',
   './index.html',
@@ -20,6 +20,7 @@ const ASSETS = [
   './src/story/battle.js',
   './src/story/baldi.js',
   './src/story/endings.js',
+  './src/story/dialogue_expansions.js',
   './images/yam.png',
   './images/Boss_fight.png',
   './images/yam_boss_animation_food_1.png',
