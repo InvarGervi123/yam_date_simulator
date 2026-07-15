@@ -15,6 +15,7 @@ function runPregnancyGame(onSuccess, onFail) {
   const particlesContainer = document.getElementById("preg3DParticles");
   const bossNameElement = document.querySelector(".boss-name");
   const flashEffect = document.getElementById("pregFlashEffect");
+  const bossAura = document.getElementById("pregBossAura");
 
   const playerStaminaBar = document.getElementById("pregPlayerStaminaBar");
   const playerStaminaText = document.getElementById("pregPlayerStaminaText");
@@ -35,6 +36,9 @@ function runPregnancyGame(onSuccess, onFail) {
   }
   if (flashEffect) {
     flashEffect.className = ""; // Reset flash overlay
+  }
+  if (bossAura) {
+    bossAura.style.display = "none"; // Hide evil aura at start
   }
 
   // Combat parameters
@@ -62,6 +66,10 @@ function runPregnancyGame(onSuccess, onFail) {
   let lastParticleSpawn = 0;
   let temporaryHitBlur = 0; // Decays over time when hit
   let crouchY = 0; // Relative pixel translation offset for 3D ducking
+
+  // Phase 2 movement coordinates
+  let phase2OffsetX = 0;
+  let phase2OffsetY = 0;
 
   function writeLog(msg) {
     if (combatLog) combatLog.textContent = msg;
@@ -253,7 +261,7 @@ function runPregnancyGame(onSuccess, onFail) {
     }
   }
 
-  // Phase 2 transition sequence
+  // Phase 2 transition sequence (3-Second Demon Transformation)
   function startPhase2Transition() {
     isPhaseTransitioning = true;
     bossState = "transitioning";
@@ -265,47 +273,67 @@ function runPregnancyGame(onSuccess, onFail) {
     playSfx("audio/truimph.mp3");
     flashScreen("preg-screen-flash");
     triggerVibrate([200, 100, 200, 100, 400]);
-    writeLog("💥 שלב 1 הושלם! אבל ים עדיין לא נכנע... 💥");
+    writeLog("💥 שלב 1 הושלם! ים נתקף זעם קוסמי ומתחיל להשתנות... 💥");
 
-    // Intense camera shake
-    triggerCameraShake();
+    // Intense camera shake interval
+    let cameraShakeTimer = setInterval(() => {
+      triggerCameraShake();
+    }, 450);
 
-    // Sprite transitions
-    let shakeCount = 0;
-    const shakeInterval = setInterval(() => {
-      const sx = (Math.random() - 0.5) * 20;
-      const sy = (Math.random() - 0.5) * 20;
-      bossContainer.style.transform = `translate(calc(-50% + ${sx}px), calc(-50% + ${sy}px)) scale(1.1)`;
-      shakeCount++;
-      if (shakeCount > 15) {
-        clearInterval(shakeInterval);
+    // Flicker/transformation interval
+    let flickerCount = 0;
+    const flickerInterval = setInterval(() => {
+      // Strobe opacity, scale, and colors to look like a chaotic transformation
+      yamImg.style.opacity = (flickerCount % 2 === 0) ? "0.2" : "1.0";
+      const scale = 1.0 + (flickerCount * 0.012);
+      yamImg.style.transform = `scale(${scale})`;
+      yamImg.style.filter = `drop-shadow(0 0 ${flickerCount}px #ff0000) hue-rotate(${flickerCount * 8}deg) saturate(${1.0 + flickerCount * 0.05})`;
+
+      flickerCount++;
+      if (flickerCount >= 40) {
+        clearInterval(flickerInterval);
       }
-    }, 80);
+    }, 75);
 
-    // Refill health bar
+    // Refill health bar slowly over 3000ms
     let healingHp = 0;
     const healInterval = setInterval(() => {
-      healingHp += 5;
+      healingHp += 2.5;
       if (bossHpBar) bossHpBar.style.width = healingHp + "%";
       if (healingHp >= 100) {
         clearInterval(healInterval);
-        
-        phase = 2;
-        bossHp = 100;
-        isPhaseTransitioning = false;
-        bossState = "idle";
-        stateTimer = Date.now() + 1000;
-
-        if (bossNameElement) {
-          bossNameElement.innerHTML = "ים, אל הבורקסים השחוטים <span style='color: #e74c3c;'>(Phase 2 - God of Burek)</span>";
-          bossNameElement.style.color = "#ff3f3f";
-          bossNameElement.style.textShadow = "0 0 15px #e74c3c";
-        }
-        
-        playSfx("audio/break.mp3");
-        writeLog("⚠️ שלב 2: ים התעורר לצורתו האמיתית: אל הבורקסים השחוטים! ⚠️");
       }
-    }, 80);
+    }, 75);
+
+    // Trigger middle phase aura & monster filters
+    setTimeout(() => {
+      if (bossAura) bossAura.style.display = "block";
+      playSfx("audio/break.mp3");
+      writeLog("👹 אזהרה! גופו של ים הופך למפלצת בורקסים קוסמית זועמת! 👹");
+      triggerVibrate([400, 100, 400]);
+      yamImg.style.filter = "drop-shadow(0 0 35px #e74c3c) invert(1) hue-rotate(290deg) contrast(1.8) saturate(2.5)";
+    }, 1500);
+
+    // Complete transformation at 3000ms
+    setTimeout(() => {
+      clearInterval(cameraShakeTimer);
+      yamImg.style.opacity = "1.0";
+      yamImg.style.transform = "";
+      
+      phase = 2;
+      bossHp = 100;
+      isPhaseTransitioning = false;
+      bossState = "idle";
+      stateTimer = Date.now() + 1000;
+
+      if (bossNameElement) {
+        bossNameElement.innerHTML = "ים, אל הבורקסים השחוטים <span style='color: #e74c3c;'>(Phase 2 - God of Burek)</span>";
+        bossNameElement.style.color = "#ff3f3f";
+        bossNameElement.style.textShadow = "0 0 15px #e74c3c";
+      }
+      
+      writeLog("⚠️ שלב 2: ים התעורר לצורתו האמיתית: אל הבורקסים השחוטים! ⚠️");
+    }, 3000);
   }
 
   // Debris generator
@@ -379,6 +407,28 @@ function runPregnancyGame(onSuccess, onFail) {
     if (playerStaminaBar) playerStaminaBar.style.width = playerStamina + "%";
     if (playerStaminaText) playerStaminaText.textContent = Math.floor(playerStamina) + " / 100";
 
+    // Passive Boss HP Healing (Regenerate health when not vulnerable/recovering)
+    if (!isPhaseTransitioning && !isGameOver && bossState !== "recovering" && bossState !== "transitioning") {
+      const healRate = phase === 2 ? 0.13 : 0.05; // 8 HP/sec in Phase 2, 3 HP/sec in Phase 1
+      bossHp = Math.min(100, bossHp + healRate);
+      if (bossHpBar) bossHpBar.style.width = bossHp + "%";
+    }
+
+    // Phase 2 floating Lissajous zipping offsets
+    if (phase === 2 && !isPhaseTransitioning) {
+      if (bossState === "idle" || bossState === "charging" || bossState === "recovering") {
+        phase2OffsetX = Math.sin(Date.now() / 220) * 110;
+        phase2OffsetY = Math.cos(Date.now() / 270) * 50;
+      } else {
+        // Direct center targeting during lunge
+        phase2OffsetX = 0;
+        phase2OffsetY = 0;
+      }
+    } else {
+      phase2OffsetX = 0;
+      phase2OffsetY = 0;
+    }
+
     // VR 360 Parallax nebula spin with Skew effects for 3D depth + translateY for crouch
     spaceAngle += phase === 2 ? 3.8 : 0.8;
     const pulseFreq = phase === 2 ? 220 : 450;
@@ -423,7 +473,7 @@ function runPregnancyGame(onSuccess, onFail) {
       const rotY = Math.sin(Date.now() / hoverFreqY) * (phase === 2 ? 38 : 16);
       const rotX = Math.cos(Date.now() / hoverFreqX) * (phase === 2 ? 24 : 10);
       const scaleMultiplier = (bossState === "lunging") ? 2.8 : 1.0;
-      bossContainer.style.transform = `translate(-50%, calc(${bossState === "lunging" ? "-15%" : "-50%"} + ${crouchY}px)) scale(${scaleMultiplier}) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+      bossContainer.style.transform = `translate(calc(-50% + ${phase2OffsetX}px), calc(${bossState === "lunging" ? "-15%" : "-50%"} + ${crouchY + phase2OffsetY}px)) scale(${scaleMultiplier}) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
 
       // Dynamic Boss Spin attack animation in Phase 2
       if (bossState === "charging") {
@@ -545,7 +595,16 @@ function runPregnancyGame(onSuccess, onFail) {
     bossContainer.style.transform = "";
     yamImg.className = "";
     yamImg.style.transform = "";
+    yamImg.style.opacity = "";
+    yamImg.style.filter = "";
     if (warningFlash) warningFlash.style.display = "none";
+
+    if (bossAura) {
+      bossAura.style.display = "none";
+    }
+
+    phase2OffsetX = 0;
+    phase2OffsetY = 0;
 
     if (playerStaminaText) {
       playerStaminaText.classList.remove("stamina-exhausted-flash");

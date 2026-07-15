@@ -725,3 +725,21 @@
   30%, 50%, 70% { transform: translate3d(-15px, -10px, 0) rotate(-4deg); }
   40%, 60% { transform: translate3d(15px, 10px, 0) rotate(4deg); }
 }
+
+/* Pulsating Demonic Evil Aura for Yam Phase 2 */
+.boss-evil-aura {
+  position: absolute;
+  inset: -45px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 76, 60, 0.95) 0%, rgba(155, 89, 182, 0.5) 45%, transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  animation: bAuraPulse 0.9s infinite alternate;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes bAuraPulse {
+  0% { transform: scale(0.85); opacity: 0.65; filter: blur(15px); }
+  100% { transform: scale(1.25); opacity: 1.0; filter: blur(30px); }
+}
