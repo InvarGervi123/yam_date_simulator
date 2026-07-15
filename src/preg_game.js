@@ -30,9 +30,7 @@ function runPregnancyGame(onSuccess, onFail) {
   }
 
   overlay.style.display = "flex";
-  
-  // Start Phase 1 music
-  playMusic("audio/The Clockwork Void.mp3");
+  playMusic("audio/the_clockwork_void.mp3");
   
   if (particlesContainer) {
     particlesContainer.innerHTML = ""; // Clear debris safely
@@ -73,6 +71,39 @@ function runPregnancyGame(onSuccess, onFail) {
   // Phase 2 movement coordinates
   let phase2OffsetX = 0;
   let phase2OffsetY = 0;
+
+  // Phantom Spirits (Phase 2 Sentinels)
+  let phantoms = [];
+  const phantomImages = [
+    "images/yam_sleepy.png",
+    "images/yam_angry.png",
+    "images/yam_sad.png",
+    "images/yam_curious.png",
+    "images/yam_happy.png",
+    "images/yam_horny.png",
+    "images/yam_surpise.png",
+    "images/yam_alien.png"
+  ];
+
+  function spawnPhantom(imgSrc, index) {
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.className = "boss-phantom-spirit";
+    // Append inside bossContainer to make positioning relative to Yam's center
+    bossContainer.appendChild(img);
+
+    phantoms.push({
+      element: img,
+      angle: (index * (Math.PI * 2)) / 8,
+      orbitRadius: 0,
+      targetRadius: 125, // Tighter orbit radius so they stay centered and visible
+      z: 0
+    });
+
+    setTimeout(() => {
+      if (img) img.style.opacity = "0.65";
+    }, 20);
+  }
 
   function writeLog(msg) {
     if (combatLog) combatLog.textContent = msg;
@@ -264,7 +295,7 @@ function runPregnancyGame(onSuccess, onFail) {
     }
   }
 
-  // Phase 2 transition sequence (3-Second Demon Transformation)
+  // Phase 2 transition sequence (6-Second Epic Demonic Transformation & Phantom Summon)
   function startPhase2Transition() {
     isPhaseTransitioning = true;
     bossState = "transitioning";
@@ -283,42 +314,56 @@ function runPregnancyGame(onSuccess, onFail) {
       triggerCameraShake();
     }, 450);
 
-    // Flicker/transformation interval
+    // Staggered flicker of Yam's main sprite
     let flickerCount = 0;
     const flickerInterval = setInterval(() => {
-      // Strobe opacity, scale, and colors to look like a chaotic transformation
       yamImg.style.opacity = (flickerCount % 2 === 0) ? "0.2" : "1.0";
-      const scale = 1.0 + (flickerCount * 0.012);
+      const scale = 1.0 + (flickerCount * 0.008);
       yamImg.style.transform = `scale(${scale})`;
-      yamImg.style.filter = `drop-shadow(0 0 ${flickerCount}px #ff0000) hue-rotate(${flickerCount * 8}deg) saturate(${1.0 + flickerCount * 0.05})`;
+      yamImg.style.filter = `drop-shadow(0 0 ${flickerCount * 0.6}px #ff0000) hue-rotate(${flickerCount * 4}deg)`;
 
       flickerCount++;
-      if (flickerCount >= 40) {
+      if (flickerCount >= 80) {
         clearInterval(flickerInterval);
       }
     }, 75);
 
-    // Refill health bar slowly over 3000ms
+    // Slowly refill health bar over 6000ms
     let healingHp = 0;
     const healInterval = setInterval(() => {
-      healingHp += 2.5;
+      healingHp += 1.25;
       if (bossHpBar) bossHpBar.style.width = healingHp + "%";
       if (healingHp >= 100) {
         clearInterval(healInterval);
       }
     }, 75);
 
-    // Trigger middle phase aura & monster filters
+    // 2 Seconds: Summon the Phantom Spirits
     setTimeout(() => {
+      if (isGameOver) return;
+      writeLog("🔮 ים פולט מגופו את צלילי הרפאים הרגשיים שלו! 🔮");
+      phantomImages.forEach((src, idx) => {
+        setTimeout(() => {
+          if (isGameOver || !isPhaseTransitioning) return;
+          spawnPhantom(src, idx);
+          playSfx("audio/crack.mp3");
+          triggerVibrate(30);
+        }, idx * 180);
+      });
+    }, 2000);
+
+    // 4.5 Seconds: Ignite evil aura & monster filter overrides
+    setTimeout(() => {
+      if (isGameOver) return;
       if (bossAura) bossAura.style.display = "block";
       playSfx("audio/break.mp3");
-      playMusic("audio/The Clockwork Void Extend.mp3"); // Play Phase 2 track!
+      playMusic("audio/the_clockwork_void_extend.mp3"); // Play Phase 2 track!
       writeLog("👹 אזהרה! גופו של ים הופך למפלצת בורקסים קוסמית זועמת! 👹");
       triggerVibrate([400, 100, 400]);
       yamImg.style.filter = "drop-shadow(0 0 35px #e74c3c) invert(1) hue-rotate(290deg) contrast(1.8) saturate(2.5)";
-    }, 1500);
+    }, 4500);
 
-    // Complete transformation at 3000ms
+    // 6 Seconds: Complete transformation
     setTimeout(() => {
       clearInterval(cameraShakeTimer);
       yamImg.style.opacity = "1.0";
@@ -337,7 +382,7 @@ function runPregnancyGame(onSuccess, onFail) {
       }
       
       writeLog("⚠️ שלב 2: ים התעורר לצורתו האמיתית: אל הבורקסים השחוטים! ⚠️");
-    }, 3000);
+    }, 6000);
   }
 
   // Debris generator
@@ -431,6 +476,40 @@ function runPregnancyGame(onSuccess, onFail) {
     } else {
       phase2OffsetX = 0;
       phase2OffsetY = 0;
+    }
+
+    // Animate Phantom Spirits Orbitals & Attack Zooming (Relative coordinates)
+    for (let i = 0; i < phantoms.length; i++) {
+      const p = phantoms[i];
+      
+      if (bossState === "charging") {
+        p.angle += 0.08; // Spin rapidly during warnings
+      } else {
+        p.angle += 0.02; // Normal slow float
+      }
+
+      // Smoothly expand radius
+      p.orbitRadius += (p.targetRadius - p.orbitRadius) * 0.08;
+
+      if (bossState === "lunging") {
+        // Phantoms shoot directly at the screen (Spectral barrage!)
+        p.z += (350 - p.z) * 0.08;
+        p.element.style.opacity = Math.max(0, 0.65 - (p.z / 350));
+        
+        const scale = 1.0 + (p.z / 100) * 0.8;
+        const x = Math.cos(p.angle) * (p.orbitRadius + p.z * 1.5);
+        const y = Math.sin(p.angle) * (p.orbitRadius + p.z * 1.5);
+        p.element.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${p.z}px) scale(${scale}) rotate(${p.angle * 8}deg)`;
+      } else {
+        // Normal orbital rotation around Yam's center (relative inside bossContainer)
+        p.z = 0;
+        p.element.style.opacity = "0.65";
+        
+        const scale = 1.0 + Math.sin(Date.now() / 300 + p.angle) * 0.1;
+        const x = Math.cos(p.angle) * p.orbitRadius;
+        const y = Math.sin(p.angle) * p.orbitRadius;
+        p.element.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0px) scale(${scale}) rotate(${p.angle * 2.5}deg)`;
+      }
     }
 
     // VR 360 Parallax nebula spin with Skew effects for 3D depth + translateY for crouch
@@ -580,6 +659,14 @@ function runPregnancyGame(onSuccess, onFail) {
 
     // Restore background theme of visual novel
     playMusic("audio/main.mp3");
+
+    // Clean up called phantom spirits elements
+    phantoms.forEach(p => {
+      if (p.element) {
+        p.element.remove();
+      }
+    });
+    phantoms = [];
 
     if (flashEffect) {
       flashEffect.className = "";

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v11-new-music';
+const CACHE_NAME = 'yam-date-sim-v13-centered-music';
 const ASSETS = [
   './',
   './index.html',
@@ -48,8 +48,8 @@ const ASSETS = [
   './audio/main.mp3',
   './audio/rip.mp3',
   './audio/truimph.mp3',
-  './audio/The Clockwork Void.mp3',
-  './audio/The Clockwork Void Extend.mp3'
+  './audio/the_clockwork_void.mp3',
+  './audio/the_clockwork_void_extend.mp3'
 ];
 
 // Install Service Worker and cache all resources

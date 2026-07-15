@@ -743,3 +743,17 @@
   0% { transform: scale(0.85); opacity: 0.65; filter: blur(15px); }
   100% { transform: scale(1.25); opacity: 1.0; filter: blur(30px); }
 }
+
+/* Semi-transparent glowing phantom ghost spirits of Yam */
+.boss-phantom-spirit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 95px;
+  height: 95px;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 16px rgba(155, 89, 182, 0.95)) opacity(0.65) saturate(1.5);
+  transition: opacity 0.5s ease, transform 0.05s linear;
+  z-index: 5;
+}
