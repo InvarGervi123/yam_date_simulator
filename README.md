@@ -21,7 +21,8 @@
 * **Wolfenstein-Style 3D Engine (CPU-Optimized):** Custom-built Wolfenstein 3D Raycaster using HTML5 2D Canvas context rendering. Avoids heavy WebGL overhead, reducing GPU temperatures and memory consumption on low-end mobile hardware. Includes a localized unstick fallback heuristic pathfinder.
 * **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
 * **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
-* **State Serialization & Cache Durability:** System endings (90 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
+* **State Serialization & Cache Durability:** System endings (91 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
+* **Yam Space VR Pregnancy Minigame:** A chaotic full-screen 360-degree rotating starfield alignment minigame featuring dynamic Lissajous target movement, screen tilting, space dust layers, and physical haptic pulses.
 * **Full Keyboard Navigation (Laptop-friendly):** Enables a complete mouse-free playthrough. Advance story dialogues with `Space` / `Enter`, select choices with numeric keys `1`-`9`, use numbers `1`-`4` for Deltarune battle actions, and `Backspace` / `Escape` to close sub-menus.
 
 ### 📸 Visual Previews
@@ -109,6 +110,7 @@ Contributions, bug reports, and suggestions are welcome!
     ├── battle_arena.js # לולאת Dodging, זיהוי פגיעות ולייזרים בזמן אמת
     ├── baldi.js        # מנהל מבוך באלדי, אינטראקציית טאבלט, חסינות מגן וחישוב שגיאות
     ├── baldi_renderer.js # מנוע ציור ה-Raycasting ותלת-המימד (Pure CPU Render)
+    ├── preg_game.js    # מנוע משחק ההריון בחלל - סיבוב VR 360, כוח כבידה והתאמה קוסמית
     ├── engine.js       # מנוע ה-VN הראשי, ניהול שמירת סופים ומעברים אסינכרוניים
     └── story/          # בסיס נתוני העלילה המפוצל למניעת עומס קונטקסט
         ├── setup.js    # אתחול אובייקט הדיאלוגים
@@ -117,7 +119,7 @@ Contributions, bug reports, and suggestions are welcome!
         ├── court.js    # סצנות משפט בסגנון Ace Attorney (6 סצנות)
         ├── battle.js   # דיאלוגים מלווי קרב בוס (5 סצנות)
         ├── baldi.js    # דיאלוגים ומבוא למבוך המתמטיקה (4 סצנות)
-        └── endings.js  # הגדרות ומעקב 90 הסופים של המשחק (113 סצנות סוף)
+        └── endings.js  # הגדרות ומעקב 91 הסופים של המשחק (113 סצנות סוף)
 ```
 
 ---

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v3-layout-fix';
+const CACHE_NAME = 'yam-date-sim-v5-souls-fight';
 const ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
   './src/battle_arena.js',
   './src/baldi.js',
   './src/baldi_renderer.js',
+  './src/preg_game.js',
   './src/engine.js',
   './src/story/setup.js',
   './src/story/main.js',

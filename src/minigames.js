@@ -13,6 +13,13 @@ function runMinigame(config) {
     runBaldiMinigame(config);
     return;
   }
+  if (config.type === "pregnancy_space") {
+    runPregnancyGame(
+      () => showScene(config.nextSuccess),
+      () => showScene(config.nextFail)
+    );
+    return;
+  }
 
   minigameOverlay.style.display = "flex";
   

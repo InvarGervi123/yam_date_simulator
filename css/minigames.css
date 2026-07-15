@@ -371,3 +371,283 @@
   background: #ffe07a;
   transform: scale(1.05);
 }
+
+/* --- Space VR Dark Souls Pregnancy Fight --- */
+#pregOverlay {
+  position: absolute;
+  inset: 0;
+  background: #05000a;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 150;
+  font-family: 'Rubik', 'Heebo', sans-serif;
+  color: #ffffff;
+  padding: 40px 20px;
+}
+
+#pregSpaceContainer {
+  position: absolute;
+  width: 250%;
+  height: 250%;
+  left: -75%;
+  top: -75%;
+  background: radial-gradient(circle at center, #1b002a 0%, #030008 90%);
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#pregStarfield {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+    radial-gradient(#ffd447, rgba(255, 212, 71, 0.15) 1px, transparent 30px);
+  background-size: 450px 450px, 300px 300px;
+  background-position: 0 0, 50px 80px;
+  opacity: 0.75;
+}
+
+#pregNebula {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(155, 89, 182, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(231, 76, 60, 0.25) 0%, transparent 50%);
+  filter: blur(50px);
+}
+
+/* Boss Container (handles lunges and 3D effects) */
+#pregBossContainer {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+#pregYamImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(155, 89, 182, 0.6));
+  transition: filter 0.2s ease, transform 0.1s linear;
+}
+
+/* Visual cue for telegraphing attack */
+.boss-charging {
+  filter: drop-shadow(0 0 35px #e74c3c) saturate(1.8) !important;
+  animation: bossVibrate 0.1s infinite;
+}
+
+@keyframes bossVibrate {
+  0% { transform: translate(2px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(0px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(2px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(2px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.boss-tired {
+  filter: drop-shadow(0 0 25px #3498db) saturate(0.6) !important;
+}
+
+.boss-dmg-shake {
+  animation: bossHitShake 0.15s linear;
+}
+
+@keyframes bossHitShake {
+  0% { transform: translate(-50%, -50%) scale(0.95); filter: brightness(1.8); }
+  50% { transform: translate(-45%, -48%) scale(1.05); filter: brightness(1.8); }
+  100% { transform: translate(-50%, -50%) scale(1); filter: none; }
+}
+
+/* Dark Souls HUD styling */
+#pregDarkSoulsHud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(5,0,10,0.8) 0%, transparent 100%);
+}
+
+.boss-health-block {
+  width: 90%;
+  max-width: 680px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.boss-name {
+  font-family: 'Times New Roman', serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #c8a2c8;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.boss-hp-track {
+  width: 100%;
+  height: 10px;
+  background: rgba(40, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+#pregBossHpBar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #9b59b6, #e74c3c);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-hud-block {
+  width: 90%;
+  max-width: 680px;
+}
+
+.player-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(10, 5, 20, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 30px;
+}
+
+.player-hp-label {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.player-hp-track {
+  flex-grow: 1;
+  height: 16px;
+  background: #3a1010;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#pregPlayerHpBar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #e74c3c, #f1c40f);
+  transition: width 0.15s ease-out;
+}
+
+#pregPlayerHpText {
+  font-weight: bold;
+  font-size: 14px;
+  min-width: 80px;
+  text-align: right;
+}
+
+#pregWarningFlash {
+  margin-top: 15px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #ff3f3f;
+  text-shadow: 0 0 10px #ff0000;
+  animation: warningPulse 0.3s infinite alternate;
+}
+
+@keyframes warningPulse {
+  from { opacity: 0.3; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+/* Combat logs console overlay */
+#pregCombatLog {
+  position: absolute;
+  bottom: 120px;
+  left: 5%;
+  right: 5%;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffd447;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Mobile Controls Overlay */
+#pregMobileControls {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  z-index: 15;
+}
+
+#pregMobileControls button {
+  flex: 1;
+  background: rgba(20, 10, 30, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 16px 20px;
+  border-radius: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+
+#pregMobileControls button:active {
+  background: #ffd447;
+  color: #030305;
+  border-color: #ffd447;
+  transform: scale(0.95);
+}
+
+/* Action flash screen effects */
+.preg-screen-hit {
+  animation: pregHitFlash 0.35s ease-out;
+}
+
+@keyframes pregHitFlash {
+  0% { box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.8); background-color: rgba(255, 0, 0, 0.2); }
+  100% { box-shadow: none; background-color: transparent; }
+}
+
+.preg-screen-flash {
+  animation: pregDodgeFlash 0.3s ease-out;
+}
+
+@keyframes pregDodgeFlash {
+  0% { background-color: rgba(255, 255, 255, 0.15); }
+  100% { background-color: transparent; }
+}

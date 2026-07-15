@@ -42,6 +42,47 @@
       </div>
     </div>
 
+    <!-- Space VR Pregnancy Minigame Overlay -->
+    <div id="pregOverlay" style="display: none;">
+      <div id="pregSpaceContainer">
+        <div id="pregStarfield"></div>
+        <div id="pregNebula"></div>
+      </div>
+      
+      <div id="pregBossContainer">
+        <img id="pregYamImg" src="images/yam.png" alt="Boss Yam" />
+      </div>
+      
+      <div id="pregDarkSoulsHud">
+        <div class="boss-health-block">
+          <div class="boss-name">ים, האדון הראשון של המיטה (Lord of the Bed)</div>
+          <div class="boss-hp-track">
+            <div id="pregBossHpBar"></div>
+          </div>
+        </div>
+        
+        <div class="player-hud-block">
+          <div class="player-stats">
+            <span class="player-hp-label">HP</span>
+            <div class="player-hp-track">
+              <div id="pregPlayerHpBar"></div>
+            </div>
+            <span id="pregPlayerHpText">100 / 100</span>
+            <span id="pregPlayerStance" style="margin-right: 15px; font-weight: bold; color: #ffd447;">עמידה: 🛡️ מוכן</span>
+          </div>
+        </div>
+
+        <div id="pregWarningFlash" style="display: none;">⚠️ היזהר! התקפה קרובה!</div>
+      </div>
+
+      <div id="pregCombatLog"></div>
+
+      <div id="pregMobileControls">
+        <button id="pregBtnAttack">⚔️ התקפה (W)</button>
+        <button id="pregBtnDodge">🛡️ התחמקות (S)</button>
+      </div>
+    </div>
+
     <!-- Ending Gallery Modal -->
     <div id="galleryModal" style="display: none;">
       <div id="galleryBox">
@@ -158,6 +199,7 @@
   <script src="src/battle_arena.js"></script>
   <script src="src/baldi_renderer.js"></script>
   <script src="src/baldi.js"></script>
+  <script src="src/preg_game.js"></script>
   <script src="src/engine.js"></script>
   <script>
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
