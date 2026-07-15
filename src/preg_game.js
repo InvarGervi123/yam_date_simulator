@@ -19,10 +19,10 @@ function runPregnancyGame(onSuccess, onFail) {
 
   const playerStaminaBar = document.getElementById("pregPlayerStaminaBar");
   const playerStaminaText = document.getElementById("pregPlayerStaminaText");
+  const playerComboText = document.getElementById("pregPlayerCombo");
 
   const btnAttack = document.getElementById("pregBtnAttack");
   const btnDodge = document.getElementById("pregBtnDodge");
-  const playerComboText = document.getElementById("pregPlayerCombo");
 
   if (!overlay || !space || !bossContainer || !yamImg) {
     console.error("Critical Pregnancy VR minigame elements are missing in DOM. Fallback skip...");
@@ -64,21 +64,103 @@ function runPregnancyGame(onSuccess, onFail) {
   let isGasping = false; // Exhaustion status
   let gaspTimer = 0;
 
-  // Combo system mechanics
-  let comboCount = 0;
+  // Combo recipe system mechanics
+  let currentRecipe = [];
+  let recipeProgress = 0;
   let healFreezeTimer = 0;
+
+  const comboRecipes = [
+    ["w", "s", "w"],          // Counter Strike (Attack, Dodge, Attack)
+    ["w", "w", "s", "w"],     // Burek Slam (Attack, Attack, Dodge, Attack)
+    ["s", "w", "s", "w"],     // Phantom Evasion (Dodge, Attack, Dodge, Attack)
+    ["w", "s", "w", "s", "w"] // Dragon Slice (Attack, Dodge, Attack, Dodge, Attack)
+  ];
+
+  function generateNewRecipe() {
+    if (phase !== 2) return;
+    const r = comboRecipes[Math.floor(Math.random() * comboRecipes.length)];
+    currentRecipe = r;
+    recipeProgress = 0;
+    updateComboHUD();
+  }
 
   function updateComboHUD() {
     if (!playerComboText) return;
-    if (comboCount <= 0) {
+    if (phase !== 2 || isPhaseTransitioning || isGameOver) {
       playerComboText.style.display = "none";
       playerComboText.className = "";
+      return;
+    }
+
+    playerComboText.style.display = "inline";
+    playerComboText.classList.remove("combo-active-pulse", "combo-super-strike");
+    void playerComboText.offsetWidth; // Force Reflow
+    playerComboText.classList.add("combo-active-pulse");
+
+    // Format the recipe visually: completed keys are green, pending keys are grey
+    let html = "רצף: ";
+    for (let i = 0; i < currentRecipe.length; i++) {
+      const stepName = currentRecipe[i].toUpperCase();
+      if (i < recipeProgress) {
+        html += `<span style="color: #2ecc71; text-shadow: 0 0 10px #2ecc71; font-weight: bold;">${stepName}</span>`;
+      } else {
+        html += `<span style="color: #bdc3c7; font-weight: bold;">${stepName}</span>`;
+      }
+      if (i < currentRecipe.length - 1) {
+        html += " ➔ ";
+      }
+    }
+    playerComboText.innerHTML = html;
+  }
+
+  function registerComboInput(inputChar) {
+    if (isGameOver || isPhaseTransitioning || phase !== 2) return;
+
+    // Check if the input matches the current step of the recipe
+    if (currentRecipe[recipeProgress] === inputChar) {
+      recipeProgress++;
+      playSfx("audio/healing.mp3"); // Play a positive ding sound
+      updateComboHUD();
+
+      if (recipeProgress >= currentRecipe.length) {
+        triggerSuperStrike();
+      }
     } else {
-      playerComboText.style.display = "inline";
-      playerComboText.textContent = `קומבו: X${comboCount}`;
-      playerComboText.classList.remove("combo-active-pulse", "combo-super-strike");
-      void playerComboText.offsetWidth; // Force Reflow
-      playerComboText.classList.add("combo-active-pulse");
+      // Wrong input: reset combo recipe progress
+      recipeProgress = 0;
+      playSfx("audio/dodge.mp3"); // Fail sound
+      writeLog("⚠️ רצף קומבו נשבר! התחל מחדש.");
+      updateComboHUD();
+    }
+  }
+
+  function triggerSuperStrike() {
+    const superDmg = 30;
+    bossHp = Math.max(0, bossHp - superDmg);
+    if (bossHpBar) bossHpBar.style.width = bossHp + "%";
+    
+    healFreezeTimer = Date.now() + 4000; // Freeze passive regeneration for 4 seconds!
+    writeLog("🔥 קומבו הושלם! שחררת מכת בורקס מוחצת שהסבה 30 נזק והקפיאה את הריפוי שלו ל-4 שניות! 🔥");
+    
+    playSfx("audio/truimph.mp3");
+    flashScreen("preg-screen-flash");
+    triggerCameraShake();
+    
+    if (playerComboText) {
+      playerComboText.innerHTML = "<span class='combo-super-strike'>💥 מכת קומבו! 💥</span>";
+    }
+
+    recipeProgress = 0;
+    
+    // Generate new recipe after a brief delay
+    setTimeout(() => {
+      if (!isGameOver && !isPhaseTransitioning) {
+        generateNewRecipe();
+      }
+    }, 1500);
+
+    if (bossHp <= 0) {
+      endGame(true);
     }
   }
 
@@ -121,7 +203,7 @@ function runPregnancyGame(onSuccess, onFail) {
     });
 
     setTimeout(() => {
-      if (img) img.style.opacity = "0.65";
+      if (img) img.style.opacity = "0.85";
     }, 20);
   }
 
@@ -175,12 +257,15 @@ function runPregnancyGame(onSuccess, onFail) {
     if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
       e.preventDefault();
       if (isGasping) return; // Cannot dodge while gasping
-      playerStance = "dodging";
-      if (playerStanceText) {
-        playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-        playerStanceText.style.color = "#3498db";
+      if (playerStance !== "dodging") {
+        playerStance = "dodging";
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+          playerStanceText.style.color = "#3498db";
+        }
+        crouchY = 25; // Apply displacement offset
+        registerComboInput("s"); // Add S to Combo recipe evaluation
       }
-      crouchY = 25; // Apply displacement offset instead of translating overlay
     }
 
     // Attack (W, Up, or Space)
@@ -225,12 +310,15 @@ function runPregnancyGame(onSuccess, onFail) {
     btnDodge.ontouchstart = (e) => {
       e.preventDefault();
       if (isGameOver || isPhaseTransitioning || isGasping) return;
-      playerStance = "dodging";
-      if (playerStanceText) {
-        playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-        playerStanceText.style.color = "#3498db";
+      if (playerStance !== "dodging") {
+        playerStance = "dodging";
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+          playerStanceText.style.color = "#3498db";
+        }
+        crouchY = 25;
+        registerComboInput("s"); // Add S to Combo recipe evaluation on mobile
       }
-      crouchY = 25;
     };
 
     btnDodge.ontouchend = (e) => {
@@ -293,31 +381,8 @@ function runPregnancyGame(onSuccess, onFail) {
     if (bossHpBar) bossHpBar.style.width = bossHp + "%";
     writeLog(attackMessage);
 
-    // Increment combo on hit
-    comboCount++;
-    updateComboHUD();
-
-    if (comboCount >= 5) {
-      // Trigger Special Combo Strike!
-      const superDmg = 30;
-      bossHp = Math.max(0, bossHp - superDmg);
-      if (bossHpBar) bossHpBar.style.width = bossHp + "%";
-      healFreezeTimer = Date.now() + 3000; // Freeze passive regeneration for 3 seconds!
-      writeLog("🔥 קומבו X5 מטורף! מכת בורקס קוסמית שהסבה לים 30 נזק והקפיאה את הריפוי שלו ל-3 שניות! 🔥");
-      playSfx("audio/truimph.mp3");
-      flashScreen("preg-screen-flash");
-      triggerCameraShake();
-      comboCount = 0;
-      if (playerComboText) {
-        playerComboText.textContent = "💥 מכת קומבו! 💥";
-        playerComboText.className = "combo-super-strike";
-      }
-      setTimeout(() => {
-        if (!isGameOver) {
-          updateComboHUD();
-        }
-      }, 1000);
-    }
+    // Register W to Combo recipe evaluation
+    registerComboInput("w");
 
     // Sprite shake on hit
     bossContainer.classList.add("boss-dmg-shake");
@@ -423,6 +488,8 @@ function runPregnancyGame(onSuccess, onFail) {
       isPhaseTransitioning = false;
       bossState = "idle";
       stateTimer = Date.now() + 1000;
+
+      generateNewRecipe(); // Initialize first recipe in Phase 2!
 
       if (bossNameElement) {
         bossNameElement.innerHTML = "ים, אל הבורקסים השחוטים <span style='color: #e74c3c;'>(Phase 2 - God of Burek)</span>";
@@ -572,12 +639,15 @@ function runPregnancyGame(onSuccess, onFail) {
     // Check keyboard duck mapping continuously
     if (keysPressed["s"] || keysPressed["arrowdown"]) {
       if (!isGasping) {
-        playerStance = "dodging";
-        if (playerStanceText) {
-          playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-          playerStanceText.style.color = "#3498db";
+        if (playerStance !== "dodging") {
+          playerStance = "dodging";
+          if (playerStanceText) {
+            playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+            playerStanceText.style.color = "#3498db";
+          }
+          crouchY = 25;
+          registerComboInput("s"); // Add S to Combo recipe evaluation
         }
-        crouchY = 25;
       }
     }
 
@@ -657,7 +727,7 @@ function runPregnancyGame(onSuccess, onFail) {
           writeLog(`💥 מכת נגד קטלנית! ים הדף את המתקפה והסב לך ${counterDmg} נזק! 💥`);
           triggerVibrate([200, 100, 200]);
 
-          comboCount = 0; // Reset Combo on getting parried
+          recipeProgress = 0; // Reset recipe progress on counter-attack parry
           updateComboHUD();
 
           if (playerHp <= 0) {
@@ -678,7 +748,7 @@ function runPregnancyGame(onSuccess, onFail) {
           writeLog(`💥 פגיעה קשה! ספגת ${pDmg} נזק מים!`);
           triggerVibrate([120, 60, 120]);
 
-          comboCount = 0; // Reset Combo on hit
+          recipeProgress = 0; // Reset recipe progress on lunge hit
           updateComboHUD();
 
           if (playerHp <= 0) {
@@ -756,7 +826,7 @@ function runPregnancyGame(onSuccess, onFail) {
     phase2OffsetX = 0;
     phase2OffsetY = 0;
 
-    comboCount = 0;
+    recipeProgress = 0;
     if (playerComboText) {
       playerComboText.style.display = "none";
       playerComboText.className = "";
@@ -788,6 +858,9 @@ function runPregnancyGame(onSuccess, onFail) {
   if (playerStanceText) {
     playerStanceText.textContent = "עמידה: 🛡️ מוכן";
     playerStanceText.style.color = "#ffd447";
+  }
+  if (playerComboText) {
+    playerComboText.style.display = "none";
   }
   writeLog("• הקרב התחיל. התחמק בזמן (S) ותקוף (W)!");
 
