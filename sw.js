@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v10-demon-aura';
+const CACHE_NAME = 'yam-date-sim-v11-new-music';
 const ASSETS = [
   './',
   './index.html',
@@ -47,7 +47,9 @@ const ASSETS = [
   './audio/inject.mp3',
   './audio/main.mp3',
   './audio/rip.mp3',
-  './audio/truimph.mp3'
+  './audio/truimph.mp3',
+  './audio/The Clockwork Void.mp3',
+  './audio/The Clockwork Void Extend.mp3'
 ];
 
 // Install Service Worker and cache all resources

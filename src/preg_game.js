@@ -31,6 +31,9 @@ function runPregnancyGame(onSuccess, onFail) {
 
   overlay.style.display = "flex";
   
+  // Start Phase 1 music
+  playMusic("audio/The Clockwork Void.mp3");
+  
   if (particlesContainer) {
     particlesContainer.innerHTML = ""; // Clear debris safely
   }
@@ -309,6 +312,7 @@ function runPregnancyGame(onSuccess, onFail) {
     setTimeout(() => {
       if (bossAura) bossAura.style.display = "block";
       playSfx("audio/break.mp3");
+      playMusic("audio/The Clockwork Void Extend.mp3"); // Play Phase 2 track!
       writeLog("👹 אזהרה! גופו של ים הופך למפלצת בורקסים קוסמית זועמת! 👹");
       triggerVibrate([400, 100, 400]);
       yamImg.style.filter = "drop-shadow(0 0 35px #e74c3c) invert(1) hue-rotate(290deg) contrast(1.8) saturate(2.5)";
@@ -573,6 +577,9 @@ function runPregnancyGame(onSuccess, onFail) {
     overlay.style.transform = ""; 
     space.style.filter = "";
     bossContainer.style.filter = "";
+
+    // Restore background theme of visual novel
+    playMusic("audio/main.mp3");
 
     if (flashEffect) {
       flashEffect.className = "";
