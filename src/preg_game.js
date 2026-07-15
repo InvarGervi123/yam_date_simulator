@@ -14,6 +14,7 @@ function runPregnancyGame(onSuccess, onFail) {
   const combatLog = document.getElementById("pregCombatLog");
   const particlesContainer = document.getElementById("preg3DParticles");
   const bossNameElement = document.querySelector(".boss-name");
+  const flashEffect = document.getElementById("pregFlashEffect");
 
   const btnAttack = document.getElementById("pregBtnAttack");
   const btnDodge = document.getElementById("pregBtnDodge");
@@ -28,6 +29,9 @@ function runPregnancyGame(onSuccess, onFail) {
   
   if (particlesContainer) {
     particlesContainer.innerHTML = ""; // Clear debris safely
+  }
+  if (flashEffect) {
+    flashEffect.className = ""; // Reset flash overlay
   }
 
   // Combat parameters
@@ -48,11 +52,13 @@ function runPregnancyGame(onSuccess, onFail) {
   let keysPressed = {};
   let particles = [];
   let lastParticleSpawn = 0;
+  let temporaryHitBlur = 0; // Decays over time when hit
 
   function writeLog(msg) {
     if (combatLog) combatLog.textContent = msg;
   }
 
+  // Audio helpers
   function playSfx(src) {
     if (window.audioEngine && typeof window.audioEngine.playSfx === "function") {
       window.audioEngine.playSfx(src);
@@ -65,12 +71,14 @@ function runPregnancyGame(onSuccess, onFail) {
     }
   }
 
+  // Flash hits/dodges via pregFlashEffect to preserve overlay background solidity
   function flashScreen(type) {
-    overlay.classList.remove("preg-screen-hit", "preg-screen-flash");
-    void overlay.offsetWidth; // force DOM reflow
-    overlay.classList.add(type);
+    if (!flashEffect) return;
+    flashEffect.className = "";
+    void flashEffect.offsetWidth; // force DOM reflow
+    flashEffect.className = type;
     setTimeout(() => {
-      overlay.classList.remove(type);
+      if (flashEffect) flashEffect.className = "";
     }, 350);
   }
 
@@ -170,11 +178,12 @@ function runPregnancyGame(onSuccess, onFail) {
     let attackMessage = "";
 
     if (bossState === "recovering") {
-      dmg = phase === 2 ? 18 : 22; 
+      dmg = phase === 2 ? 12 : 22; // Harder scaling in phase 2: only 12 crit dmg
       attackMessage = `⚔️ מכה קריטית! ים ספג ${dmg} נזק (חלש)!`;
       playSfx("audio/crack.mp3");
       triggerVibrate([50, 30, 50]);
     } else {
+      dmg = phase === 2 ? 5 : 10; // Harder scaling in phase 2: only 5 basic dmg
       attackMessage = `⚔️ תקפת את ים! הוא ספג ${dmg} נזק.`;
       playSfx("audio/hit.mp3");
       triggerVibrate(20);
@@ -330,6 +339,19 @@ function runPregnancyGame(onSuccess, onFail) {
     // 3D Particles
     updateParticles();
 
+    // Lack of Oxygen dynamic blur calculations
+    temporaryHitBlur = Math.max(0, temporaryHitBlur - 0.12);
+    const healthBlur = (100 - playerHp) * 0.18; // Heavy blur proportional to low health
+    const totalBlur = healthBlur + temporaryHitBlur;
+    
+    if (totalBlur > 0) {
+      space.style.filter = `blur(${totalBlur}px)`;
+      bossContainer.style.filter = `blur(${totalBlur}px)`;
+    } else {
+      space.style.filter = "";
+      bossContainer.style.filter = "";
+    }
+
     // 3D Floating billboard and Boss rotations
     if (!isPhaseTransitioning) {
       // 3D Floating tilt
@@ -358,7 +380,7 @@ function runPregnancyGame(onSuccess, onFail) {
     if (!isPhaseTransitioning && now > stateTimer) {
       if (bossState === "idle") {
         bossState = "charging";
-        stateTimer = now + (phase === 2 ? 480 : 900); // Super fast warning in Phase 2
+        stateTimer = now + (phase === 2 ? 360 : 650); // Warning time: 650ms in Ph1, 360ms in Ph2!
         yamImg.className = "boss-charging";
         if (warningFlash) warningFlash.style.display = "block";
         playSfx("audio/crack.mp3");
@@ -377,7 +399,7 @@ function runPregnancyGame(onSuccess, onFail) {
           writeLog("🛡️ חמיקה מושלמת! (DODGE) ים מפספס!");
           triggerVibrate(30);
         } else {
-          const pDmg = phase === 2 ? 35 : 25;
+          const pDmg = phase === 2 ? 45 : 30; // Heavy damage: 30 in Ph1, 45 in Ph2!
           playerHp = Math.max(0, playerHp - pDmg);
           if (playerHpBar) playerHpBar.style.width = playerHp + "%";
           if (playerHpText) playerHpText.textContent = `${playerHp} / 100`;
@@ -385,6 +407,7 @@ function runPregnancyGame(onSuccess, onFail) {
           playSfx("audio/hit.mp3");
           flashScreen("preg-screen-hit");
           triggerCameraShake(); // Rumble viewport
+          temporaryHitBlur = 10; // Instantly trigger a heavy blur overlay
           writeLog(`💥 פגיעה קשה! ספגת ${pDmg} נזק מים!`);
           triggerVibrate([120, 60, 120]);
 
@@ -396,13 +419,13 @@ function runPregnancyGame(onSuccess, onFail) {
 
       } else if (bossState === "lunging") {
         bossState = "recovering";
-        stateTimer = now + (phase === 2 ? 650 : 1200);
+        stateTimer = now + (phase === 2 ? 450 : 750); // Tired window: 750ms in Ph1, 450ms in Ph2!
         yamImg.className = "boss-tired";
         writeLog("💤 ים התעייף ונשאר חשוף! תתקוף עכשיו!");
 
       } else if (bossState === "recovering") {
         bossState = "idle";
-        const idleDelay = phase === 2 ? (Math.random() * 350 + 350) : (Math.random() * 1000 + 800);
+        const idleDelay = phase === 2 ? (Math.random() * 300 + 300) : (Math.random() * 800 + 700);
         stateTimer = now + idleDelay;
         yamImg.className = "";
         writeLog("• ים חזר לעמידה רגילה.");
@@ -415,8 +438,13 @@ function runPregnancyGame(onSuccess, onFail) {
   function endGame(success) {
     isGameOver = true;
     overlay.style.display = "none";
-    overlay.style.transform = ""; // Reset transform
+    overlay.style.transform = ""; 
+    space.style.filter = "";
+    bossContainer.style.filter = "";
 
+    if (flashEffect) {
+      flashEffect.className = "";
+    }
     if (particlesContainer) {
       particlesContainer.innerHTML = "";
     }

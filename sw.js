@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v7-souls-final';
+const CACHE_NAME = 'yam-date-sim-v8-oxygen-blur';
 const ASSETS = [
   './',
   './index.html',
