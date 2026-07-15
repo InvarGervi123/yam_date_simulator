@@ -69,12 +69,21 @@
         
         <div class="player-hud-block">
           <div class="player-stats">
-            <span class="player-hp-label">HP</span>
-            <div class="player-hp-track">
-              <div id="pregPlayerHpBar"></div>
+            <div class="stat-row">
+              <span class="player-hp-label">HP</span>
+              <div class="player-hp-track">
+                <div id="pregPlayerHpBar"></div>
+              </div>
+              <span id="pregPlayerHpText">100 / 100</span>
             </div>
-            <span id="pregPlayerHpText">100 / 100</span>
-            <span id="pregPlayerStance" style="margin-right: 15px; font-weight: bold; color: #ffd447;">עמידה: 🛡️ מוכן</span>
+            <div class="stat-row">
+              <span class="player-stamina-label">ST</span>
+              <div class="player-stamina-track">
+                <div id="pregPlayerStaminaBar"></div>
+              </div>
+              <span id="pregPlayerStaminaText">100 / 100</span>
+            </div>
+            <span id="pregPlayerStance" style="font-weight: bold; color: #ffd447;">עמידה: 🛡️ מוכן</span>
           </div>
         </div>
 

@@ -16,6 +16,9 @@ function runPregnancyGame(onSuccess, onFail) {
   const bossNameElement = document.querySelector(".boss-name");
   const flashEffect = document.getElementById("pregFlashEffect");
 
+  const playerStaminaBar = document.getElementById("pregPlayerStaminaBar");
+  const playerStaminaText = document.getElementById("pregPlayerStaminaText");
+
   const btnAttack = document.getElementById("pregBtnAttack");
   const btnDodge = document.getElementById("pregBtnDodge");
 
@@ -49,10 +52,16 @@ function runPregnancyGame(onSuccess, onFail) {
   let stateTimer = Date.now() + 1200; // Phase 1 idle timer
   let attackCooldown = 0;
 
+  // Stamina parameters (Prevent Spamming)
+  let playerStamina = 100;
+  let isGasping = false; // Exhaustion status
+  let gaspTimer = 0;
+
   let keysPressed = {};
   let particles = [];
   let lastParticleSpawn = 0;
   let temporaryHitBlur = 0; // Decays over time when hit
+  let crouchY = 0; // Relative pixel translation offset for 3D ducking
 
   function writeLog(msg) {
     if (combatLog) combatLog.textContent = msg;
@@ -82,12 +91,16 @@ function runPregnancyGame(onSuccess, onFail) {
     }, 350);
   }
 
+  // Apply camera shakes to inner nodes only to avoid gaps revealing room.png
   function triggerCameraShake() {
-    overlay.classList.remove("screen-shake-heavy");
-    void overlay.offsetWidth; // force DOM reflow
-    overlay.classList.add("screen-shake-heavy");
+    space.classList.remove("screen-shake-heavy");
+    bossContainer.classList.remove("screen-shake-heavy");
+    void space.offsetWidth; // force DOM reflow
+    space.classList.add("screen-shake-heavy");
+    bossContainer.classList.add("screen-shake-heavy");
     setTimeout(() => {
-      overlay.classList.remove("screen-shake-heavy");
+      space.classList.remove("screen-shake-heavy");
+      bossContainer.classList.remove("screen-shake-heavy");
     }, 400);
   }
 
@@ -99,17 +112,19 @@ function runPregnancyGame(onSuccess, onFail) {
     // Dodge (S / ArrowDown)
     if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
       e.preventDefault();
+      if (isGasping) return; // Cannot dodge while gasping
       playerStance = "dodging";
       if (playerStanceText) {
         playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
         playerStanceText.style.color = "#3498db";
       }
-      overlay.style.transform = "translateY(25px)"; // Viewport ducking effect
+      crouchY = 25; // Apply displacement offset instead of translating overlay
     }
 
     // Attack (W, Up, or Space)
     if (e.key === "ArrowUp" || e.key === "w" || e.key === "W" || e.key === " ") {
       e.preventDefault();
+      if (isGasping) return; // Cannot attack while gasping
       if (playerStance !== "dodging" && Date.now() > attackCooldown) {
         triggerPlayerAttack();
       }
@@ -119,12 +134,14 @@ function runPregnancyGame(onSuccess, onFail) {
   const handleKeyUp = (e) => {
     keysPressed[e.key.toLowerCase()] = false;
     if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
-      playerStance = "ready";
-      if (playerStanceText) {
-        playerStanceText.textContent = "עמידה: 🛡️ מוכן";
-        playerStanceText.style.color = "#ffd447";
+      if (playerStance === "dodging") {
+        playerStance = "ready";
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ מוכן";
+          playerStanceText.style.color = "#ffd447";
+        }
       }
-      overlay.style.transform = ""; // Reset viewport position
+      crouchY = 0; // Reset displacement offset
     }
   };
 
@@ -135,7 +152,7 @@ function runPregnancyGame(onSuccess, onFail) {
   if (btnAttack) {
     btnAttack.onclick = (e) => {
       e.preventDefault();
-      if (isGameOver || isPhaseTransitioning) return;
+      if (isGameOver || isPhaseTransitioning || isGasping) return;
       if (playerStance !== "dodging" && Date.now() > attackCooldown) {
         triggerPlayerAttack();
       }
@@ -145,28 +162,49 @@ function runPregnancyGame(onSuccess, onFail) {
   if (btnDodge) {
     btnDodge.ontouchstart = (e) => {
       e.preventDefault();
-      if (isGameOver || isPhaseTransitioning) return;
+      if (isGameOver || isPhaseTransitioning || isGasping) return;
       playerStance = "dodging";
       if (playerStanceText) {
         playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
         playerStanceText.style.color = "#3498db";
       }
-      overlay.style.transform = "translateY(25px)";
+      crouchY = 25;
     };
 
     btnDodge.ontouchend = (e) => {
       e.preventDefault();
-      playerStance = "ready";
-      if (playerStanceText) {
-        playerStanceText.textContent = "עמידה: 🛡️ מוכן";
-        playerStanceText.style.color = "#ffd447";
+      if (playerStance === "dodging") {
+        playerStance = "ready";
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ מוכן";
+          playerStanceText.style.color = "#ffd447";
+        }
       }
-      overlay.style.transform = "";
+      crouchY = 0;
     };
   }
 
-  // Player Attack Trigger
+  // Player Attack Trigger with Stamina Drain
   function triggerPlayerAttack() {
+    // If stamina is too low, player gasps for air (Exhausted)
+    if (playerStamina < 35) {
+      isGasping = true;
+      gaspTimer = Date.now() + 1500; // Locked for 1.5 seconds
+      playSfx("audio/dodge.mp3"); // Play breath/skip sound
+      triggerVibrate(150);
+      if (playerStaminaText) {
+        playerStaminaText.classList.add("stamina-exhausted-flash");
+      }
+      if (playerStanceText) {
+        playerStanceText.textContent = "עמידה: 🥵 עייף מדי! *מתנשף*";
+        playerStanceText.style.color = "#ff3f3f";
+      }
+      writeLog("🥵 התעייפת והתנשפת! אינך יכול לתקוף ללא סיבולת!");
+      return;
+    }
+
+    // Spend Stamina
+    playerStamina = Math.max(0, playerStamina - 35);
     attackCooldown = Date.now() + 250; 
     playerStance = "attacking";
     if (playerStanceText) {
@@ -319,20 +357,45 @@ function runPregnancyGame(onSuccess, onFail) {
   function gameLoop() {
     if (isGameOver) return;
 
-    // VR 360 Parallax nebula spin with Skew effects for 3D depth
+    // Stamina Regeneration calculations
+    if (isGasping) {
+      // Slow recovery when gasping
+      playerStamina = Math.min(100, playerStamina + 0.35);
+      if (Date.now() > gaspTimer && playerStamina >= 35) {
+        isGasping = false;
+        if (playerStaminaText) playerStaminaText.classList.remove("stamina-exhausted-flash");
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ מוכן";
+          playerStanceText.style.color = "#ffd447";
+        }
+      }
+    } else {
+      // Normal stamina regeneration (Slower when dodging, faster when ready)
+      const regenRate = playerStance === "dodging" ? 0.25 : 0.65;
+      playerStamina = Math.min(100, playerStamina + regenRate);
+    }
+
+    // Update Stamina HUD
+    if (playerStaminaBar) playerStaminaBar.style.width = playerStamina + "%";
+    if (playerStaminaText) playerStaminaText.textContent = Math.floor(playerStamina) + " / 100";
+
+    // VR 360 Parallax nebula spin with Skew effects for 3D depth + translateY for crouch
     spaceAngle += phase === 2 ? 3.8 : 0.8;
     const pulseFreq = phase === 2 ? 220 : 450;
     const pulseScale = phase === 2 ? 0.12 : 0.03;
     const pulse = 1 + Math.sin(Date.now() / pulseFreq) * pulseScale;
     const skew = Math.sin(Date.now() / 600) * (phase === 2 ? 8 : 1);
-    space.style.transform = `rotate(${spaceAngle}deg) scale(${pulse}) skew(${skew}deg)`;
+    space.style.transform = `rotate(${spaceAngle}deg) scale(${pulse}) skew(${skew}deg) translateY(${crouchY}px)`;
 
     // Check keyboard duck mapping continuously
     if (keysPressed["s"] || keysPressed["arrowdown"]) {
-      playerStance = "dodging";
-      if (playerStanceText) {
-        playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-        playerStanceText.style.color = "#3498db";
+      if (!isGasping) {
+        playerStance = "dodging";
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+          playerStanceText.style.color = "#3498db";
+        }
+        crouchY = 25;
       }
     }
 
@@ -360,7 +423,7 @@ function runPregnancyGame(onSuccess, onFail) {
       const rotY = Math.sin(Date.now() / hoverFreqY) * (phase === 2 ? 38 : 16);
       const rotX = Math.cos(Date.now() / hoverFreqX) * (phase === 2 ? 24 : 10);
       const scaleMultiplier = (bossState === "lunging") ? 2.8 : 1.0;
-      bossContainer.style.transform = `translate(-50%, ${bossState === "lunging" ? "-15%" : "-50%"}) scale(${scaleMultiplier}) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+      bossContainer.style.transform = `translate(-50%, calc(${bossState === "lunging" ? "-15%" : "-50%"} + ${crouchY}px)) scale(${scaleMultiplier}) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
 
       // Dynamic Boss Spin attack animation in Phase 2
       if (bossState === "charging") {
@@ -380,7 +443,7 @@ function runPregnancyGame(onSuccess, onFail) {
     if (!isPhaseTransitioning && now > stateTimer) {
       if (bossState === "idle") {
         bossState = "charging";
-        stateTimer = now + (phase === 2 ? 360 : 650); // Warning time: 650ms in Ph1, 360ms in Ph2!
+        stateTimer = now + (phase === 2 ? 480 : 850); // Warning time: 850ms in Ph1, 480ms in Ph2!
         yamImg.className = "boss-charging";
         if (warningFlash) warningFlash.style.display = "block";
         playSfx("audio/crack.mp3");
@@ -398,8 +461,27 @@ function runPregnancyGame(onSuccess, onFail) {
           flashScreen("preg-screen-flash");
           writeLog("🛡️ חמיקה מושלמת! (DODGE) ים מפספס!");
           triggerVibrate(30);
+        } else if (playerStance === "attacking") {
+          // Punish player for spamming attacks during lunges (Counter-Attack!)
+          const counterDmg = phase === 2 ? 85 : 65; // Massive counter-attack damage!
+          playerHp = Math.max(0, playerHp - counterDmg);
+          if (playerHpBar) playerHpBar.style.width = playerHp + "%";
+          if (playerHpText) playerHpText.textContent = `${playerHp} / 100`;
+
+          playSfx("audio/hit.mp3");
+          flashScreen("preg-screen-hit");
+          triggerCameraShake();
+          temporaryHitBlur = 12; // Instant heavy blur
+          writeLog(`💥 מכת נגד קטלנית! ים הדף את המתקפה והסב לך ${counterDmg} נזק! 💥`);
+          triggerVibrate([200, 100, 200]);
+
+          if (playerHp <= 0) {
+            endGame(false);
+            return;
+          }
         } else {
-          const pDmg = phase === 2 ? 45 : 30; // Heavy damage: 30 in Ph1, 45 in Ph2!
+          // Normal hit taken: 30 in Ph1, 45 in Ph2!
+          const pDmg = phase === 2 ? 45 : 30;
           playerHp = Math.max(0, playerHp - pDmg);
           if (playerHpBar) playerHpBar.style.width = playerHp + "%";
           if (playerHpText) playerHpText.textContent = `${playerHp} / 100`;
@@ -407,7 +489,7 @@ function runPregnancyGame(onSuccess, onFail) {
           playSfx("audio/hit.mp3");
           flashScreen("preg-screen-hit");
           triggerCameraShake(); // Rumble viewport
-          temporaryHitBlur = 10; // Instantly trigger a heavy blur overlay
+          temporaryHitBlur = 10; 
           writeLog(`💥 פגיעה קשה! ספגת ${pDmg} נזק מים!`);
           triggerVibrate([120, 60, 120]);
 
@@ -419,13 +501,13 @@ function runPregnancyGame(onSuccess, onFail) {
 
       } else if (bossState === "lunging") {
         bossState = "recovering";
-        stateTimer = now + (phase === 2 ? 450 : 750); // Tired window: 750ms in Ph1, 450ms in Ph2!
+        stateTimer = now + (phase === 2 ? 500 : 800); // Tired window: 800ms in Ph1, 500ms in Ph2!
         yamImg.className = "boss-tired";
         writeLog("💤 ים התעייף ונשאר חשוף! תתקוף עכשיו!");
 
       } else if (bossState === "recovering") {
         bossState = "idle";
-        const idleDelay = phase === 2 ? (Math.random() * 300 + 300) : (Math.random() * 800 + 700);
+        const idleDelay = phase === 2 ? (Math.random() * 500 + 500) : (Math.random() * 1200 + 1000);
         stateTimer = now + idleDelay;
         yamImg.className = "";
         writeLog("• ים חזר לעמידה רגילה.");
@@ -465,6 +547,10 @@ function runPregnancyGame(onSuccess, onFail) {
     yamImg.style.transform = "";
     if (warningFlash) warningFlash.style.display = "none";
 
+    if (playerStaminaText) {
+      playerStaminaText.classList.remove("stamina-exhausted-flash");
+    }
+
     if (bossNameElement) {
       bossNameElement.textContent = "ים, האדון הראשון של המיטה (Lord of the Bed)";
       bossNameElement.style.color = "";
@@ -482,6 +568,8 @@ function runPregnancyGame(onSuccess, onFail) {
   if (playerHpBar) playerHpBar.style.width = "100%";
   if (playerHpText) playerHpText.textContent = "100 / 100";
   if (bossHpBar) bossHpBar.style.width = "100%";
+  if (playerStaminaBar) playerStaminaBar.style.width = "100%";
+  if (playerStaminaText) playerStaminaText.textContent = "100 / 100";
   if (playerStanceText) {
     playerStanceText.textContent = "עמידה: 🛡️ מוכן";
     playerStanceText.style.color = "#ffd447";
