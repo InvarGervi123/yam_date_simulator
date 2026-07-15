@@ -22,6 +22,7 @@ function runPregnancyGame(onSuccess, onFail) {
 
   const btnAttack = document.getElementById("pregBtnAttack");
   const btnDodge = document.getElementById("pregBtnDodge");
+  const playerComboText = document.getElementById("pregPlayerCombo");
 
   if (!overlay || !space || !bossContainer || !yamImg) {
     console.error("Critical Pregnancy VR minigame elements are missing in DOM. Fallback skip...");
@@ -39,7 +40,8 @@ function runPregnancyGame(onSuccess, onFail) {
     flashEffect.className = ""; // Reset flash overlay
   }
   if (bossAura) {
-    bossAura.style.display = "none"; // Hide evil aura at start
+    bossAura.style.display = "block"; // Mild Phase 1 aura visible at start!
+    bossAura.classList.remove("phase2-aura");
   }
 
   // Combat parameters
@@ -61,6 +63,24 @@ function runPregnancyGame(onSuccess, onFail) {
   let playerStamina = 100;
   let isGasping = false; // Exhaustion status
   let gaspTimer = 0;
+
+  // Combo system mechanics
+  let comboCount = 0;
+  let healFreezeTimer = 0;
+
+  function updateComboHUD() {
+    if (!playerComboText) return;
+    if (comboCount <= 0) {
+      playerComboText.style.display = "none";
+      playerComboText.className = "";
+    } else {
+      playerComboText.style.display = "inline";
+      playerComboText.textContent = `קומבו: X${comboCount}`;
+      playerComboText.classList.remove("combo-active-pulse", "combo-super-strike");
+      void playerComboText.offsetWidth; // Force Reflow
+      playerComboText.classList.add("combo-active-pulse");
+    }
+  }
 
   let keysPressed = {};
   let particles = [];
@@ -258,12 +278,12 @@ function runPregnancyGame(onSuccess, onFail) {
     let attackMessage = "";
 
     if (bossState === "recovering") {
-      dmg = phase === 2 ? 12 : 22; // Harder scaling in phase 2: only 12 crit dmg
+      dmg = phase === 2 ? 7 : 22; // Harder scaling in phase 2: only 7 crit dmg
       attackMessage = `⚔️ מכה קריטית! ים ספג ${dmg} נזק (חלש)!`;
       playSfx("audio/crack.mp3");
       triggerVibrate([50, 30, 50]);
     } else {
-      dmg = phase === 2 ? 5 : 10; // Harder scaling in phase 2: only 5 basic dmg
+      dmg = phase === 2 ? 1 : 10; // Harder scaling in phase 2: only 1 basic dmg
       attackMessage = `⚔️ תקפת את ים! הוא ספג ${dmg} נזק.`;
       playSfx("audio/hit.mp3");
       triggerVibrate(20);
@@ -272,6 +292,32 @@ function runPregnancyGame(onSuccess, onFail) {
     bossHp = Math.max(0, bossHp - dmg);
     if (bossHpBar) bossHpBar.style.width = bossHp + "%";
     writeLog(attackMessage);
+
+    // Increment combo on hit
+    comboCount++;
+    updateComboHUD();
+
+    if (comboCount >= 5) {
+      // Trigger Special Combo Strike!
+      const superDmg = 30;
+      bossHp = Math.max(0, bossHp - superDmg);
+      if (bossHpBar) bossHpBar.style.width = bossHp + "%";
+      healFreezeTimer = Date.now() + 3000; // Freeze passive regeneration for 3 seconds!
+      writeLog("🔥 קומבו X5 מטורף! מכת בורקס קוסמית שהסבה לים 30 נזק והקפיאה את הריפוי שלו ל-3 שניות! 🔥");
+      playSfx("audio/truimph.mp3");
+      flashScreen("preg-screen-flash");
+      triggerCameraShake();
+      comboCount = 0;
+      if (playerComboText) {
+        playerComboText.textContent = "💥 מכת קומבו! 💥";
+        playerComboText.className = "combo-super-strike";
+      }
+      setTimeout(() => {
+        if (!isGameOver) {
+          updateComboHUD();
+        }
+      }, 1000);
+    }
 
     // Sprite shake on hit
     bossContainer.classList.add("boss-dmg-shake");
@@ -355,7 +401,10 @@ function runPregnancyGame(onSuccess, onFail) {
     // 4.5 Seconds: Ignite evil aura & monster filter overrides
     setTimeout(() => {
       if (isGameOver) return;
-      if (bossAura) bossAura.style.display = "block";
+      if (bossAura) {
+        bossAura.style.display = "block";
+        bossAura.classList.add("phase2-aura"); // Activate giant fiery aura!
+      }
       playSfx("audio/break.mp3");
       playMusic("audio/the_clockwork_void_extend.mp3"); // Play Phase 2 track!
       writeLog("👹 אזהרה! גופו של ים הופך למפלצת בורקסים קוסמית זועמת! 👹");
@@ -456,9 +505,9 @@ function runPregnancyGame(onSuccess, onFail) {
     if (playerStaminaBar) playerStaminaBar.style.width = playerStamina + "%";
     if (playerStaminaText) playerStaminaText.textContent = Math.floor(playerStamina) + " / 100";
 
-    // Passive Boss HP Healing (Regenerate health when not vulnerable/recovering)
-    if (!isPhaseTransitioning && !isGameOver && bossState !== "recovering" && bossState !== "transitioning") {
-      const healRate = phase === 2 ? 0.13 : 0.05; // 8 HP/sec in Phase 2, 3 HP/sec in Phase 1
+    // Passive Boss HP Healing (Regenerate health when not vulnerable/recovering & healing is not frozen by combo)
+    if (!isPhaseTransitioning && !isGameOver && bossState !== "recovering" && bossState !== "transitioning" && Date.now() > healFreezeTimer) {
+      const healRate = phase === 2 ? 0.15 : 0.05; // 9 HP/sec in Phase 2, 3 HP/sec in Phase 1
       bossHp = Math.min(100, bossHp + healRate);
       if (bossHpBar) bossHpBar.style.width = bossHp + "%";
     }
@@ -576,7 +625,7 @@ function runPregnancyGame(onSuccess, onFail) {
     if (!isPhaseTransitioning && now > stateTimer) {
       if (bossState === "idle") {
         bossState = "charging";
-        stateTimer = now + (phase === 2 ? 480 : 850); // Warning time: 850ms in Ph1, 480ms in Ph2!
+        stateTimer = now + (phase === 2 ? 380 : 850); // Warning time: 850ms in Ph1, 380ms in Ph2!
         yamImg.className = "boss-charging";
         if (warningFlash) warningFlash.style.display = "block";
         playSfx("audio/crack.mp3");
@@ -608,13 +657,16 @@ function runPregnancyGame(onSuccess, onFail) {
           writeLog(`💥 מכת נגד קטלנית! ים הדף את המתקפה והסב לך ${counterDmg} נזק! 💥`);
           triggerVibrate([200, 100, 200]);
 
+          comboCount = 0; // Reset Combo on getting parried
+          updateComboHUD();
+
           if (playerHp <= 0) {
             endGame(false);
             return;
           }
         } else {
-          // Normal hit taken: 30 in Ph1, 45 in Ph2!
-          const pDmg = phase === 2 ? 45 : 30;
+          // Normal hit taken: 30 in Ph1, 55 in Ph2!
+          const pDmg = phase === 2 ? 55 : 30;
           playerHp = Math.max(0, playerHp - pDmg);
           if (playerHpBar) playerHpBar.style.width = playerHp + "%";
           if (playerHpText) playerHpText.textContent = `${playerHp} / 100`;
@@ -625,6 +677,9 @@ function runPregnancyGame(onSuccess, onFail) {
           temporaryHitBlur = 10; 
           writeLog(`💥 פגיעה קשה! ספגת ${pDmg} נזק מים!`);
           triggerVibrate([120, 60, 120]);
+
+          comboCount = 0; // Reset Combo on hit
+          updateComboHUD();
 
           if (playerHp <= 0) {
             endGame(false);
@@ -695,10 +750,17 @@ function runPregnancyGame(onSuccess, onFail) {
 
     if (bossAura) {
       bossAura.style.display = "none";
+      bossAura.classList.remove("phase2-aura");
     }
 
     phase2OffsetX = 0;
     phase2OffsetY = 0;
+
+    comboCount = 0;
+    if (playerComboText) {
+      playerComboText.style.display = "none";
+      playerComboText.className = "";
+    }
 
     if (playerStaminaText) {
       playerStaminaText.classList.remove("stamina-exhausted-flash");

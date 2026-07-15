@@ -726,22 +726,35 @@
   40%, 60% { transform: translate3d(15px, 10px, 0) rotate(4deg); }
 }
 
-/* Pulsating Demonic Evil Aura for Yam Phase 2 */
+/* Pulsating Mild Cosmic Aura for Yam Phase 1 */
 .boss-evil-aura {
   position: absolute;
-  inset: -45px;
+  inset: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(231, 76, 60, 0.95) 0%, rgba(155, 89, 182, 0.5) 45%, transparent 70%);
-  filter: blur(20px);
+  background: radial-gradient(circle, rgba(155, 89, 182, 0.7) 0%, rgba(52, 152, 219, 0.3) 50%, transparent 70%);
+  filter: blur(15px);
   z-index: -1;
-  animation: bAuraPulse 0.9s infinite alternate;
+  animation: bAuraPulsePhase1 1.5s infinite alternate;
   mix-blend-mode: screen;
   pointer-events: none;
 }
 
-@keyframes bAuraPulse {
-  0% { transform: scale(0.85); opacity: 0.65; filter: blur(15px); }
-  100% { transform: scale(1.25); opacity: 1.0; filter: blur(30px); }
+@keyframes bAuraPulsePhase1 {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Giant Pulsating Demonic Aura for Yam Phase 2 */
+.boss-evil-aura.phase2-aura {
+  inset: -80px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.95) 0%, rgba(230, 126, 34, 0.75) 35%, rgba(155, 89, 182, 0.4) 60%, transparent 80%);
+  filter: blur(25px);
+  animation: bAuraPulsePhase2 0.7s infinite alternate;
+}
+
+@keyframes bAuraPulsePhase2 {
+  0% { transform: scale(0.85); opacity: 0.7; filter: blur(20px); }
+  100% { transform: scale(1.45); opacity: 1.0; filter: blur(40px); }
 }
 
 /* Semi-transparent glowing phantom ghost spirits of Yam */
@@ -749,11 +762,36 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 95px;
-  height: 95px;
+  width: 155px;
+  height: 155px;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 0 16px rgba(155, 89, 182, 0.95)) opacity(0.65) saturate(1.5);
+  filter: drop-shadow(0 0 20px rgba(155, 89, 182, 0.95)) opacity(0.85) saturate(1.6);
   transition: opacity 0.5s ease, transform 0.05s linear;
   z-index: 5;
+}
+
+/* Combo text pulse and special indicator animations */
+.combo-active-pulse {
+  display: inline-block;
+  animation: comboPulse 0.15s ease-out;
+  text-shadow: 0 0 10px #e67e22, 0 0 20px #f39c12;
+}
+
+.combo-super-strike {
+  display: inline-block;
+  animation: superComboPulse 0.3s infinite alternate;
+  color: #ff3f3f !important;
+  text-shadow: 0 0 15px #e74c3c, 0 0 30px #ff0000;
+}
+
+@keyframes comboPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes superComboPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15); }
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v13-centered-music';
+const CACHE_NAME = 'yam-date-sim-v15-combo-strikes';
 const ASSETS = [
   './',
   './index.html',
