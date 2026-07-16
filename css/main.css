@@ -31,10 +31,9 @@ html, body {
   overflow: hidden;
 }
 
-#soundToggle {
+#soundToggle, #fullscreenToggle {
   position: absolute;
   top: 16px;
-  right: 16px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -56,14 +55,22 @@ html, body {
   -webkit-user-select: none;
 }
 
-#soundToggle:hover {
+#soundToggle {
+  right: 16px;
+}
+
+#fullscreenToggle {
+  right: 76px;
+}
+
+#soundToggle:hover, #fullscreenToggle:hover {
   background: rgba(255, 212, 71, 0.9);
   border-color: #ffd447;
   color: #030305;
   transform: scale(1.08);
 }
 
-#soundToggle:active {
+#soundToggle:active, #fullscreenToggle:active {
   transform: scale(0.95);
 }
 

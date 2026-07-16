@@ -2,13 +2,68 @@
 
 window.asciiCache = {};
 
+// Pre-defined ASCII assets for file:// protocol compliance (No CORS/Canvas taint blocks)
+const PREDEFINED_ASCII = {
+  "yam_angry.png": `
+        .-"""-.
+       / ☠   ☠ \\\\
+      |  (o.o)  |
+      |   \\\\=/   |
+       \\\\   m   /
+        |     |
+  `,
+  "yam.png": `
+        .-"""-.
+       /  o   o  \\\\
+      |   (o.o)   |
+      |    \\\\=/    |
+       \\\\    m    /
+        |       |
+  `,
+  "yam_dead.png": `
+       .---.
+      / ☠ ☠ \\\\
+     |  (X.X)  |
+      \\\\   ^   /
+       |||||||
+       '-----'
+  `,
+  "room.jpg": `
++-------------------------------------------------+
+|  /|                                         |\\\\  |
+| / |               [ WINDOW ]                | \\\\ |
+|/  |             +------------+              |  \\\\|
+|   |             |   ★    ★   |              |   |
+|   |             +------------+              |   |
+|   |                                         |   |
+|   |             +------------+              |   |
+|   |             |  [ BED ]   |              |   |
+|   |_____________|   YAMDATE  |______________|   |
+|  /              +------------+               \\\\  |
+| /                                             \\\\ |
+|/                                               \\\\|
++-------------------------------------------------+
+  `
+};
+
 window.convertToAscii = function(imgElement, width, height, callback) {
   if (!imgElement) {
     if (callback) callback("");
     return "";
   }
 
-  const src = imgElement.src;
+  const src = imgElement.src || "";
+  
+  // Find match in predefined ASCII based on filename
+  for (const filename in PREDEFINED_ASCII) {
+    if (src.includes(filename)) {
+      const art = PREDEFINED_ASCII[filename];
+      if (callback) callback(art);
+      return art;
+    }
+  }
+
+  // Fallback to canvas conversion (if running on http/https server with CORS support)
   if (window.asciiCache[src]) {
     if (callback) callback(window.asciiCache[src]);
     return window.asciiCache[src];
@@ -18,8 +73,6 @@ window.convertToAscii = function(imgElement, width, height, callback) {
   canvas.width = width || 80;
   canvas.height = height || 45;
   const ctx = canvas.getContext("2d");
-  
-  imgElement.crossOrigin = "Anonymous";
   
   try {
     ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
@@ -41,7 +94,6 @@ window.convertToAscii = function(imgElement, width, height, callback) {
         if (a < 50) {
           asciiStr += " ";
         } else {
-          // Grayscale brightness calculations
           const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
           const charIdx = Math.floor((brightness / 255) * (chars.length - 1));
           asciiStr += chars[charIdx];
@@ -54,8 +106,11 @@ window.convertToAscii = function(imgElement, width, height, callback) {
     if (callback) callback(asciiStr);
     return asciiStr;
   } catch (e) {
-    console.error("ASCII conversion failed", e);
-    if (callback) callback("");
-    return "";
+    console.warn("Local ASCII conversion failed (CORS file:// block expected, fallback to default)", e);
+    
+    // Return empty fallback art instead of crash
+    const fallbackArt = "\n [ ASCII ART ] \n";
+    if (callback) callback(fallbackArt);
+    return fallbackArt;
   }
 };

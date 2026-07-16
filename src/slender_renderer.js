@@ -60,7 +60,9 @@ window.slenderRenderer = (function() {
     const depthBuffer = Array(COLS).fill(Infinity);
 
     // Calculate dynamic flashlight visibility range based on battery
-    const maxFlashlightRange = ctx.flashlightOn ? (4.2 * (ctx.battery / 100)) + 1.3 : 0.75;
+    const maxFlashlightRange = ctx.flashlightOn ? (9.5 * (ctx.battery / 100)) + 2.5 : 1.5;
+    const maxRSpan = document.getElementById("debugMaxR");
+    if (maxRSpan) maxRSpan.textContent = maxFlashlightRange.toFixed(2);
 
     // 2. Cast 80 rays (one for each horizontal screen column)
     const fov = ctx.fov;
@@ -97,6 +99,11 @@ window.slenderRenderer = (function() {
       const correctedDist = rayDist * Math.cos(rayAngle - ctx.pa);
       depthBuffer[c] = correctedDist;
 
+      if (c === 40) {
+        const rayDSpan = document.getElementById("debugRayD");
+        if (rayDSpan) rayDSpan.textContent = correctedDist.toFixed(2);
+      }
+
       // Draw wall slice if within flashlight range
       if (correctedDist <= maxFlashlightRange) {
         const wallH = Math.min(ROWS, Math.floor(13 / correctedDist));
@@ -104,21 +111,25 @@ window.slenderRenderer = (function() {
 
         for (let r = 0; r < ROWS; r++) {
           if (r >= emptyH && r < emptyH + wallH) {
-            // Wall character depth shading: closer = '@#', further = ':.'
-            const wallChars = "@#8&o:*. ";
-            const charIdx = Math.min(wallChars.length - 1, Math.floor(correctedDist * 1.45));
+            // Wall character depth shading: closer = '##', further = ':.'
+            const wallChars = "##||::.. ";
+            const charIdx = Math.min(wallChars.length - 1, Math.floor(correctedDist * 0.9));
             grid[r][c] = wallChars[charIdx];
           } else if (r >= emptyH + wallH) {
-            // Floor
-            grid[r][c] = '.';
+            // Checkerboard floor pattern for better depth/movement perception
+            grid[r][c] = (r + c) % 2 === 0 ? '.' : ' ';
           }
         }
       }
     }
 
     // 3. Project 3D Billboard Sprites (Pages, Batteries, Yam, Invar)
-    const activeSprites = ctx.sprites
-      .filter(s => !s.collected)
+    const allSprites = [
+      ...ctx.sprites.filter(s => !s.collected),
+      { x: ctx.yam.x, y: ctx.yam.y, type: "yam" }
+    ];
+
+    const activeSprites = allSprites
       .map(s => {
         const dist = Math.hypot(ctx.px - s.x, ctx.py - s.y);
         return { ...s, dist };
@@ -133,8 +144,9 @@ window.slenderRenderer = (function() {
       const sy = sprite.y - ctx.py;
 
       // Rotate coordinates relative to player direction
-      const rotX = sx * Math.cos(-ctx.pa) - sy * Math.sin(-ctx.pa);
-      const rotY = sx * Math.sin(-ctx.pa) + sy * Math.cos(-ctx.pa);
+      // Rotate coordinates relative to player direction vector (depth rotY, offset rotX)
+      const rotY = sx * Math.cos(ctx.pa) + sy * Math.sin(ctx.pa);
+      const rotX = -sx * Math.sin(ctx.pa) + sy * Math.cos(ctx.pa);
 
       if (rotY < 0.1) return; // behind screen
 
@@ -192,6 +204,24 @@ window.slenderRenderer = (function() {
     }
 
     preElement.textContent = finalStr;
+
+    // 6. Update debug panel
+    const wSpan = document.getElementById("debugW");
+    const aSpan = document.getElementById("debugA");
+    const sSpan = document.getElementById("debugS");
+    const dSpan = document.getElementById("debugD");
+    const xSpan = document.getElementById("debugX");
+    const ySpan = document.getElementById("debugY");
+    const angleSpan = document.getElementById("debugAngle");
+
+    const activeKeys = window.slenderKeys || {};
+    if (wSpan) wSpan.textContent = activeKeys.w ? "1" : "0";
+    if (aSpan) aSpan.textContent = activeKeys.a ? "1" : "0";
+    if (sSpan) sSpan.textContent = activeKeys.s ? "1" : "0";
+    if (dSpan) dSpan.textContent = activeKeys.d ? "1" : "0";
+    if (xSpan) xSpan.textContent = ctx.px.toFixed(2);
+    if (ySpan) ySpan.textContent = ctx.py.toFixed(2);
+    if (angleSpan) angleSpan.textContent = ctx.pa.toFixed(2);
   }
 
   return {

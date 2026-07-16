@@ -39,6 +39,7 @@ window.slenderCtx = {
   let loopId = null;
   let heartbeatIntervalId = null;
   let keys = { w: false, s: false, a: false, d: false };
+  window.slenderKeys = keys;
   let onSuccessCallback = null;
   let onFailCallback = null;
 
@@ -58,21 +59,25 @@ window.slenderCtx = {
 
   function handleKeyDown(e) {
     if (!window.slenderCtx.active || window.slenderCtx.gameOver) return;
-    if (e.key === "w" || e.key === "ArrowUp") keys.w = true;
-    if (e.key === "s" || e.key === "ArrowDown") keys.s = true;
-    if (e.key === "a" || e.key === "ArrowLeft") keys.a = true;
-    if (e.key === "d" || e.key === "ArrowRight") keys.d = true;
+    const k = e.key.toLowerCase();
     
-    if (e.key === "e" || e.key === " ") {
+    // Layout-independent and Hebrew layout key checks (Swapped A/D to match player direction preference)
+    if (k === "w" || e.code === "KeyW" || e.key === "ArrowUp" || e.key === "ק" || e.key === "׳") keys.w = true;
+    if (k === "s" || e.code === "KeyS" || e.key === "ArrowDown" || e.key === "ד") keys.s = true;
+    if (k === "a" || e.code === "KeyA" || e.key === "ArrowLeft" || e.key === "ש") keys.d = true;
+    if (k === "d" || e.code === "KeyD" || e.key === "ArrowRight" || e.key === "ג") keys.a = true;
+    
+    if (k === "e" || e.code === "KeyE" || e.key === " " || e.key === "ק" || e.key === "ת") {
       checkInteract();
     }
   }
 
   function handleKeyUp(e) {
-    if (e.key === "w" || e.key === "ArrowUp") keys.w = false;
-    if (e.key === "s" || e.key === "ArrowDown") keys.s = false;
-    if (e.key === "a" || e.key === "ArrowLeft") keys.a = false;
-    if (e.key === "d" || e.key === "ArrowRight") keys.d = false;
+    const k = e.key.toLowerCase();
+    if (k === "w" || e.code === "KeyW" || e.key === "ArrowUp" || e.key === "ק" || e.key === "׳") keys.w = false;
+    if (k === "s" || e.code === "KeyS" || e.key === "ArrowDown" || e.key === "ד") keys.s = false;
+    if (k === "a" || e.code === "KeyA" || e.key === "ArrowLeft" || e.key === "ש") keys.d = false;
+    if (k === "d" || e.code === "KeyD" || e.key === "ArrowRight" || e.key === "ג") keys.a = false;
   }
 
   function checkInteract() {
@@ -211,8 +216,8 @@ window.slenderCtx = {
     onFailCallback = failCb;
 
     const ctx = window.slenderCtx;
-    ctx.px = 2.5;
-    ctx.py = 2.5;
+    ctx.px = 1.5;
+    ctx.py = 1.5;
     ctx.pa = 0.0;
     ctx.pagesCollected = 0;
     ctx.battery = 100;
@@ -238,6 +243,7 @@ window.slenderCtx = {
     ];
 
     keys = { w: false, s: false, a: false, d: false };
+    window.focus();
 
     // Show elements
     const slenderOverlay = document.getElementById("slenderContainer");
@@ -250,6 +256,12 @@ window.slenderCtx = {
     if (soundToggle) soundToggle.style.display = "none";
     const galleryToggle = document.getElementById("galleryToggle");
     if (galleryToggle) galleryToggle.style.display = "none";
+    const fullscreenToggle = document.getElementById("fullscreenToggle");
+    if (fullscreenToggle) fullscreenToggle.style.display = "none";
+    
+    // Remove grayscaling to make red text fully bright
+    const gameContainer = document.getElementById("game");
+    if (gameContainer) gameContainer.classList.remove("horror-grayscale-filter");
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
@@ -288,6 +300,12 @@ window.slenderCtx = {
     if (soundToggle) soundToggle.style.display = "block";
     const galleryToggle = document.getElementById("galleryToggle");
     if (galleryToggle) galleryToggle.style.display = "block";
+    const fullscreenToggle = document.getElementById("fullscreenToggle");
+    if (fullscreenToggle) fullscreenToggle.style.display = "block";
+
+    // Restore grayscaling for the visual novel dialogues
+    const gameContainer = document.getElementById("game");
+    if (gameContainer) gameContainer.classList.add("horror-grayscale-filter");
   }
 
   function gameLoop() {

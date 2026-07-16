@@ -2,9 +2,17 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("שגיאת קוד: " + message + "\nקובץ: " + source + "\nשורה: " + lineno);
+      return false;
+    };
+    window.addEventListener("unhandledrejection", function(event) {
+      alert("חריגת Promise: " + event.reason);
+    });
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ים דייט סימולטור</title>
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#e74c3c" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +25,7 @@
 <body>
   <main id="game">
     <button id="soundToggle" aria-label="השתק מוזיקה">🔇</button>
+    <button id="fullscreenToggle" aria-label="מסך מלא">🖥️</button>
     <button id="galleryToggle" aria-label="טבלת סופים">🏆</button>
     <div id="fallbackBg"></div>
     <div id="asciiBackground" class="ascii-art" style="display: none; position: absolute; inset: 0; font-family: monospace; white-space: pre; line-height: 8px; font-size: 8px; color: #ff0000; text-shadow: 0 0 5px #ff0000; overflow: hidden; z-index: 1; opacity: 0.45; pointer-events: none;"></div>
@@ -105,9 +114,21 @@
 
     <!-- Slender 3D ASCII Maze Container -->
     <div id="slenderContainer" style="display: none; position: absolute; inset: 0; background: #000; z-index: 250; flex-direction: column; justify-content: center; align-items: center; font-family: monospace; color: #ff0000; user-select: none;">
-      <div style="display: flex; gap: 40px; font-size: 20px; margin-bottom: 10px; text-shadow: 0 0 6px #ff0000;">
+      <div style="display: flex; gap: 40px; font-size: 20px; margin-bottom: 5px; text-shadow: 0 0 6px #ff0000;">
         <div>📄 דפי קוד: <span id="slenderPages">0/4</span></div>
         <div>🔋: <span id="slenderBattery">100%</span></div>
+      </div>
+      <!-- Debug diagnostics panel -->
+      <div id="slenderDebugPanel" style="font-size: 13px; margin-bottom: 8px; color: #ff4444; font-family: monospace; display: flex; gap: 15px; text-shadow: 0 0 3px #ff0000;">
+        <span>W:<span id="debugW">0</span></span>
+        <span>A:<span id="debugA">0</span></span>
+        <span>S:<span id="debugS">0</span></span>
+        <span>D:<span id="debugD">0</span></span>
+        <span>X:<span id="debugX">0</span></span>
+        <span>Y:<span id="debugY">0</span></span>
+        <span>A:<span id="debugAngle">0</span></span>
+        <span>MaxR:<span id="debugMaxR">0</span></span>
+        <span>RayD:<span id="debugRayD">0</span></span>
       </div>
       <pre id="slenderPre"></pre>
       <div id="slenderMobileControls" style="display: none; width: 100%; max-width: 320px; margin-top: 15px; flex-direction: column; gap: 8px;">
@@ -248,6 +269,7 @@
   <script src="src/battle_arena.js"></script>
   <script src="src/baldi_renderer.js"></script>
   <script src="src/baldi.js"></script>
+  <script src="src/ascii_converter.js"></script>
   <script src="src/slender_renderer.js"></script>
   <script src="src/slender.js"></script>
   <script src="src/preg_game_renderer.js"></script>
@@ -255,6 +277,12 @@
   <script src="src/engine.js"></script>
   <script>
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      // Dynamically load manifest to bypass local file:// CORS warnings
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = 'manifest.json';
+      document.head.appendChild(manifestLink);
+
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((reg) => console.log('PWA Service Worker registered successfully!', reg.scope))

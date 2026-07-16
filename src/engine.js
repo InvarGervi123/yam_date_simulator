@@ -380,6 +380,29 @@ function openEndingsGallery() {
   galleryModal.style.display = "flex";
 }
 
+// Fullscreen mode handler
+const fullscreenToggle = document.getElementById("fullscreenToggle");
+if (fullscreenToggle) {
+  fullscreenToggle.onclick = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+}
+
+// Track fullscreen state to toggle button icon
+document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement) {
+    if (fullscreenToggle) fullscreenToggle.textContent = "✖️";
+  } else {
+    if (fullscreenToggle) fullscreenToggle.textContent = "🖥️";
+  }
+});
+
 if (galleryToggle) galleryToggle.onclick = openEndingsGallery;
 if (closeGallery) {
   closeGallery.onclick = () => {
