@@ -73,6 +73,24 @@ function runPregnancyGame(onSuccess, onFail) {
     window.pregRenderer.start();
   }
 
+  // Floating Combat Texts Above Boss
+  function spawnFloatingText(text, color) {
+    const el = document.createElement("div");
+    el.className = "preg-floating-text";
+    el.textContent = text;
+    el.style.color = color;
+    el.style.textShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+    
+    // Random horizontal jitter to prevent overlay stacking
+    const randomOffset = (Math.random() - 0.5) * 45;
+    el.style.left = `calc(50% + ${randomOffset}px)`;
+    
+    bossContainer.appendChild(el);
+    setTimeout(() => {
+      el.remove();
+    }, 800);
+  }
+
   // Combo recipe parameters
   const comboRecipes = [
     ["w", "s", "w"],          // Counter Strike (Attack, Dodge, Attack)
@@ -129,12 +147,15 @@ function runPregnancyGame(onSuccess, onFail) {
 
       if (ctx.recipeProgress >= ctx.currentRecipe.length) {
         triggerSuperStrike();
+      } else {
+        spawnFloatingText(`✨ PERFECT! (${ctx.recipeProgress}/${ctx.currentRecipe.length})`, "#2ecc71");
       }
     } else {
       // Wrong input: reset combo recipe progress
       ctx.recipeProgress = 0;
       playSfx("audio/dodge.mp3"); // Fail sound
       writeLog("⚠️ רצף קומבו נשבר! התחל מחדש.");
+      spawnFloatingText("⚠️ BREAK!", "#e74c3c");
       updateComboHUD();
     }
   }
@@ -146,6 +167,18 @@ function runPregnancyGame(onSuccess, onFail) {
     
     ctx.healFreezeTimer = Date.now() + 4000; // Freeze passive regeneration for 4 seconds!
     writeLog("🔥 קומבו הושלם! שחררת מכת בורקס מוחצת שהסבה 30 נזק והקפיאה את הריפוי שלו ל-4 שניות! 🔥");
+    spawnFloatingText("💥 SPECIAL BUREK STRIKE! 💥", "#f39c12");
+
+    // Play visual neon diagonal slash cut
+    const slash = document.getElementById("pregSlashEffect");
+    if (slash) {
+      slash.style.display = "block";
+      slash.className = "slash-animate";
+      setTimeout(() => {
+        slash.className = "";
+        slash.style.display = "none";
+      }, 400);
+    }
     
     playSfx("audio/truimph.mp3");
     flashScreen("preg-screen-flash");
@@ -251,6 +284,11 @@ function runPregnancyGame(onSuccess, onFail) {
       e.preventDefault();
       if (ctx.isGasping) return; // Cannot dodge while gasping
       if (ctx.playerStance !== "dodging") {
+        if (ctx.playerStamina < 10) {
+          spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
+          return;
+        }
+        ctx.playerStamina = Math.max(0, ctx.playerStamina - 10); // Entering dodge costs 10 stamina flat
         ctx.playerStance = "dodging";
         if (playerStanceText) {
           playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
@@ -304,6 +342,11 @@ function runPregnancyGame(onSuccess, onFail) {
       e.preventDefault();
       if (ctx.isGameOver || ctx.isPhaseTransitioning || ctx.isGasping) return;
       if (ctx.playerStance !== "dodging") {
+        if (ctx.playerStamina < 10) {
+          spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
+          return;
+        }
+        ctx.playerStamina = Math.max(0, ctx.playerStamina - 10); // Flat entry cost
         ctx.playerStance = "dodging";
         if (playerStanceText) {
           playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
@@ -343,6 +386,7 @@ function runPregnancyGame(onSuccess, onFail) {
         playerStanceText.style.color = "#ff3f3f";
       }
       writeLog("🥵 התעייפת והתנשפת! אינך יכול לתקוף ללא סיבולת!");
+      spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
       return;
     }
 
@@ -361,11 +405,13 @@ function runPregnancyGame(onSuccess, onFail) {
     if (ctx.bossState === "recovering") {
       dmg = ctx.phase === 2 ? 7 : 22; // Harder scaling in phase 2: only 7 crit dmg
       attackMessage = `⚔️ מכה קריטית! ים ספג ${dmg} נזק (חלש)!`;
+      spawnFloatingText("⚔️ CRITICAL!", "#ffd447");
       playSfx("audio/crack.mp3");
       triggerVibrate([50, 30, 50]);
     } else {
       dmg = ctx.phase === 2 ? 1 : 10; // Harder scaling in phase 2: only 1 basic dmg
       attackMessage = `⚔️ תקפת את ים! הוא ספג ${dmg} נזק.`;
+      spawnFloatingText("⚔️ HIT!", "#ffffff");
       playSfx("audio/hit.mp3");
       triggerVibrate(20);
     }
@@ -500,8 +546,26 @@ function runPregnancyGame(onSuccess, onFail) {
   function gameLogicLoop() {
     if (ctx.isGameOver) return;
 
-    // Stamina Regeneration calculations
-    if (ctx.isGasping) {
+    // Stamina Regeneration / Dodge holding drain calculations
+    if (ctx.playerStance === "dodging") {
+      // Continuous stamina drain while holding dodge/shield
+      ctx.playerStamina = Math.max(0, ctx.playerStamina - 0.4);
+      if (ctx.playerStamina <= 0) {
+        ctx.playerStance = "ready";
+        ctx.crouchY = 0;
+        ctx.isGasping = true;
+        ctx.gaspTimer = Date.now() + 1500;
+        playSfx("audio/dodge.mp3");
+        triggerVibrate(150);
+        if (playerStaminaText) playerStaminaText.classList.add("stamina-exhausted-flash");
+        if (playerStanceText) {
+          playerStanceText.textContent = "עמידה: 🥵 עייף מדי! *מתנשף*";
+          playerStanceText.style.color = "#ff3f3f";
+        }
+        writeLog("🥵 מגן נשבר מחוסר סיבולת! התעייפת והתנשפת!");
+        spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
+      }
+    } else if (ctx.isGasping) {
       // Slow recovery when gasping
       ctx.playerStamina = Math.min(100, ctx.playerStamina + 0.35);
       if (Date.now() > ctx.gaspTimer && ctx.playerStamina >= 35) {
@@ -513,8 +577,8 @@ function runPregnancyGame(onSuccess, onFail) {
         }
       }
     } else {
-      // Normal stamina regeneration (Slower when dodging, faster when ready)
-      const regenRate = ctx.playerStance === "dodging" ? 0.25 : 0.65;
+      // Normal stamina regeneration
+      const regenRate = 0.65;
       ctx.playerStamina = Math.min(100, ctx.playerStamina + regenRate);
     }
 
@@ -522,13 +586,18 @@ function runPregnancyGame(onSuccess, onFail) {
     if (ctx.keysPressed["s"] || ctx.keysPressed["arrowdown"]) {
       if (!ctx.isGasping) {
         if (ctx.playerStance !== "dodging") {
-          ctx.playerStance = "dodging";
-          if (playerStanceText) {
-            playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-            playerStanceText.style.color = "#3498db";
+          if (ctx.playerStamina < 10) {
+            spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
+          } else {
+            ctx.playerStamina = Math.max(0, ctx.playerStamina - 10); // Flat entry cost
+            ctx.playerStance = "dodging";
+            if (playerStanceText) {
+              playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+              playerStanceText.style.color = "#3498db";
+            }
+            ctx.crouchY = 25;
+            registerComboInput("s"); // Add S to Combo recipe evaluation
           }
-          ctx.crouchY = 25;
-          registerComboInput("s"); // Add S to Combo recipe evaluation
         }
       }
     }
@@ -555,6 +624,7 @@ function runPregnancyGame(onSuccess, onFail) {
           playSfx("audio/dodge.mp3");
           flashScreen("preg-screen-flash");
           writeLog("🛡️ חמיקה מושלמת! (DODGE) ים מפספס!");
+          spawnFloatingText("🛡️ DODGED!", "#3498db");
           triggerVibrate(30);
         } else if (ctx.playerStance === "attacking") {
           // Punish player for spamming attacks during lunges (Counter-Attack!)
@@ -566,6 +636,7 @@ function runPregnancyGame(onSuccess, onFail) {
           triggerCameraShake();
           ctx.temporaryHitBlur = 12; // Instant heavy blur
           writeLog(`💥 מכת נגד קטלנית! ים הדף את המתקפה והסב לך ${counterDmg} נזק! 💥`);
+          spawnFloatingText("💥 PARRY COUNTER!", "#ff3f3f");
           triggerVibrate([200, 100, 200]);
 
           ctx.recipeProgress = 0; // Reset combo recipe progress on parry
@@ -585,6 +656,7 @@ function runPregnancyGame(onSuccess, onFail) {
           triggerCameraShake(); // Rumble viewport
           ctx.temporaryHitBlur = 10; 
           writeLog(`💥 פגיעה קשה! ספגת ${pDmg} נזק מים!`);
+          spawnFloatingText("💥 HIT!", "#ff4747");
           triggerVibrate([120, 60, 120]);
 
           ctx.recipeProgress = 0; // Reset combo recipe progress on hit

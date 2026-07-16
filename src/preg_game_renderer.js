@@ -170,6 +170,13 @@
     const skew = Math.sin(Date.now() / 600) * (ctx.phase === 2 ? 8 : 1);
     if (space) {
       space.style.transform = `rotate(${spaceAngle}deg) scale(${pulse}) skew(${skew}deg) translateY(${ctx.crouchY}px)`;
+      if (ctx.phase === 2 && !ctx.isPhaseTransitioning) {
+        if (!space.classList.contains("phase2-background-aura")) {
+          space.classList.add("phase2-background-aura");
+        }
+      } else {
+        space.classList.remove("phase2-background-aura");
+      }
     }
 
     // 3D Particles

@@ -795,3 +795,85 @@
   0% { transform: scale(1); }
   100% { transform: scale(1.15); }
 }
+
+/* Cosmic Background Aura */
+.phase2-background-aura {
+  animation: bgAuraPulse 3s infinite alternate ease-in-out !important;
+  box-shadow: inset 0 0 100px rgba(231, 76, 60, 0.6) !important;
+}
+
+@keyframes bgAuraPulse {
+  0% {
+    background: radial-gradient(circle, #0e0517 30%, #1c0a2a 70%, #2f0909 100%) !important;
+  }
+  100% {
+    background: radial-gradient(circle, #19051d 30%, #2b031c 70%, #4c0404 100%) !important;
+  }
+}
+
+/* Floating combat text styling */
+.preg-floating-text {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 15;
+  animation: floatingTextAnim 0.8s ease-out forwards;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+@keyframes floatingTextAnim {
+  0% {
+    transform: translate(-50%, 0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -30px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -80px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Neon laser diagonal slash slice */
+#pregSlashEffect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+}
+
+#pregSlashEffect.slash-animate {
+  display: block !important;
+  background: linear-gradient(135deg, transparent 48%, #00ffff 50%, #ff00ff 52%, transparent 54%);
+  background-size: 200% 200%;
+  animation: slashCutAnim 0.4s ease-out forwards;
+}
+
+@keyframes slashCutAnim {
+  0% {
+    opacity: 0;
+    filter: brightness(1) drop-shadow(0 0 0px #00ffff);
+    transform: scale(0.1) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    filter: brightness(2.5) drop-shadow(0 0 25px #ff00ff);
+    transform: scale(1.1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(1) drop-shadow(0 0 5px #00ffff);
+    transform: scale(1.2) rotate(5deg);
+  }
+}

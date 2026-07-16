@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v17-split-renderer';
+const CACHE_NAME = 'yam-date-sim-v18-juice';
 const ASSETS = [
   './',
   './index.html',
