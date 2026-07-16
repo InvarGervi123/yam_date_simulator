@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v16-combo-recipes';
+const CACHE_NAME = 'yam-date-sim-v17-split-renderer';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './src/baldi.js',
   './src/baldi_renderer.js',
   './src/preg_game.js',
+  './src/preg_game_renderer.js',
   './src/engine.js',
   './src/story/setup.js',
   './src/story/main.js',
