@@ -249,6 +249,13 @@ window.slenderCtx = {
     const slenderOverlay = document.getElementById("slenderContainer");
     if (slenderOverlay) slenderOverlay.style.display = "flex";
     
+    // Show mobile touch keys on mobile/tablet devices or small viewports
+    const mobileControls = document.getElementById("slenderMobileControls");
+    if (mobileControls) {
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 800);
+      mobileControls.style.display = isTouch ? "flex" : "none";
+    }
+    
     // Hide visual novel HUD buttons to prevent navigation during slender minigame
     const dialogueBox = document.getElementById("dialogBox");
     if (dialogueBox) dialogueBox.style.display = "none";
@@ -292,6 +299,10 @@ window.slenderCtx = {
     // Hide elements
     const slenderOverlay = document.getElementById("slenderContainer");
     if (slenderOverlay) slenderOverlay.style.display = "none";
+    
+    // Hide mobile controls
+    const mobileControls = document.getElementById("slenderMobileControls");
+    if (mobileControls) mobileControls.style.display = "none";
     
     // Restore visual novel HUD components
     const dialogueBox = document.getElementById("dialogBox");
