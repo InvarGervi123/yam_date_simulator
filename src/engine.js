@@ -98,6 +98,20 @@ function addChoice(label, nextScene) {
   choices.appendChild(btn);
 }
 
+function glitchText(str) {
+  if (!str) return "";
+  const glitchChars = "☠⛥⛧✗🕆⌖☒☣☢⚡";
+  let res = "";
+  for (let i = 0; i < str.length; i++) {
+    if (Math.random() < 0.08 && str[i] !== '\n' && str[i] !== ' ') {
+      res += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+    } else {
+      res += str[i];
+    }
+  }
+  return res;
+}
+
 function showScene(id) {
   const scene = story[id];
 
@@ -117,11 +131,87 @@ function showScene(id) {
 
   currentScene = id;
 
+  // Determine if this is part of the horror route
+  const isHorrorRoute = id.startsWith("slender") || id.includes("horror") || id === "yinover_threat";
+  window.asciiModeEnabled = isHorrorRoute;
+
+  const bgPre = document.getElementById("asciiBackground");
+  const charPre = document.getElementById("asciiCharacter");
+  const gameContainer = document.getElementById("game");
+
+  // Toggle grayscale filter based on horror route
+  if (isHorrorRoute) {
+    if (gameContainer) gameContainer.classList.add("horror-grayscale-filter");
+  } else {
+    if (gameContainer) gameContainer.classList.remove("horror-grayscale-filter");
+    if (bgPre) bgPre.style.display = "none";
+    if (charPre) charPre.style.display = "none";
+    bg.style.display = "block";
+    character.style.display = "block";
+  }
+
+  // Handle Full-Screen Jumpscare Overlay
+  const jumpscareDiv = document.getElementById("pregJumpscare");
+  if (id === "slender_jumpscare") {
+    if (jumpscareDiv) {
+      jumpscareDiv.style.display = "flex";
+      const jImg = new Image();
+      jImg.onload = () => {
+        const jAscii = document.getElementById("jumpscareAscii");
+        window.convertToAscii(jImg, 80, 42, (str) => {
+          if (jAscii) jAscii.textContent = str;
+        });
+      };
+      jImg.src = "images/yam_dead.png";
+      
+      if (gameContainer) gameContainer.classList.add("effect-shake");
+      triggerVibration(1000);
+      playSfx("audio/break.mp3");
+    }
+  } else {
+    if (jumpscareDiv) jumpscareDiv.style.display = "none";
+  }
+
   const bgSrc = scene.bg === false ? "" : (scene.bg || DEFAULT_BG);
   const charSrc = scene.character === false ? "" : (scene.character || scene.characterImage || DEFAULT_CHARACTER);
 
-  fileExistsFallbackImage(bg, bgSrc);
-  fileExistsFallbackImage(character, charSrc);
+  if (window.asciiModeEnabled) {
+    bg.style.display = "none";
+    character.style.display = "none";
+
+    if (bgSrc) {
+      if (bgPre) {
+        bgPre.style.display = "block";
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          window.convertToAscii(tempImg, 85, 45, (str) => {
+            if (currentScene === id) bgPre.textContent = str;
+          });
+        };
+        tempImg.src = bgSrc;
+      }
+    } else {
+      if (bgPre) bgPre.textContent = "";
+    }
+
+    if (charSrc) {
+      if (charPre) {
+        charPre.style.display = "block";
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          window.convertToAscii(tempImg, 70, 40, (str) => {
+            if (currentScene === id) charPre.textContent = str;
+          });
+        };
+        tempImg.src = charSrc;
+      }
+    } else {
+      if (charPre) charPre.textContent = "";
+    }
+  } else {
+    fileExistsFallbackImage(bg, bgSrc);
+    fileExistsFallbackImage(character, charSrc);
+  }
 
   // Trigger Character Animations (bounce, shake, slide_in, float)
   character.className = "";
@@ -136,7 +226,13 @@ function showScene(id) {
   }
 
   speaker.textContent = scene.speaker || "";
-  text.textContent = scene.text || "";
+  
+  let displayText = scene.text || "";
+  if (window.asciiModeEnabled) {
+    displayText = glitchText(displayText);
+  }
+  text.textContent = displayText;
+  
   clearChoices();
 
   if (scene.music) playMusic(scene.music);

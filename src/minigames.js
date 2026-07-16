@@ -20,6 +20,13 @@ function runMinigame(config) {
     );
     return;
   }
+  if (config.type === "slender_3d") {
+    runSlenderMinigame(
+      () => showScene(config.nextSuccess),
+      () => showScene(config.nextFail)
+    );
+    return;
+  }
 
   minigameOverlay.style.display = "flex";
   

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v18-juice';
+const CACHE_NAME = 'yam-date-sim-v19-horror';
 const ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,9 @@ const ASSETS = [
   './src/battle_arena.js',
   './src/baldi.js',
   './src/baldi_renderer.js',
+  './src/slender.js',
+  './src/slender_renderer.js',
+  './src/ascii_converter.js',
   './src/preg_game.js',
   './src/preg_game_renderer.js',
   './src/engine.js',
@@ -37,6 +40,7 @@ const ASSETS = [
   './images/yam_surpise.png',
   './images/yam_alien.png',
   './images/yam_dead.png',
+  './images/invar.png',
   './audio/boss_fight.mp3',
   './audio/break.mp3',
   './audio/click.mp3',
@@ -50,7 +54,8 @@ const ASSETS = [
   './audio/rip.mp3',
   './audio/truimph.mp3',
   './audio/the_clockwork_void.mp3',
-  './audio/the_clockwork_void_extend.mp3'
+  './audio/the_clockwork_void_extend.mp3',
+  './audio/Panic.mp3'
 ];
 
 // Install Service Worker and cache all resources

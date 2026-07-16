@@ -19,8 +19,10 @@
     <button id="soundToggle" aria-label="השתק מוזיקה">🔇</button>
     <button id="galleryToggle" aria-label="טבלת סופים">🏆</button>
     <div id="fallbackBg"></div>
+    <div id="asciiBackground" class="ascii-art" style="display: none; position: absolute; inset: 0; font-family: monospace; white-space: pre; line-height: 8px; font-size: 8px; color: #ff0000; text-shadow: 0 0 5px #ff0000; overflow: hidden; z-index: 1; opacity: 0.45; pointer-events: none;"></div>
     <img id="background" alt="רקע" />
     <div id="characterContainer">
+      <pre id="asciiCharacter" class="ascii-art" style="display: none; font-family: monospace; white-space: pre; line-height: 6px; font-size: 6px; color: #ff0000; text-shadow: 0 0 5px #ff0000; margin: 0 auto; text-align: center; pointer-events: none; transform: scale(1.3);"></pre>
       <img id="character" alt="ים" />
     </div>
 
@@ -99,6 +101,35 @@
         <button id="pregBtnAttack">⚔️ התקפה (W)</button>
         <button id="pregBtnDodge">🛡️ התחמקות (S)</button>
       </div>
+    </div>
+
+    <!-- Slender 3D ASCII Maze Container -->
+    <div id="slenderContainer" style="display: none; position: absolute; inset: 0; background: #000; z-index: 250; flex-direction: column; justify-content: center; align-items: center; font-family: monospace; color: #ff0000; user-select: none;">
+      <div style="display: flex; gap: 40px; font-size: 20px; margin-bottom: 10px; text-shadow: 0 0 6px #ff0000;">
+        <div>📄 דפי קוד: <span id="slenderPages">0/4</span></div>
+        <div>🔋: <span id="slenderBattery">100%</span></div>
+      </div>
+      <pre id="slenderPre"></pre>
+      <div id="slenderMobileControls" style="display: none; width: 100%; max-width: 320px; margin-top: 15px; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: center;">
+          <button id="slenderCtrlForward" class="slender-ctrl-btn">▲</button>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 20px;">
+          <button id="slenderCtrlLeft" class="slender-ctrl-btn">◀</button>
+          <button id="slenderCtrlAction" class="slender-ctrl-btn" style="background: #990000;">קח קוד</button>
+          <button id="slenderCtrlRight" class="slender-ctrl-btn">▶</button>
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <button id="slenderCtrlBackward" class="slender-ctrl-btn">▼</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slender / Horror Jumpscare Overlay -->
+    <div id="pregJumpscare" style="display: none; position: absolute; inset: 0; background: #000; z-index: 300; justify-content: center; align-items: center; text-align: center; color: #ff0000; font-family: monospace; flex-direction: column; overflow: hidden;">
+      <pre id="jumpscareAscii" style="font-size: 8px; line-height: 6px; text-shadow: 0 0 10px #ff0000; color: #ff0000;"></pre>
+      <h1 style="font-size: 40px; margin: 20px 0 10px 0; text-shadow: 0 0 8px #ff0000; color: #ff0000;">👹 שקרן! 👹</h1>
+      <p style="font-size: 20px; color: #ff0000; text-shadow: 0 0 5px #ff0000; margin: 0;">ינוור לא יציל אותך מפה...</p>
     </div>
 
     <!-- Ending Gallery Modal -->
@@ -217,6 +248,8 @@
   <script src="src/battle_arena.js"></script>
   <script src="src/baldi_renderer.js"></script>
   <script src="src/baldi.js"></script>
+  <script src="src/slender_renderer.js"></script>
+  <script src="src/slender.js"></script>
   <script src="src/preg_game_renderer.js"></script>
   <script src="src/preg_game.js"></script>
   <script src="src/engine.js"></script>
