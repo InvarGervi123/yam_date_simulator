@@ -155,6 +155,16 @@ function showScene(id) {
   if (id === "slender_jumpscare") {
     if (jumpscareDiv) {
       jumpscareDiv.style.display = "flex";
+      
+      // Click anywhere to dismiss jumpscare and advance dialogue
+      jumpscareDiv.onclick = () => {
+        jumpscareDiv.style.display = "none";
+        triggerVibration(15);
+        if (nextBtn) {
+          nextBtn.click();
+        }
+      };
+
       const jImg = new Image();
       jImg.onload = () => {
         const jAscii = document.getElementById("jumpscareAscii");
