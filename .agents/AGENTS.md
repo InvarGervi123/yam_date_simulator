@@ -46,14 +46,24 @@ To write highly readable, glitch-free code, follow this plan-first checklist:
 - Keep HTML elements natively focusable and preserve the `:focus-visible` styling (defined in `css/main.css`) to allow seamless, visually guided Tab and Shift+Tab navigation.
 
 ## 8. Pregnancy VR Combat Engine & Combo System Rules
-- All Pregnancy VR combat logic is contained in `src/preg_game.js`.
+- The engine is split modularly:
+  - `src/preg_game.js`: Manages keyboard/mobile input handlers, flat stamina calculations, combo recipe checks, logic status updates, and sound playback.
+  - `src/preg_game_renderer.js`: Manages real-time loop updates (`gameLoop` and `requestAnimationFrame`), Lissajous boss coordinates, 3D particles, 3D phantom billboard orbits, and blur filters.
+  - Connected via the global `pregCtx` state wrapper object.
 - **Aura Mechanics**: `#pregBossAura` displays a mild cosmic glow in Phase 1 and adds the `.phase2-aura` class (massive fiery red-orange animation) at 4.5s of the Phase 2 transformation.
+- **Cosmic Background Aura**: Phase 2 toggles `.phase2-background-aura` on `#pregSpaceContainer` to animate breathing dark violet/crimson radial gradients and box-shadow glows.
 - **Phantom Orbitals**: 8 phantom Yams are spawned dynamically inside `#pregBossContainer` at 2s of the transition. They orbit at a radius of `125px` and scale up to `3.5x` flying towards the screen during the `lunging` state.
 - **Combo Recipe Validation**:
   - The combo is sequence-based: keys match `W` (for attack inputs) and `S` (for crouch/dodge inputs).
   - Track progress with `recipeProgress`. Highlight completed steps in green (`#2ecc71`) and pending in grey (`#bdc3c7`).
   - Mismatched inputs or taking damage instantly resets `recipeProgress` to `0`.
   - Completing a sequence triggers the Special Burek Strike (30 damage and a 4-second freeze on Yam's HP regeneration).
+- **Dodge Stamina Costs**:
+  - Entering dodge stance costs 10 stamina flat.
+  - Holding dodge drains 0.4 stamina per frame. Running out of stamina forces the stance back to `"ready"` and locks the player in a 1.5s gasping fatigue state.
+- **Floating Combat Text & Neon Slash**:
+  - Floating feedback tags (e.g. `"⚔️ CRITICAL!"`, `"🛡️ DODGED!"`, `"🥵 EXHAUSTED!"`) must spawn above Yam inside `pregBossContainer` using `spawnFloatingText`.
+  - Neon diagonal slash overlay (`#pregSlashEffect`) triggers `.slash-animate` on combo completion.
 - **Transformation Timeline**: Must last exactly 6 seconds: 0s-2s sprite flicker, 2s-4s stagger spawn of 8 phantoms, 4.5s aura transition & music swap, 6s transition complete.
 - **Prevent Room Leak**: Shakes and ducking transformations must never be applied to `#pregOverlay`. They must be applied strictly to internal wrapper nodes (`#pregSpaceContainer` and `#pregBossContainer`).
 

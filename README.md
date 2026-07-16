@@ -22,7 +22,7 @@
 * **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
 * **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
 * **State Serialization & Cache Durability:** System endings (91 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
-* **Yam Space VR Pregnancy Dark Souls Combat Engine:** A brutal, real-time action minigame featuring a 2-phase boss fight, stamina conservation, ducking (S/ArrowDown), attack openings (W/ArrowUp), dynamic lack-of-oxygen blur filters, camera shakes, customized double soundtracks, a 6-second monster transformation, orbiting phantom spirits, and an arcade-style Combo Recipe sequence matching system.
+* **Yam Space VR Pregnancy Dark Souls Combat Engine:** A brutal, real-time action minigame featuring a 2-phase boss fight, flat and continuous dodge stamina depletion, ducking (S/ArrowDown), attack openings (W/ArrowUp), dynamic lack-of-oxygen blur filters, camera shakes, customized double soundtracks, a 6-second monster transformation, orbiting phantom spirits, floating neon combat feedback tags, full-screen diagonal combo neon slash triggers, and a sequence-based Combo Recipe system.
 * **Full Keyboard Navigation (Laptop-friendly):** Enables a complete mouse-free playthrough. Advance story dialogues with `Space` / `Enter`, select choices with numeric keys `1`-`9`, use numbers `1`-`4` for Deltarune battle actions, and `Backspace` / `Escape` to close sub-menus.
 
 ### 📸 Visual Previews
@@ -86,7 +86,7 @@ Contributions, bug reports, and suggestions are welcome!
 | **לוח מעקב סופים** | סריאליזציה של מערכים ושמירתם ב-Cookies וב-LocalStorage. | התמדה ושמירת נתונים מקומית ללא צורך במסד נתונים (Database-free persistence). |
 | **מנוע קרב Deltarune** | לולאת פיזיקה בזמן אמת המפרידה בין זיהוי התנגשות (Collision) לרישום גילוח (Graze). | ריצה חלקה ב-60FPS יציב על קנבס HTML5 Canvas 2D. |
 | **מבוך תלת-מימד Baldi** | Raycaster המבוסס על אופטימיזציית טריגונומטריה מקומית ואלגוריתם BFS לחילוץ אויב. | ניווט פיזיקלי של האויב ללא תקיעת מעבד, ללא דליפות מיקום בקירות. |
-| **קרב הריון קוסמי** | מנהל קרב מבוסס Stamina, התחמקות, מתקפות נגד, הילות, רוחות מפלצת ומערכת רצפי קומבו (Combo Recipes). | חוויית Boss Fight קולנועית וקשוחה עם פילטרים, רעידות, מוזיקה כפולה וביצועי קצה. |
+| **קרב הריון קוסמי** | מנוע Stamina (כולל צריכת מגן), התחמקות, מתקפות נגד, הילות חלל, רוחות מפלצת, פידבק טקסט קופץ, סלאש לייזר וקומבואים. | חוויית Boss Fight קולנועית, מפוצלת מודולרית (preg_game ו-preg_game_renderer) לטובת ביצועים מקסימליים. |
 | **אופטימיזציית PWA** | רישום Service Worker מותנה פרוטוקול ותיקיית נכסים סטטית מוגדרת מראש. | תמיכה מלאה באופליין וטעינה מיידית מזיכרון המכשיר (Zero network requests). |
 
 ---
