@@ -965,3 +965,21 @@
   color: #000000;
 }
 
+.yam-char {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px #ffffff, 0 0 15px #ff0000 !important;
+  font-weight: bold;
+}
+
+.page-char {
+  color: #2ecc71 !important;
+  text-shadow: 0 0 8px #2ecc71 !important;
+  font-weight: bold;
+}
+
+.battery-char {
+  color: #00d2d3 !important;
+  text-shadow: 0 0 8px #00d2d3 !important;
+  font-weight: bold;
+}
+

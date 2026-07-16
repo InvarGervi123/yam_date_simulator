@@ -178,7 +178,15 @@ window.slenderRenderer = (function() {
           if (rotY < depthBuffer[screenCol]) {
             const char = template[rIndex][cIndex];
             if (char && char !== ' ') {
-              grid[screenRow][screenCol] = char;
+              if (sprite.type === "yam") {
+                grid[screenRow][screenCol] = `<span class="yam-char">${char}</span>`;
+              } else if (sprite.type === "page") {
+                grid[screenRow][screenCol] = `<span class="page-char">${char}</span>`;
+              } else if (sprite.type === "battery") {
+                grid[screenRow][screenCol] = `<span class="battery-char">${char}</span>`;
+              } else {
+                grid[screenRow][screenCol] = char;
+              }
             }
           }
         }
@@ -203,7 +211,7 @@ window.slenderRenderer = (function() {
       finalStr += grid[r].join("") + "\n";
     }
 
-    preElement.textContent = finalStr;
+    preElement.innerHTML = finalStr;
 
     // 6. Update debug panel
     const wSpan = document.getElementById("debugW");
