@@ -293,14 +293,14 @@ function showScene(id) {
 
   // Trigger Character Animations (bounce, shake, slide_in, float)
   character.className = "";
-  if (scene.characterAnimation) {
-    const animClass = `char-${scene.characterAnimation}`;
-    character.classList.add(animClass);
-    if (scene.characterAnimation !== "float") {
-      setTimeout(() => {
-        character.classList.remove(animClass);
-      }, 500);
-    }
+  const anim = scene.characterAnimation || "float"; // Default to float to keep the game feeling alive
+  const animClass = `char-${anim}`;
+  character.classList.add(animClass);
+  if (anim !== "float") {
+    setTimeout(() => {
+      character.classList.remove(animClass);
+      character.classList.add("char-float"); // transition back to idle float bobbing
+    }, 500);
   }
 
   speaker.textContent = scene.speaker || "";
@@ -561,6 +561,21 @@ if (typewriterToggle) {
     }
   };
 }
+
+// Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
+const startAudioOnInteraction = () => {
+  if (audioCtx && audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  const currentMusic = document.getElementById("music");
+  if (currentMusic && !window.isMuted && currentMusic.paused) {
+    currentMusic.play().catch(() => {});
+  }
+  window.removeEventListener("click", startAudioOnInteraction);
+  window.removeEventListener("keydown", startAudioOnInteraction);
+};
+window.addEventListener("click", startAudioOnInteraction);
+window.addEventListener("keydown", startAudioOnInteraction);
 
 // Start Simulator
 showScene("start");
