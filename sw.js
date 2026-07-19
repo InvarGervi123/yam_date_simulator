@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v25-mute';
+const CACHE_NAME = 'yam-date-sim-v26-keyboard';
 const ASSETS = [
   './',
   './index.html',

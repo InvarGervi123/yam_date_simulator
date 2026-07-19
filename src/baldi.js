@@ -176,22 +176,24 @@ function runBaldiMinigame(config) {
 
   function handleKeyDown(e) {
     if (activePadSession) return;
-    if (e.key === "w" || e.key === "ArrowUp") keys.w = true;
-    if (e.key === "s" || e.key === "ArrowDown") keys.s = true;
-    if (e.key === "a" || e.key === "ArrowLeft") keys.a = true;
-    if (e.key === "d" || e.key === "ArrowRight") keys.d = true;
+    const k = e.key.toLowerCase();
+    if (k === "w" || e.code === "KeyW" || e.key === "ArrowUp" || k === "ק" || k === "׳") keys.w = true;
+    if (k === "s" || e.code === "KeyS" || e.key === "ArrowDown" || k === "ד") keys.s = true;
+    if (k === "a" || e.code === "KeyA" || e.key === "ArrowLeft" || k === "ש") keys.a = true;
+    if (k === "d" || e.code === "KeyD" || e.key === "ArrowRight" || k === "ג") keys.d = true;
     
     // Interact action
-    if (e.key === "e" || e.key === " ") {
+    if (k === "e" || e.code === "KeyE" || k === " " || k === "ק") {
       triggerInteract();
     }
   }
 
   function handleKeyUp(e) {
-    if (e.key === "w" || e.key === "ArrowUp") keys.w = false;
-    if (e.key === "s" || e.key === "ArrowDown") keys.s = false;
-    if (e.key === "a" || e.key === "ArrowLeft") keys.a = false;
-    if (e.key === "d" || e.key === "ArrowRight") keys.d = false;
+    const k = e.key.toLowerCase();
+    if (k === "w" || e.code === "KeyW" || e.key === "ArrowUp" || k === "ק" || k === "׳") keys.w = false;
+    if (k === "s" || e.code === "KeyS" || e.key === "ArrowDown" || k === "ד") keys.s = false;
+    if (k === "a" || e.code === "KeyA" || e.key === "ArrowLeft" || k === "ש") keys.a = false;
+    if (k === "d" || e.code === "KeyD" || e.key === "ArrowRight" || k === "ג") keys.d = false;
   }
 
   window.addEventListener("keydown", handleKeyDown);

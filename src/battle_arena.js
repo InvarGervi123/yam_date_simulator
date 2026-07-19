@@ -32,8 +32,22 @@ window.battleArena = {
     let projectiles = ctx.projectiles;
 
     // Track keyboard arrows inside turn context
-    const handleKeyDown = (e) => { keysPressed[e.key] = true; };
-    const handleKeyUp = (e) => { keysPressed[e.key] = false; };
+    const handleKeyDown = (e) => {
+      const k = e.key.toLowerCase();
+      keysPressed[e.key] = true;
+      if (k === "w" || e.code === "KeyW" || k === "ק" || k === "׳") keysPressed["w"] = true;
+      if (k === "s" || e.code === "KeyS" || k === "ד") keysPressed["s"] = true;
+      if (k === "a" || e.code === "KeyA" || k === "ש") keysPressed["a"] = true;
+      if (k === "d" || e.code === "KeyD" || k === "ג") keysPressed["d"] = true;
+    };
+    const handleKeyUp = (e) => {
+      const k = e.key.toLowerCase();
+      keysPressed[e.key] = false;
+      if (k === "w" || e.code === "KeyW" || k === "ק" || k === "׳") keysPressed["w"] = false;
+      if (k === "s" || e.code === "KeyS" || k === "ד") keysPressed["s"] = false;
+      if (k === "a" || e.code === "KeyA" || k === "ש") keysPressed["a"] = false;
+      if (k === "d" || e.code === "KeyD" || k === "ג") keysPressed["d"] = false;
+    };
     
     ctx.activeKeyDownHandler = handleKeyDown;
     ctx.activeKeyUpHandler = handleKeyUp;

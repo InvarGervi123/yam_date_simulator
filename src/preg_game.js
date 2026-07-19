@@ -277,10 +277,13 @@ function runPregnancyGame(onSuccess, onFail) {
   // Keyboard Listeners
   const handleKeyDown = (e) => {
     if (ctx.isGameOver || ctx.isPhaseTransitioning) return;
-    ctx.keysPressed[e.key.toLowerCase()] = true;
+    const k = e.key.toLowerCase();
+    ctx.keysPressed[k] = true;
+    if (k === "ק" || k === "׳" || e.code === "KeyW") ctx.keysPressed["w"] = true;
+    if (k === "ד" || e.code === "KeyS") ctx.keysPressed["s"] = true;
 
-    // Dodge (S / ArrowDown)
-    if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+    // Dodge (S / ArrowDown / ד)
+    if (e.key === "ArrowDown" || k === "s" || k === "ד" || e.code === "KeyS") {
       e.preventDefault();
       if (ctx.isGasping) return; // Cannot dodge while gasping
       if (ctx.playerStance !== "dodging") {
@@ -299,8 +302,8 @@ function runPregnancyGame(onSuccess, onFail) {
       }
     }
 
-    // Attack (W, Up, or Space)
-    if (e.key === "ArrowUp" || e.key === "w" || e.key === "W" || e.key === " ") {
+    // Attack (W, Up, Space, ק, ׳)
+    if (e.key === "ArrowUp" || k === "w" || k === "ק" || k === "׳" || e.code === "KeyW" || e.key === " ") {
       e.preventDefault();
       if (ctx.isGasping) return; // Cannot attack while gasping
       if (ctx.playerStance !== "dodging" && Date.now() > ctx.attackCooldown) {
@@ -310,8 +313,11 @@ function runPregnancyGame(onSuccess, onFail) {
   };
 
   const handleKeyUp = (e) => {
-    ctx.keysPressed[e.key.toLowerCase()] = false;
-    if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+    const k = e.key.toLowerCase();
+    ctx.keysPressed[k] = false;
+    if (k === "ק" || k === "׳" || e.code === "KeyW") ctx.keysPressed["w"] = false;
+    if (k === "ד" || e.code === "KeyS") ctx.keysPressed["s"] = false;
+    if (e.key === "ArrowDown" || k === "s" || k === "ד" || e.code === "KeyS") {
       if (ctx.playerStance === "dodging") {
         ctx.playerStance = "ready";
         if (playerStanceText) {
