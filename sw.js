@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v20-juicy';
+const CACHE_NAME = 'yam-date-sim-v21-settings';
 const ASSETS = [
   './',
   './index.html',

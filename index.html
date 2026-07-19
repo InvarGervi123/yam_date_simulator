@@ -24,9 +24,8 @@
 </head>
 <body>
   <main id="game">
-    <button id="soundToggle" aria-label="השתק מוזיקה">🔇</button>
+    <button id="settingsToggle" aria-label="הגדרות">⚙️</button>
     <button id="fullscreenToggle" aria-label="מסך מלא">🖥️</button>
-    <button id="typewriterToggle" aria-label="מהירות כתיבה">✍️</button>
     <button id="galleryToggle" aria-label="טבלת סופים">🏆</button>
     <div id="fallbackBg"></div>
     <div id="asciiBackground" class="ascii-art" style="display: none; position: absolute; inset: 0; font-family: monospace; white-space: pre; line-height: 8px; font-size: 8px; color: #ff0000; text-shadow: 0 0 5px #ff0000; overflow: hidden; z-index: 1; opacity: 0.45; pointer-events: none;"></div>
@@ -170,6 +169,37 @@
             </thead>
             <tbody id="galleryBody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" style="display: none;">
+      <div id="settingsBox">
+        <button id="closeSettings">✕</button>
+        <h3 style="margin: 0; font-size: 22px; color: #ffd447; text-align: center;">⚙️ הגדרות המשחק</h3>
+        <div class="settings-list">
+          <div class="settings-item">
+            <span>🎵 מוזיקת רקע</span>
+            <label class="switch">
+              <input type="checkbox" id="settingMusic">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <span>🔊 אפקטים וקולות (SFX)</span>
+            <label class="switch">
+              <input type="checkbox" id="settingSfx">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <span>✍️ כתיבה הדרגתית</span>
+            <label class="switch">
+              <input type="checkbox" id="settingTypewriter">
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
       </div>
     </div>

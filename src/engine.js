@@ -544,22 +544,79 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// Typewriter Speed HUD Button Binding
-const typewriterToggle = document.getElementById("typewriterToggle");
-if (typewriterToggle) {
-  typewriterToggle.textContent = typewriterEnabled ? "✍️" : "⚡";
-  typewriterToggle.onclick = () => {
-    typewriterEnabled = !typewriterEnabled;
-    localStorage.setItem("gameTypewriter", typewriterEnabled);
-    typewriterToggle.textContent = typewriterEnabled ? "✍️" : "⚡";
-    triggerVibration(20);
-    // If we toggle off during typing, reveal text immediately
-    if (!typewriterEnabled && isTextTyping) {
-      isTextTyping = false;
-      if (typewriterTimer) clearTimeout(typewriterTimer);
-      text.textContent = currentFullText;
+// Settings Modal UI Bindings
+const settingsToggle = document.getElementById("settingsToggle");
+const settingsModal = document.getElementById("settingsModal");
+const closeSettings = document.getElementById("closeSettings");
+
+const settingMusic = document.getElementById("settingMusic");
+const settingSfx = document.getElementById("settingSfx");
+const settingTypewriter = document.getElementById("settingTypewriter");
+
+if (settingsToggle && settingsModal && closeSettings) {
+  settingsToggle.onclick = () => {
+    // Open settings modal and load current states into checkboxes
+    if (settingMusic) settingMusic.checked = !window.isMusicMuted;
+    if (settingSfx) settingSfx.checked = !window.isSfxMuted;
+    if (settingTypewriter) settingTypewriter.checked = typewriterEnabled;
+    
+    settingsModal.style.display = "flex";
+    triggerVibration(15);
+  };
+  
+  closeSettings.onclick = () => {
+    settingsModal.style.display = "none";
+    triggerVibration(10);
+  };
+  
+  // Close when clicking outside settings box
+  settingsModal.onclick = (e) => {
+    if (e.target === settingsModal) {
+      settingsModal.style.display = "none";
     }
   };
+  
+  if (settingMusic) {
+    settingMusic.onchange = () => {
+      window.isMusicMuted = !settingMusic.checked;
+      localStorage.setItem("gameMusicMuted", window.isMusicMuted);
+      triggerVibration(10);
+      
+      // Dynamically apply music mute state to the audio element immediately
+      const musicElem = document.getElementById("music");
+      if (musicElem) {
+        musicElem.muted = window.isMusicMuted;
+        if (!window.isMusicMuted) {
+          musicElem.play().catch(() => {});
+        } else {
+          musicElem.pause();
+        }
+      }
+    };
+  }
+  
+  if (settingSfx) {
+    settingSfx.onchange = () => {
+      window.isSfxMuted = !settingSfx.checked;
+      localStorage.setItem("gameSfxMuted", window.isSfxMuted);
+      triggerVibration(10);
+    };
+  }
+  
+  if (settingTypewriter) {
+    settingTypewriter.onchange = () => {
+      typewriterEnabled = settingTypewriter.checked;
+      localStorage.setItem("gameTypewriter", typewriterEnabled);
+      triggerVibration(10);
+      
+      // If disabled during active typing, reveal text immediately
+      if (!typewriterEnabled && isTextTyping) {
+        isTextTyping = false;
+        if (typewriterTimer) clearTimeout(typewriterTimer);
+        text.textContent = currentFullText;
+      }
+    };
+  }
 }
 
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)

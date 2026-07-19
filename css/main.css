@@ -31,7 +31,7 @@ html, body {
   overflow: hidden;
 }
 
-#soundToggle, #fullscreenToggle, #typewriterToggle {
+#settingsToggle, #fullscreenToggle {
   position: absolute;
   top: 16px;
   width: 48px;
@@ -55,7 +55,7 @@ html, body {
   -webkit-user-select: none;
 }
 
-#soundToggle {
+#settingsToggle {
   right: 16px;
 }
 
@@ -63,18 +63,14 @@ html, body {
   right: 76px;
 }
 
-#typewriterToggle {
-  right: 136px;
-}
-
-#soundToggle:hover, #fullscreenToggle:hover, #typewriterToggle:hover {
+#settingsToggle:hover, #fullscreenToggle:hover {
   background: rgba(255, 212, 71, 0.9);
   border-color: #ffd447;
   color: #030305;
   transform: scale(1.08);
 }
 
-#soundToggle:active, #fullscreenToggle:active, #typewriterToggle:active {
+#settingsToggle:active, #fullscreenToggle:active {
   transform: scale(0.95);
 }
 
@@ -606,4 +602,118 @@ button {
 @keyframes floatAnim {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
+}
+
+/* --- Settings Modal & Toggle Switch Styles --- */
+#settingsModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 3, 5, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 230; /* overlay settings on top of visual novel HUD */
+}
+
+#settingsBox {
+  background: rgba(18, 18, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  border-radius: 22px;
+  padding: 24px;
+  width: 90%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: mgBoxFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  direction: rtl; /* Right to Left for clean Hebrew reading layout */
+}
+
+#closeSettings {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+#closeSettings:hover {
+  color: #ffffff;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 16px;
+  color: #e2e8f0;
+  direction: rtl;
+}
+
+.settings-item span {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 500;
+}
+
+/* Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #4a5568;
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #ffd447;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
 }
