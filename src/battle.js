@@ -45,6 +45,22 @@ function runDeltaruneBattle(config) {
   let activeTouchHandler = null;
 
   // Getter/setter context bridge to share state with battle_arena.js
+  /**
+   * @typedef {Object} BattleCtx
+   * @property {number} playerHp - Player health points (0 to 100).
+   * @property {number} playerTp - Tension points percentage (0 to 100).
+   * @property {boolean} hasShield - State if the player has active shield block.
+   * @property {number} bossHp - Boss health points (0 to 200).
+   * @property {number} bossMercy - Boss mercy/spare progress percentage (0 to 100).
+   * @property {boolean} isGameOver - Flag indicating if the turn battle ended.
+   * @property {number} turnCount - Number of completed battle turns.
+   * @property {number} heartX - Dodging heart X coordinate.
+   * @property {number} heartY - Dodging heart Y coordinate.
+   * @property {boolean} lastTurnHealed - Tracking if player used a healing item on the last turn.
+   * @property {number} bossAttackPower - Attack damage modifier of the Boss.
+   * @property {Object} keysPressed - Dictionary of actively held keyboard keys.
+   * @property {Array<Object>} projectiles - Active bullets/hazards inside the dodging arena.
+   */
   const battleCtx = {
     get playerHp() { return playerHp; },
     set playerHp(v) { playerHp = v; updateHpBars(); },
