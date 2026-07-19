@@ -31,7 +31,7 @@ html, body {
   overflow: hidden;
 }
 
-#soundToggle, #fullscreenToggle {
+#soundToggle, #fullscreenToggle, #typewriterToggle {
   position: absolute;
   top: 16px;
   width: 48px;
@@ -63,14 +63,18 @@ html, body {
   right: 76px;
 }
 
-#soundToggle:hover, #fullscreenToggle:hover {
+#typewriterToggle {
+  right: 136px;
+}
+
+#soundToggle:hover, #fullscreenToggle:hover, #typewriterToggle:hover {
   background: rgba(255, 212, 71, 0.9);
   border-color: #ffd447;
   color: #030305;
   transform: scale(1.08);
 }
 
-#soundToggle:active, #fullscreenToggle:active {
+#soundToggle:active, #fullscreenToggle:active, #typewriterToggle:active {
   transform: scale(0.95);
 }
 
@@ -560,4 +564,46 @@ button {
 }
 #galleryTableContainer::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 212, 71, 0.4);
+}
+
+/* --- Character Sprite Animations & Scene Transitions --- */
+#background, #character {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.char-bounce {
+  animation: bounceAnim 0.4s ease;
+}
+
+.char-shake {
+  animation: shakeAnim 0.4s ease;
+}
+
+.char-slide_in {
+  animation: slideInAnim 0.4s ease;
+}
+
+.char-float {
+  animation: floatAnim 3s ease-in-out infinite;
+}
+
+@keyframes bounceAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-15px); }
+  40%, 80% { transform: translateX(15px); }
+}
+
+@keyframes slideInAnim {
+  0% { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }

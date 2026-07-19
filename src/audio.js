@@ -3,17 +3,24 @@
 const music = document.getElementById("music");
 const sfx = document.getElementById("sfx");
 const soundToggle = document.getElementById("soundToggle");
-let isMuted = true;
+// Initialize audio state from localStorage (default to false / unmuted for new users)
+let isMuted = localStorage.getItem("gameMuted") === "true";
+if (localStorage.getItem("gameMuted") === null) {
+  isMuted = false; // default to unmuted for public release
+}
+window.isMuted = isMuted;
 
-// Initialize audio as muted by default
-if (music) music.muted = true;
-if (sfx) sfx.muted = true;
-if (soundToggle) soundToggle.textContent = "🔇";
+if (music) music.muted = isMuted;
+if (sfx) sfx.muted = isMuted;
+if (soundToggle) soundToggle.textContent = isMuted ? "🔇" : "🔊";
 
 // Toggle mute function
 if (soundToggle) {
   soundToggle.onclick = () => {
     isMuted = !isMuted;
+    window.isMuted = isMuted;
+    localStorage.setItem("gameMuted", isMuted);
+    
     if (music) music.muted = isMuted;
     if (sfx) sfx.muted = isMuted;
     soundToggle.textContent = isMuted ? "🔇" : "🔊";

@@ -2,6 +2,74 @@
 
 let currentScene = "start";
 
+// Typewriter & Audio settings state
+let typewriterTimer = null;
+let currentFullText = "";
+let isTextTyping = false;
+let typewriterEnabled = localStorage.getItem("gameTypewriter") !== "false";
+
+let audioCtx = null;
+function playVoiceBeep(speaker) {
+  if (window.isMuted) return;
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    let freq = 220;
+    let type = "sine";
+    let vol = 0.08;
+    
+    const name = (speaker || "").toLowerCase();
+    if (name.includes("ים") || name.includes("yam")) {
+      freq = 110;
+      type = "triangle";
+      vol = 0.12;
+    } else if (name.includes("באלדי") || name.includes("baldi")) {
+      freq = 380;
+      type = "sine";
+      vol = 0.06;
+    } else if (name.includes("ינוור") || name.includes("invar")) {
+      freq = 180;
+      type = "sawtooth";
+      vol = 0.04;
+    }
+    
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.05);
+  } catch (e) {}
+}
+
+function skipOrAdvanceDialogue() {
+  if (isTextTyping && typewriterEnabled) {
+    // Reveal text immediately
+    isTextTyping = false;
+    if (typewriterTimer) clearTimeout(typewriterTimer);
+    text.textContent = currentFullText;
+    triggerVibration(10);
+  } else {
+    // Standard advance
+    const scene = story[currentScene];
+    if (scene && scene.next) {
+      triggerVibration(15);
+      showScene(scene.next);
+    }
+  }
+}
+
 const bg = document.getElementById("background");
 const character = document.getElementById("character");
 const speaker = document.getElementById("speaker");
@@ -241,7 +309,34 @@ function showScene(id) {
   if (window.asciiModeEnabled) {
     displayText = glitchText(displayText);
   }
-  text.textContent = displayText;
+
+  // Handle Typewriter Text Effect
+  if (typewriterTimer) clearTimeout(typewriterTimer);
+  currentFullText = displayText;
+  
+  if (typewriterEnabled && displayText.length > 0) {
+    isTextTyping = true;
+    text.textContent = "";
+    let charIndex = 0;
+    
+    function typeNextChar() {
+      if (!isTextTyping) return;
+      if (charIndex < currentFullText.length) {
+        text.textContent += currentFullText[charIndex];
+        if (charIndex % 2 === 0) {
+          playVoiceBeep(scene.speaker);
+        }
+        charIndex++;
+        typewriterTimer = setTimeout(typeNextChar, 18);
+      } else {
+        isTextTyping = false;
+      }
+    }
+    typeNextChar();
+  } else {
+    isTextTyping = false;
+    text.textContent = currentFullText;
+  }
   
   clearChoices();
 
@@ -298,12 +393,18 @@ function showScene(id) {
   if (scene.next) {
     nextBtn.style.display = "block";
     nextBtn.textContent = scene.nextText || "המשך";
-    nextBtn.onclick = () => {
-      triggerVibration(15);
-      showScene(scene.next);
+    nextBtn.onclick = (e) => {
+      e.stopPropagation();
+      skipOrAdvanceDialogue();
     };
   } else {
     nextBtn.style.display = "none";
+  }
+
+  // Allow clicking the dialog box itself to skip/advance
+  const dialogBox = document.getElementById("dialogBox");
+  if (dialogBox) {
+    dialogBox.onclick = skipOrAdvanceDialogue;
   }
 }
 
@@ -426,12 +527,10 @@ window.addEventListener("keydown", (e) => {
   if (galleryModal && galleryModal.style.display === "flex") return;
   if (minigameOverlay && minigameOverlay.style.display === "flex") return;
 
-  // Space or Enter advances dialogue
+  // Space or Enter advances dialogue (either completes typewriter typing, or goes to next scene)
   if (e.key === " " || e.key === "Enter") {
-    if (nextBtn && nextBtn.style.display !== "none" && typeof nextBtn.onclick === "function") {
-      e.preventDefault();
-      nextBtn.click();
-    }
+    e.preventDefault();
+    skipOrAdvanceDialogue();
   }
 
   // Numbers 1-9 choose visual novel story choices
@@ -444,6 +543,24 @@ window.addEventListener("keydown", (e) => {
     }
   }
 });
+
+// Typewriter Speed HUD Button Binding
+const typewriterToggle = document.getElementById("typewriterToggle");
+if (typewriterToggle) {
+  typewriterToggle.textContent = typewriterEnabled ? "✍️" : "⚡";
+  typewriterToggle.onclick = () => {
+    typewriterEnabled = !typewriterEnabled;
+    localStorage.setItem("gameTypewriter", typewriterEnabled);
+    typewriterToggle.textContent = typewriterEnabled ? "✍️" : "⚡";
+    triggerVibration(20);
+    // If we toggle off during typing, reveal text immediately
+    if (!typewriterEnabled && isTextTyping) {
+      isTextTyping = false;
+      if (typewriterTimer) clearTimeout(typewriterTimer);
+      text.textContent = currentFullText;
+    }
+  };
+}
 
 // Start Simulator
 showScene("start");
