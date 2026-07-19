@@ -717,3 +717,13 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(24px);
 }
+
+/* OLED Power Saving Mode */
+#game.oled-mode {
+  background: #000000 !important;
+}
+#game.oled-mode #background,
+#game.oled-mode #fallbackBg,
+#game.oled-mode #asciiBackground {
+  display: none !important;
+}

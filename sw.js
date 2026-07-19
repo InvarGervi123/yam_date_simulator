@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v21-settings';
+const CACHE_NAME = 'yam-date-sim-v22-oled';
 const ASSETS = [
   './',
   './index.html',

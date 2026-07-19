@@ -7,6 +7,8 @@ let typewriterTimer = null;
 let currentFullText = "";
 let isTextTyping = false;
 let typewriterEnabled = localStorage.getItem("gameTypewriter") !== "false";
+let animationsEnabled = localStorage.getItem("gameAnimations") !== "false";
+let oledModeEnabled = localStorage.getItem("gameOled") === "true";
 
 let audioCtx = null;
 function playVoiceBeep(speaker) {
@@ -293,14 +295,18 @@ function showScene(id) {
 
   // Trigger Character Animations (bounce, shake, slide_in, float)
   character.className = "";
-  const anim = scene.characterAnimation || "float"; // Default to float to keep the game feeling alive
-  const animClass = `char-${anim}`;
-  character.classList.add(animClass);
-  if (anim !== "float") {
-    setTimeout(() => {
-      character.classList.remove(animClass);
-      character.classList.add("char-float"); // transition back to idle float bobbing
-    }, 500);
+  if (animationsEnabled) {
+    const anim = scene.characterAnimation || "float"; // Default to float to keep the game feeling alive
+    const animClass = `char-${anim}`;
+    character.classList.add(animClass);
+    if (anim !== "float") {
+      setTimeout(() => {
+        if (animationsEnabled) {
+          character.classList.remove(animClass);
+          character.classList.add("char-float"); // transition back to idle float bobbing
+        }
+      }, 500);
+    }
   }
 
   speaker.textContent = scene.speaker || "";
@@ -560,6 +566,11 @@ if (settingsToggle && settingsModal && closeSettings) {
     if (settingSfx) settingSfx.checked = !window.isSfxMuted;
     if (settingTypewriter) settingTypewriter.checked = typewriterEnabled;
     
+    const settingAnimation = document.getElementById("settingAnimation");
+    const settingOled = document.getElementById("settingOled");
+    if (settingAnimation) settingAnimation.checked = animationsEnabled;
+    if (settingOled) settingOled.checked = oledModeEnabled;
+    
     settingsModal.style.display = "flex";
     triggerVibration(15);
   };
@@ -617,6 +628,41 @@ if (settingsToggle && settingsModal && closeSettings) {
       }
     };
   }
+
+  const settingAnimation = document.getElementById("settingAnimation");
+  const settingOled = document.getElementById("settingOled");
+
+  if (settingAnimation) {
+    settingAnimation.onchange = () => {
+      animationsEnabled = settingAnimation.checked;
+      localStorage.setItem("gameAnimations", animationsEnabled);
+      triggerVibration(10);
+      
+      // Update sprite styling instantly
+      if (!animationsEnabled) {
+        character.className = "";
+      } else {
+        character.classList.add("char-float");
+      }
+    };
+  }
+
+  if (settingOled) {
+    settingOled.onchange = () => {
+      oledModeEnabled = settingOled.checked;
+      localStorage.setItem("gameOled", oledModeEnabled);
+      triggerVibration(10);
+      
+      const gameElem = document.getElementById("game");
+      if (gameElem) {
+        if (oledModeEnabled) {
+          gameElem.classList.add("oled-mode");
+        } else {
+          gameElem.classList.remove("oled-mode");
+        }
+      }
+    };
+  }
 }
 
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
@@ -633,6 +679,12 @@ const startAudioOnInteraction = () => {
 };
 window.addEventListener("click", startAudioOnInteraction);
 window.addEventListener("keydown", startAudioOnInteraction);
+
+// Apply initial OLED settings from localStorage
+const gameElem = document.getElementById("game");
+if (gameElem && localStorage.getItem("gameOled") === "true") {
+  gameElem.classList.add("oled-mode");
+}
 
 // Start Simulator
 showScene("start");
