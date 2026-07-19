@@ -51,7 +51,7 @@ Object.assign(window.story, {
   },
 
   oranit_kitchen_meet: {
-    character: "images/yam_happy.png",
+    character: "images/characters/yam_happy.png",
     speaker: "ים",
     characterAnimation: "shake",
     text: "ים יושב ליד השולחן בפיג'מה ואוכל שניצל תירס קפוא.\n'איך נכנסתם?! השומר בשער נשבע לי שהוא לא נותן לאף אחד לעבור בלי סאב פעיל!'\nינוור מחייך: 'קסם היוטיוב שלי חזק מהחומות של אורנית!'",
@@ -71,7 +71,7 @@ Object.assign(window.story, {
   },
 
   tel_aviv_dream: {
-    character: "images/yam_angry.png",
+    character: "images/characters/yam_angry.png",
     speaker: "ים",
     characterAnimation: "float",
     text: "ים נאנח ומסתכל על התקרה בעיניים חולמניות.\n'תל אביב... לגור בדירת חדר וחצי מעל פלאפל ג'ינה, עם מרפסת קטנה לעריכת סרטונים. אבל... זה כזה יקר! השכירות שם עולה יותר מכל ההכנסות של ים שמואל הפקות ב-10 שנים!'",
@@ -92,7 +92,7 @@ Object.assign(window.story, {
   },
 
   tel_aviv_park_date: {
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     speaker: "ים",
     characterAnimation: "bounce",
     text: "אתם יושבים על הדשא בפארק הירקון ושותים מיץ פחיות זול.\nים מביט בירקון: 'וואו... המים פה ירוקים כמעט כמו מיץ הפחיות של ינוור.\nזה מרגיש כמו דייט אמיתי... אפילו יותר טוב מסרטון גיימינג של 10 שעות.'\nאתם מתחבקים בזמן שנוטריות מנסות לגנוב לכם את הבורקס.",
@@ -152,7 +152,7 @@ Object.assign(window.story, {
   },
 
   math_study_intro: {
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     speaker: "ים",
     characterAnimation: "float",
     text: "מתמטיקה? מתמטיקה זה קל!\nהכל זה אלגוריתמים, נתוני אנליטיקס ונוסחאות של בורקסים.\nבוא נראה אם תצליחי לפתור את מבחן המתמטיקה המהיר שלי.\nהנה דף הנוסחאות הרשמי של ים שמואל הפקות, תשתמשי בו בתבונה!",

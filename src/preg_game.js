@@ -203,14 +203,14 @@ function runPregnancyGame(onSuccess, onFail) {
   }
 
   const phantomImages = [
-    "images/yam_sleepy.png",
-    "images/yam_angry.png",
-    "images/yam_sad.png",
-    "images/yam_curious.png",
-    "images/yam_happy.png",
-    "images/yam_horny.png",
-    "images/yam_surpise.png",
-    "images/yam_alien.png"
+    "images/characters/yam_sleepy.png",
+    "images/characters/yam_angry.png",
+    "images/characters/yam_sad.png",
+    "images/characters/yam_curious.png",
+    "images/characters/yam_happy.png",
+    "images/characters/yam_horny.png",
+    "images/characters/yam_surpise.png",
+    "images/characters/yam_alien.png"
   ];
 
   function spawnPhantom(imgSrc, index) {

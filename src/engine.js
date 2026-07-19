@@ -86,8 +86,8 @@ const minigameInstruction = document.getElementById("minigameInstruction");
 const minigameVisual = document.getElementById("minigameVisual");
 const minigameBtn = document.getElementById("minigameBtn");
 
-const DEFAULT_BG = "images/room.jpg";
-const DEFAULT_CHARACTER = "images/yam.png";
+const DEFAULT_BG = "images/backgrounds/room.jpg";
+const DEFAULT_CHARACTER = "images/characters/yam.png";
 
 // Haptic Vibration helper
 function triggerVibration(pattern) {
@@ -242,7 +242,7 @@ function showScene(id) {
           if (jAscii) jAscii.textContent = str;
         });
       };
-      jImg.src = "images/yam_dead.png";
+      jImg.src = "images/characters/yam_dead.png";
       
       if (gameContainer) gameContainer.classList.add("effect-shake");
       triggerVibration(1000);

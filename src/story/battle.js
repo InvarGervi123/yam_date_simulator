@@ -25,7 +25,7 @@ Object.assign(window.story, {
   },
 
   boss_fight_win: {
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     speaker: "ים",
     characterAnimation: "shake",
     effect: "shake",
@@ -48,7 +48,7 @@ Object.assign(window.story, {
   },
 
   boss_fight_spare: {
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     speaker: "ים",
     characterAnimation: "bounce",
     text: "ים מביט בך בעיניים דומעות.\n'ריחמת עלי? למרות שידעת שיש לי מינוס שלושה סאבים?!'\nהוא קם מהמיטה מרצונו החופשי.\n'אתה חבר אמיתי. יאללה, בוא נלך לאכול בורקס ולדבר על האלגוריתם.'",

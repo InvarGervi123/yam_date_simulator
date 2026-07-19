@@ -1,7 +1,7 @@
 // --- Baldi's Basics in Oranit: 3D Raycaster Engine ---
 
 const jumpscareYamImg = new Image();
-jumpscareYamImg.src = "images/yam.png";
+jumpscareYamImg.src = "images/characters/yam.png";
 
 function runBaldiMinigame(config) {
   const minigameBox = document.getElementById("minigameBox");
@@ -38,7 +38,7 @@ function runBaldiMinigame(config) {
               </div>
             </div>
             <div class="baldi-teacher-container">
-              <img id="baldiTeacherImg" class="baldi-teacher-img" src="images/yam.png" alt="Yam" />
+              <img id="baldiTeacherImg" class="baldi-teacher-img" src="images/characters/yam.png" alt="Yam" />
             </div>
           </div>
         </div>

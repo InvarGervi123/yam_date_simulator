@@ -50,12 +50,12 @@ window.battleArena = {
       // Chew animation
       const bossSprite = document.getElementById("battleBossSprite");
       if (bossSprite) {
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_1.png"; }, 0);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 350);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 700);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_2.png"; }, 1050);
-        setTimeout(() => { bossSprite.src = "images/yam_boss_animation_food_3.png"; }, 1400);
-        setTimeout(() => { bossSprite.src = "images/Boss_fight.png"; }, 2000);
+        setTimeout(() => { bossSprite.src = "images/characters/yam_boss_animation_food_1.png"; }, 0);
+        setTimeout(() => { bossSprite.src = "images/characters/yam_boss_animation_food_2.png"; }, 350);
+        setTimeout(() => { bossSprite.src = "images/characters/yam_boss_animation_food_3.png"; }, 700);
+        setTimeout(() => { bossSprite.src = "images/characters/yam_boss_animation_food_2.png"; }, 1050);
+        setTimeout(() => { bossSprite.src = "images/characters/yam_boss_animation_food_3.png"; }, 1400);
+        setTimeout(() => { bossSprite.src = "images/characters/Boss_fight.png"; }, 2000);
       }
     }
 

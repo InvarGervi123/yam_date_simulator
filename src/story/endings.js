@@ -2,14 +2,14 @@
 Object.assign(window.story, {
   end_algorithm: {
     speaker: "סוף 1/59",
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     text: "🤖 סוף האלגוריתם\n\nאת הופכת לאלגוריתם של ים.\nכל בוקר את ממליצה לו: חיבוק, מים, שמש, לא לקרוא תגובות.\nהוא מתעלם מ־75% מזה, שזה עדיין יותר טוב מהממוצע האנושי.\n\nסוף מוזר, אבל יחסית בריא.",
     end: true
   },
 
   end_content_empire: {
     speaker: "סוף 2/59",
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     text: "📹 סוף אימפריית התוכן\n\nהדייט הופך לסרטון: 'ניסיתי לצאת לדייט וכמעט קמתי מהמיטה'.\nהוא מקבל 13 צפיות, 2 לייקים, ותגובה אחת מינוור: 'חלש'.\nים קורא לזה הצלחה מסחררת.\nאת קוראת לזה קשר עם בעיות.",
     end: true
   },
@@ -46,7 +46,7 @@ Object.assign(window.story, {
 
   end_coupon_wedding: {
     speaker: "סוף 8/59",
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     text: "💍 סוף חתונה עם קוד קופון\n\nים מסכים להתחתן רק אם יש קוד קופון לאולם.\nהחתונה מתקיימת בזום, הקייטרינג הוא בורקס, והדי־ג'יי הוא פלייליסט בשם 'שירים למצבים שאין דרך חזרה'.\nרומנטי? לא. יעיל? גם לא.",
     end: true
   },
@@ -83,7 +83,7 @@ Object.assign(window.story, {
 
   end_bed_snacks: {
     speaker: "סוף 14/59",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🍿 סוף חטיפים במיטה\n\nהדייט הוא חטיפים, שמיכה, וסרטון של INVARIRON ברקע.\nים אומר שזה מושלם.\nאת אומרת שזה קצת עצוב.\nשניכם צודקים, וזה החלק הכי מטריד.",
     end: true
   },
@@ -108,7 +108,7 @@ Object.assign(window.story, {
 
   end_petah_tikva: {
     speaker: "סוף 18/59",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🏆 סוף טוב: פתח תקווה\n\nאתם יוצאים לדייט בפתח תקווה.\nלא ברור אם העיר אמיתית או באג במפה, אבל ים מחזיק לך יד.\nכעבור שנים יש לכם ילדים שנראים כמו פחיות.\nהם עושים רעש כשהם רצים, אבל לפחות יש להם אופי.",
     end: true
   },
@@ -139,7 +139,7 @@ Object.assign(window.story, {
 
   end_cinema_good: {
     speaker: "סוף 23/59",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🎥 סוף קולנוע טוב\n\nצחקת וסלחת.\nים הבטיח שבדייט הבא הוא יישן רק אחרי הטריילרים.\nזה לא הרבה, אבל באקלים הרומנטי הזה גם פירור הוא סעודה.",
     end: true
   },
@@ -158,7 +158,7 @@ Object.assign(window.story, {
 
   end_bus_romance: {
     speaker: "סוף 26/59",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🚌 סוף רומנטיקת תחנה\n\nהחזקת לו יד בתחנת אוטובוס.\nהאור היה מכוער.\nהספסל היה קר.\nהעולם נראה כמו הודעת שגיאה.\nועדיין, זה עבד.\nסוף טוב קטן ומוזר.",
     end: true
   },
@@ -213,14 +213,14 @@ Object.assign(window.story, {
 
   end_true_love: {
     speaker: "סוף 35/59",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "❤️ סוף טוב אמיתי\n\nים יוצא איתך לדייט.\nבלי טריקים. בלי איומים. בלי חוזה.\nהוא עדיין מדבר על INVARIRON יותר מדי, ואת עדיין לא מבינה למה הילדים בעתיד נראים כמו פחיות.\nאבל איכשהו, זה עובד.\n\nניצחת את ים דייט סימולטור.",
     end: true
   },
 
   end_fast_wedding: {
     speaker: "סוף בונוס",
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     text: "💍 סוף חתונה מהירה\n\nהצעת חתונה מיד אחרי בורקס גבינה.\nים אמר כן מתוך בלבול, רעב, וחשש שתיקחי את הבורקס.\nהחתונה הייתה מטומטמת אחושרמוטה.\nהילדים? כן. פחיות. מלא פחיות.",
     end: true
   },
@@ -287,7 +287,7 @@ Object.assign(window.story, {
 
   end_contract_date: {
     speaker: "סוף בונוס",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "📄 סוף חוזה הדייט\n\nים חתם.\nהדייט התקיים לפי סעיפים.\nבדקה השביעית הוא ניסה לדבר על INVARIRON, ואת הצבעת על החוזה.\nהאהבה ניצחה באמצעות בירוקרטיה, שזה הכי ישראלי שיש.",
     end: true
   },
@@ -306,14 +306,14 @@ Object.assign(window.story, {
 
   end_soft_good: {
     speaker: "סוף בונוס",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🌱 סוף טוב רך\n\nים מסכים לדייט קטן, בלי לחץ.\nהלכתם חמש דקות וחזרתם.\nזה נשמע כלום, אבל בשביל ים זה היה טריאתלון רגשי עם נעליים לא נוחות.",
     end: true
   },
 
   end_hug: {
     speaker: "סוף בונוס",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🫂 סוף חיבוק\n\nחיבקת את ים.\nהוא לא ידע מה לעשות עם הידיים.\nאחרי 4 שניות הוא אמר: 'זה יותר טוב מסאב.'\nהעולם לא נרפא, אבל החדר נהיה קצת פחות שחור.",
     end: true
   },
@@ -338,7 +338,7 @@ Object.assign(window.story, {
 
   end_balanced_channels: {
     speaker: "סוף בונוס",
-    character: "images/yam_dead.png",
+    character: "images/characters/yam_dead.png",
     text: "⚖ סוף איזון ערוצים\n\nאמרת שגם INVARIRON וגם ים שמואל הפקות חשובים.\nים הרגיש שנראה אותו באמת.\nהדייט התקיים, אבל כל 10 דקות הוא בדק אם הערוצים מקנאים.\nקשר מורכב, אבל עובד.",
     end: true
   },
@@ -363,7 +363,7 @@ Object.assign(window.story, {
 
   end_healthy_good: {
     speaker: "סוף סודי",
-    character: "images/yam_horny.png",
+    character: "images/characters/yam_horny.png",
     text: "🌿 סוף בריא מדי למשחק הזה\n\nנתת לים לבחור.\nהוא בחר דייט קצר מחר, אחרי שינה, בלי לחץ.\nהמשחק לא ידע איך להתמודד עם תקשורת בריאה, אז הוא פשוט נתן לך סוף טוב.\nכל הכבוד, הרסת את הדרמה בצורה הכי טובה.",
     end: true
   },
