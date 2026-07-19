@@ -179,24 +179,23 @@ window.slenderCtx = {
     const btnBackward = document.getElementById("slenderCtrlBackward");
     const btnAction = document.getElementById("slenderCtrlAction");
 
-    if (btnLeft) {
-      btnLeft.ontouchstart = (e) => { e.preventDefault(); keys.a = true; };
-      btnLeft.ontouchend = (e) => { e.preventDefault(); keys.a = false; };
+    function bindEvents(btn, keyState) {
+      if (!btn) return;
+      btn.ontouchstart = (e) => { e.preventDefault(); keys[keyState] = true; };
+      btn.ontouchend = (e) => { e.preventDefault(); keys[keyState] = false; };
+      btn.onmousedown = () => { keys[keyState] = true; };
+      btn.onmouseup = () => { keys[keyState] = false; };
+      btn.onmouseleave = () => { keys[keyState] = false; };
     }
-    if (btnRight) {
-      btnRight.ontouchstart = (e) => { e.preventDefault(); keys.d = true; };
-      btnRight.ontouchend = (e) => { e.preventDefault(); keys.d = false; };
-    }
-    if (btnForward) {
-      btnForward.ontouchstart = (e) => { e.preventDefault(); keys.w = true; };
-      btnForward.ontouchend = (e) => { e.preventDefault(); keys.w = false; };
-    }
-    if (btnBackward) {
-      btnBackward.ontouchstart = (e) => { e.preventDefault(); keys.s = true; };
-      btnBackward.ontouchend = (e) => { e.preventDefault(); keys.s = false; };
-    }
+
+    bindEvents(btnLeft, "a");
+    bindEvents(btnRight, "d");
+    bindEvents(btnForward, "w");
+    bindEvents(btnBackward, "s");
+
     if (btnAction) {
       btnAction.ontouchstart = (e) => { e.preventDefault(); checkInteract(); };
+      btnAction.onmousedown = () => { checkInteract(); };
     }
   }
 
@@ -270,6 +269,9 @@ window.slenderCtx = {
     if (mobileControls) {
       const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 800);
       mobileControls.style.display = isTouch ? "flex" : "none";
+      if (isTouch) {
+        setupTouchControls();
+      }
     }
     
     // Hide visual novel HUD buttons to prevent navigation during slender minigame
