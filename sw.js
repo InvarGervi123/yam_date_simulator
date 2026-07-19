@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v24-types';
+const CACHE_NAME = 'yam-date-sim-v25-mute';
 const ASSETS = [
   './',
   './index.html',

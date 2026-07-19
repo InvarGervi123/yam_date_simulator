@@ -10,9 +10,12 @@ let typewriterEnabled = localStorage.getItem("gameTypewriter") !== "false";
 let animationsEnabled = localStorage.getItem("gameAnimations") !== "false";
 let oledModeEnabled = localStorage.getItem("gameOled") === "true";
 
+// Autoplay tracking state to prevent browser warning spam
+window.hasUserInteracted = false;
+
 let audioCtx = null;
 function playVoiceBeep(speaker) {
-  if (window.isMuted) return;
+  if (window.isSfxMuted || !window.hasUserInteracted) return;
   try {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -667,11 +670,12 @@ if (settingsToggle && settingsModal && closeSettings) {
 
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
 const startAudioOnInteraction = () => {
+  window.hasUserInteracted = true;
   if (audioCtx && audioCtx.state === "suspended") {
     audioCtx.resume();
   }
   const currentMusic = document.getElementById("music");
-  if (currentMusic && !window.isMuted && currentMusic.paused) {
+  if (currentMusic && !window.isMusicMuted && currentMusic.paused) {
     currentMusic.play().catch(() => {});
   }
   window.removeEventListener("click", startAudioOnInteraction);
