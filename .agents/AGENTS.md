@@ -67,4 +67,10 @@ To write highly readable, glitch-free code, follow this plan-first checklist:
 - **Transformation Timeline**: Must last exactly 6 seconds: 0s-2s sprite flicker, 2s-4s stagger spawn of 8 phantoms, 4.5s aura transition & music swap, 6s transition complete.
 - **Prevent Room Leak**: Shakes and ducking transformations must never be applied to `#pregOverlay`. They must be applied strictly to internal wrapper nodes (`#pregSpaceContainer` and `#pregBossContainer`).
 
+## 9. Modular Settings, JSDoc typings & Layout Independent Keyboards
+- Expose all custom preferences (audio channels, typewriter toggles, animations, OLED battery saver) through the settings gear toggle (`⚙️`) and keep preferences synchronized in `localStorage`.
+- Maintain the JSDoc typings for the four core minigame contexts (`slenderCtx`, `baldiCtx`, `pregCtx`, `battleCtx`) to guarantee autocomplete, type safety, and editor inline documentation.
+- Keep static assets sorted: characters belong under `images/characters/` and room/scene backgrounds under `images/backgrounds/`.
+- Ensure all interactive minigames support layout-independent bindings using physical `e.code` (`KeyW`/`KeyA`/`KeyS`/`KeyD`/`KeyE`), Hebrew equivalents (`ק`/`ש`/`ד`/`ג`/`׳`), and Arrow keys so that switching language layouts never freezes player actions.
+
 

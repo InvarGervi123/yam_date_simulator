@@ -17,6 +17,10 @@
 **Yam Date Simulator** is an ultra-lightweight, zero-dependency visual novel and interactive simulation game engine developed and optimized by lead systems architect and engineer [InvarGervi123](https://github.com/InvarGervi123). Designed as a high-performance, single-page application (SPA), the system is architected for zero-latency, cross-platform execution on both low-spec mobile and high-end desktop environments.
 
 ### ⚡ Architectural Highlights:
+* **Centralized Settings Panel (⚙️):** A unified settings overlay for custom preferences (SFX/voices, background music, typewriter speed, character movement, and OLED power saver).
+* **Decoupled Audio Manager:** Separates and independently toggles background soundtracks (Music) and synthesized retro speech blips/button feedback (SFX), persisting choices in `localStorage` for instant, non-blasting reloads.
+* **OLED Power Saver (🔋):** Disables background graphics and renders dialogues/sprites against a solid black `#000000` canvas, saving device battery power on OLED displays.
+* **Layout-Independent Keyboard Mappings:** Standardizes all minigame controls (Deltarune, Baldi, and Space VR) to be layout-agnostic, supporting standard Arrow keys, QWERTY physical key codes (`KeyW`/`KeyA`/`KeyS`/`KeyD`), and translated Hebrew characters (`׳`/`ש`/`ד`/`ג`/`ק`) without conflicts.
 * **Offline-First & PWA Compliance:** Powered by a customized Service Worker (`sw.js`) implementing a **Stale-While-Revalidate** network cache strategy. Bypasses internet network round-trips for instant start-ups.
 * **Wolfenstein-Style 3D Engine (CPU-Optimized):** Custom-built Wolfenstein 3D Raycaster using HTML5 2D Canvas context rendering. Avoids heavy WebGL overhead, reducing GPU temperatures and memory consumption on low-end mobile hardware. Includes a localized unstick fallback heuristic pathfinder.
 * **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
@@ -74,6 +78,10 @@ Contributions, bug reports, and suggestions are welcome!
    מערכת טעינת הסקריפטים נבנתה ללא מודולים של ES (ללא `import`/`export`), מה שמאפשר להריץ את המשחק ישירות מדאבל-קליק על קובץ ה-`index.html` המקומי (פרוטוקול `file://`) ללא צורך בהקמת שרת מקומי, תוך התגברות על מגבלות CORS מחמירות של דפדפנים מודרניים.
 5. **אופטימיזציית זיכרון (RAM Footprint Optimization):**
    כל קבצי המולטימדיה נדחסו בצורה מקסימלית: תמונות בפורמט WebP יעיל וקבצי אודיו ב-MP3 עם Bitrate משתנה (VBR) המותאם לרמקולים של מכשירי קצה. נכסים אלו נשמרים ב-RAM רק בעת הצורך כדי למנוע דליפות זיכרון (Memory Leaks).
+6. **פאנל הגדרות מרכזי ומצב חיסכון OLED:**
+   הוספנו תפריט הגדרות (`⚙️`) המאפשר שליטה בלתי תלויה בהשתקת מוזיקה (Music) בנפרד מאפקטים קוליים (SFX), ביטול תנועות הדמויות, ומצב חיסכון OLED מיוחד המעלים את הרקעים לצבע שחור מוחלט (`#000000`) המכבה פיזית פיקסלים במסכי OLED לחסכון סוללה מוגבר בניידים.
+7. **תמיכה במקלדות עבריות (Layout Independence):**
+   כל מנועי המשחקים (Deltarune, Baldi, Space VR) הותאמו לקבלת קלט פיזי ודו-שפתי. המשחק מתרגם אוטומטית לחיצות עבריות כמו `ק`/`ש`/`ד`/`ג` וגרש `׳` לתנועות הניווט המתאימות באנגלית (`W`/`A`/`S`/`D`) ללא התנגשויות או תקיעות.
 
 ---
 
@@ -102,7 +110,9 @@ Contributions, bug reports, and suggestions are welcome!
 │   ├── minigames.css   # רכיבים אינטראקטיביים משותפים ואפקטי רעידת מסך
 │   ├── battle.css      # עיצוב זירת הקרב, מד ה-TP ואנימציות הבעות הבוס
 │   └── baldi.css       # ממשק המבוג, מקלדת וירטואלית וכפתורי מובייל
-├── images/             # נכסים גרפיים דחוסים (WebP/Optimized PNG)
+├── images/             # נכסים גרפיים מאורגנים (WebP/Optimized PNG)
+│   ├── characters/     # ספרייטים של דמויות ואנימציות (ים, אינוור, בוס)
+│   └── backgrounds/    # רקעים (כמו חדר השינה room.jpg)
 ├── audio/              # נכסי שמע ממוטבים (Variable Bitrate MP3)
 └── src/                # קוד המקור הלוגי (Vanilla JS Modules)
     ├── audio.js        # מנהל השמע הראשי, מניעת זליגות וניהול ערוצים
