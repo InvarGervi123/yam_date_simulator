@@ -136,6 +136,20 @@ function runBaldiMinigame(config) {
   let keys = { w: false, s: false, a: false, d: false };
 
   // Context broker for renderer access
+  /**
+   * @typedef {Object} BaldiCtx
+   * @property {number} px - Player X grid coordinate.
+   * @property {number} py - Player Y grid coordinate.
+   * @property {number} pa - Player angle of view (radians).
+   * @property {number} fov - Field of view angle (radians).
+   * @property {number} mapSize - Dimensions of the square map.
+   * @property {Array<number>} map - 1D array representing the map grid (1 = wall, 0 = floor).
+   * @property {Array<Object>} sprites - Active 3D billboards (like notebooks).
+   * @property {Object} yamRef - Coordinates and state of the chasing Baldi Yam.
+   * @property {string|null} hudAlert - Dynamic text warning displayed in HUD.
+   * @property {boolean} jumpScareActive - Flag if jumpscare triggers.
+   * @property {HTMLImageElement} jumpscareYamImg - Image source for the jumpscare sprite.
+   */
   const baldiCtx = {
     get px() { return px; },
     get py() { return py; },

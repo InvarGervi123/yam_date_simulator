@@ -1,5 +1,21 @@
-// --- Slender 3D ASCII Game Controller ---
-
+/**
+ * @typedef {Object} SlenderCtx
+ * @property {number} px - Player X coordinate in the 2D grid map.
+ * @property {number} py - Player Y coordinate in the 2D grid map.
+ * @property {number} pa - Player looking angle (rotation) in radians.
+ * @property {number} fov - Field of view angle in radians.
+ * @property {Array<Array<number>>} map - Active 2D grid map array (1 = wall, 0 = open path).
+ * @property {Array<Object>} sprites - Array of spawned collectible items and batteries.
+ * @property {number} pagesCollected - Number of code pages collected so far (0 to 4).
+ * @property {number} battery - Flashlight battery level percentage (0 to 100).
+ * @property {boolean} flashlightOn - State of the player's flashlight beam.
+ * @property {Object} yam - Coordinates {x, y} of the chasing Yam stalker.
+ * @property {number} yamSpeed - Movement step velocity of Yam.
+ * @property {number} staticRatio - Intensity of static distortion noise overlay (0 to 1).
+ * @property {boolean} gameOver - Mapped state if the player gets caught by Yam.
+ * @property {boolean} success - Mapped state if the player collects all code pages and escapes.
+ * @property {boolean} active - Flag indicating if the minigame physics loop is running.
+ */
 window.slenderCtx = {
   px: 2.5,
   py: 2.5,

@@ -2,6 +2,29 @@
 
 (function() {
   // Global state context bridge (shared between preg_game.js and preg_game_renderer.js)
+  /**
+   * @typedef {Object} PregCtx
+   * @property {number} playerHp - Player health points (0 to 100).
+   * @property {number} bossHp - Boss Yam health points (0 to 200).
+   * @property {boolean} isGameOver - Flag indicating if the fight ended.
+   * @property {number} phase - Boss phase (1 = normal, 2 = cosmic fury).
+   * @property {boolean} isPhaseTransitioning - Flag if transitioning to Phase 2.
+   * @property {string} playerStance - Player defense stance ("ready", "dodge", "exhausted").
+   * @property {string} bossState - Current boss combat state ("idle", "preparing", "lunging").
+   * @property {number} stateTimer - Timer tracker for current combat states.
+   * @property {number} attackCooldown - Cool down time for the player's basic slash.
+   * @property {number} playerStamina - Tension/stamina energy pool (0 to 100).
+   * @property {boolean} isGasping - State if player runs out of stamina and gasps for air.
+   * @property {number} gaspTimer - gasp fatigue countdown.
+   * @property {number} comboCount - Active combat slash chain tracker.
+   * @property {number} recipeProgress - Correct keystrokes in active combo sequence recipe.
+   * @property {number} healFreezeTimer - Freeze cooldown preventing Yam from healing.
+   * @property {Array<string>} currentRecipe - Active key combo requirements (e.g. ['W', 'S', 'W']).
+   * @property {Object} keysPressed - Dictionary of actively held keyboard keys.
+   * @property {Array<Object>} particles - Active 3D background cosmic space debris.
+   * @property {number} lastParticleSpawn - Timestamp of last generated star particle.
+   * @property {number} temporaryHitBlur - CSS blur intensity filter in pixels.
+   */
   window.pregCtx = {
     playerHp: 100,
     bossHp: 100,
