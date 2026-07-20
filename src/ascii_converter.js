@@ -46,6 +46,15 @@ const PREDEFINED_ASCII = {
   `
 };
 
+/**
+ * Converts an image element source to a text-based ASCII art representation.
+ * Automatically checks predefined assets first to bypass CORS canvas taints.
+ * @param {HTMLImageElement} imgElement - The active HTML image element.
+ * @param {number} width - Output column width mapping.
+ * @param {number} height - Output row height mapping.
+ * @param {function(string): void} callback - Fired with the parsed ASCII string outcome.
+ * @returns {string} The computed ASCII art string.
+ */
 window.convertToAscii = function(imgElement, width, height, callback) {
   if (!imgElement) {
     if (callback) callback("");

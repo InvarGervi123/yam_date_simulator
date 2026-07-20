@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v28-slender-mobile';
+const CACHE_NAME = 'yam-date-sim-v29-jsdoc';
 const ASSETS = [
   './',
   './index.html',

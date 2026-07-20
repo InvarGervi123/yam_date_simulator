@@ -3,8 +3,16 @@
 const music = document.getElementById("music");
 const sfx = document.getElementById("sfx");
 
-// Initialize states from localStorage (defaults to false / unmuted for new users)
+/**
+ * Indicates whether background music playback is muted.
+ * @type {boolean}
+ */
 window.isMusicMuted = localStorage.getItem("gameMusicMuted") === "true";
+
+/**
+ * Indicates whether game sound effects and voice synthesized blips are muted.
+ * @type {boolean}
+ */
 window.isSfxMuted = localStorage.getItem("gameSfxMuted") === "true";
 
 if (music) {
@@ -16,6 +24,10 @@ if (sfx) {
   sfx.volume = 0.8;
 }
 
+/**
+ * Plays a background music track, loops it, and respects the mute state.
+ * @param {string} src - Relative file path to the audio track.
+ */
 function playMusic(src) {
   if (!src || !music) return;
 
@@ -33,6 +45,10 @@ function playMusic(src) {
   }
 }
 
+/**
+ * Plays a sound effect or voice beep immediately, if SFX is not muted.
+ * @param {string} src - Relative file path to the sound effect.
+ */
 function playSfx(src) {
   if (!src || !sfx || window.isSfxMuted) return;
 
