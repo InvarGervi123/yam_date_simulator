@@ -159,6 +159,24 @@ Contributions, bug reports, and suggestions are welcome!
 
 ---
 
+### 📊 הסרת מעקב גוגל אנליטיקס (Google Analytics Removal)
+אם ברצונך לבטל או להסיר את מעקב המשתמשים בעתיד, בצע את השלבים הבאים:
+1. פתח את הקובץ [index.html](file:///c:/Users/User/Desktop/Bot%20discord/game/yam_date_simulator/index.html).
+2. מחק את שורות הקוד של Google tag הממוקמות בראש ה-`<head>` (שורות 5 עד 13):
+   ```html
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9E8NPTX7MT"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-9E8NPTX7MT');
+   </script>
+   ```
+3. לאחר מכן, פתח את [sw.js](file:///c:/Users/User/Desktop/Bot%20discord/game/yam_date_simulator/sw.js) ושנה את שם ה-`CACHE_NAME` (למשל, העלה את הגרסה מ-`v31` ל-`v32`) כדי שהדפדפנים של השחקנים יורידו את העדכון מיד ללא מטמון ישן.
+
+---
+
 ## 📄 רישיון (License)
 
 פרויקט זה מופץ תחת רישיון **MIT**. הנך רשאי להשתמש, לשנות ולהפיץ קוד זה באופן חופשי לחלוטין (ראה קובץ [LICENSE](LICENSE) לפרטים המלאים).
