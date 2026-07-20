@@ -171,6 +171,12 @@ function addChoice(label, nextScene) {
   choices.appendChild(btn);
 }
 
+/**
+ * Randomly replaces characters in a string with creepy glitch/horror symbols.
+ * Used during the Slender and horror routes.
+ * @param {string} str - The target text to be glitched.
+ * @returns {string} The glitched text string.
+ */
 function glitchText(str) {
   if (!str) return "";
   const glitchChars = "☠⛥⛧✗🕆⌖☒☣☢⚡";
@@ -185,6 +191,11 @@ function glitchText(str) {
   return res;
 }
 
+/**
+ * Renders a visual novel scene by updating text, character sprite animations,
+ * background images, sounds, visual screen effects, and choices in the HUD.
+ * @param {string} id - The unique identifier of the story scene (e.g. 'start', 'room_intro').
+ */
 function showScene(id) {
   const scene = story[id];
 

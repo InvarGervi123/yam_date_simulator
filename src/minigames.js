@@ -1,5 +1,10 @@
 // --- Modular Minigames Engine ---
 
+/**
+ * Routing dispatcher that starts a specific interactive minigame based on config.
+ * Supports: 'deltarune_battle', 'math_quiz', 'baldi_basics', 'pregnancy_space', and 'slender_3d'.
+ * @param {Object} config - Configuration object specifying minigame type, durations, and ending transition scene hooks.
+ */
 function runMinigame(config) {
   if (config.type === "deltarune_battle") {
     runDeltaruneBattle(config);
