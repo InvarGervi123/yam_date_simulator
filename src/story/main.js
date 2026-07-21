@@ -35,7 +35,8 @@ Object.assign(window.story, {
     choices: [
       { text: "🌸 לנסות גישה רגועה ורומנטית...", next: "room_intro_normal" },
       { text: "🔥 לנסות גישה פיזית ודרמטית...", next: "room_intro_force" },
-      { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" }
+      { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" },
+      { text: "👁️ להתחקות אחר הצל שמאחורי ים (נתיב ינוור ו-THE ECHO)", next: "yam_shadow_part1_start" }
     ]
   },
 

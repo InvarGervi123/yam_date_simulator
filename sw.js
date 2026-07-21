@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v31-gtag';
+const CACHE_NAME = 'yam-date-sim-v34-yam-shadow-step2';
 const ASSETS = [
   './',
   './index.html',
@@ -26,6 +26,9 @@ const ASSETS = [
   './src/story/baldi.js',
   './src/story/endings.js',
   './src/story/dialogue_expansions.js',
+  './src/story/yam_shadow_story.js',
+  './src/yam_shadow_battle.js',
+  './src/yam_shadow_renderer.js',
   './images/characters/yam_sleepy.png',
   './images/characters/yam.png',
   './images/characters/Boss_fight.png',

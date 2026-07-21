@@ -32,6 +32,10 @@ function runMinigame(config) {
     );
     return;
   }
+  if (config.type === "yam_shadow_battle") {
+    runYamShadowBattle(config);
+    return;
+  }
 
   minigameOverlay.style.display = "flex";
   
