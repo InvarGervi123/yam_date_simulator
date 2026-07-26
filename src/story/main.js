@@ -35,8 +35,7 @@ Object.assign(window.story, {
     choices: [
       { text: "🌸 לנסות גישה רגועה ורומנטית...", next: "room_intro_normal" },
       { text: "🔥 לנסות גישה פיזית ודרמטית...", next: "room_intro_force" },
-      { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" },
-      { text: "👁️ להתחקות אחר הצל שמאחורי ים (נתיב ינוור ו-THE ECHO)", next: "yam_shadow_part1_start" }
+      { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" }
     ]
   },
 
@@ -69,6 +68,7 @@ Object.assign(window.story, {
     speaker: "המספר",
     text: "בחרת לחקור נתיבים מיוחדים והרפתקאות מחוץ לקופסה. לאן נמשיך?",
     choices: [
+      { text: "👁️ להתחקות אחר הצל שמאחורי ים (נתיב ינוור ו-THE ECHO)", next: "yam_shadow_part1_start" },
       { text: "להכריז על קרב בוס אפי! (DELTARUNE BOSS FIGHT!)", next: "boss_fight_intro" },
       { text: "לפתור איתו תרגילים בטאבלט הלימודי שלו (Baldi's Basics!)", next: "baldi_intro" },
       { text: "לנסוע לאורנית לחפש את ים בביתו (נתיב אורנית והקסם!)", next: "oranit_travel" },
