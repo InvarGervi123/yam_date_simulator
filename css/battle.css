@@ -576,3 +576,88 @@
   90% { transform: translate(-1px, 1px); }
   100% { transform: translate(0, 0); }
 }
+
+/* --- Undertale & Deltarune Soul Modes --- */
+#playerHeart.soul-blue {
+  filter: hue-rotate(195deg) saturate(4) brightness(1.1) drop-shadow(0 0 10px #3498db);
+}
+
+#playerHeart.soul-green {
+  filter: hue-rotate(100deg) saturate(4) brightness(1.2) drop-shadow(0 0 10px #2ecc71);
+}
+
+#playerHeart.soul-yellow {
+  filter: hue-rotate(55deg) saturate(6) brightness(1.3) drop-shadow(0 0 10px #f1c40f);
+}
+
+/* Green Shield Deflector Arc */
+#shieldDeflector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 8px;
+  background: #2ecc71;
+  border: 1.5px solid #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 0 12px #2ecc71, 0 0 25px #2ecc71;
+  pointer-events: none;
+  z-index: 30;
+  transition: transform 0.05s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  transform-origin: center center;
+}
+
+/* Yellow Soul Player Laser Shot */
+.player-laser-shot {
+  position: absolute;
+  width: 6px;
+  height: 14px;
+  background: #f1c40f;
+  border-radius: 3px;
+  box-shadow: 0 0 8px #f1c40f;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Cyan & Orange Bullets */
+.projectile.proj-cyan {
+  color: #00d2d3 !important;
+  text-shadow: 0 0 8px #00d2d3, 0 0 15px #00d2d3 !important;
+}
+
+.projectile.proj-orange {
+  color: #ff9f43 !important;
+  text-shadow: 0 0 8px #ff9f43, 0 0 15px #ff9f43 !important;
+}
+
+/* X-Slash Ultimate Screen Overlay */
+#xSlashOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.x-slash-line {
+  position: absolute;
+  width: 140%;
+  height: 6px;
+  background: #ffffff;
+  box-shadow: 0 0 15px #e74c3c, 0 0 30px #e74c3c;
+  transform: rotate(-45deg) scaleX(0);
+  animation: xSlashAnim 0.35s ease-out forwards;
+}
+
+.x-slash-line-2 {
+  transform: rotate(45deg) scaleX(0);
+  animation: xSlashAnim 0.35s ease-out 0.08s forwards;
+}
+
+@keyframes xSlashAnim {
+  0% { transform: scaleX(0); opacity: 1; }
+  50% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}

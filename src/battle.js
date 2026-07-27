@@ -203,6 +203,25 @@ function runDeltaruneBattle(config) {
     }
   }
 
+  function triggerXSlashVfx() {
+    const overlayEl = document.getElementById("battleOverlay");
+    if (!overlayEl) return;
+    let slash = document.getElementById("xSlashOverlay");
+    if (!slash) {
+      slash = document.createElement("div");
+      slash.id = "xSlashOverlay";
+      slash.innerHTML = `
+        <div class="x-slash-line"></div>
+        <div class="x-slash-line x-slash-line-2"></div>
+      `;
+      overlayEl.appendChild(slash);
+    }
+    slash.style.display = "flex";
+    setTimeout(() => {
+      slash.style.display = "none";
+    }, 450);
+  }
+
   // --- UI Action Button Handlers ---
   document.getElementById("btnFight").onclick = () => {
     triggerVibration(15);
@@ -237,6 +256,53 @@ function runDeltaruneBattle(config) {
     subMenu.style.display = "flex";
 
     const actOptions = [
+      {
+        name: "🛡️ Sleep Shield (20% TP)",
+        action: () => {
+          if (playerTp < 20) {
+            writeConsole(`* אין מספיק TP! צריך לפחות 20% TP כדי להפעיל מגן.`);
+            return;
+          }
+          playerTp -= 20;
+          hasShield = true;
+          updateHpBars();
+          playSfx("audio/healing.mp3");
+          writeConsole(`* יצרת מגן שינה מיוחד (Sleep Shield)! הפגיעה הבאה בזירה תיחסם בבטחה.`);
+        }
+      },
+      {
+        name: "🥐 Burek Distraction (50% TP)",
+        action: () => {
+          if (playerTp < 50) {
+            writeConsole(`* אין מספיק TP! צריך לפחות 50% TP בשביל הבורקס.`);
+            return;
+          }
+          playerTp -= 50;
+          updateHpBars();
+          playSfx("audio/healing.mp3");
+          writeConsole(`* זרקת בורקס חם לזירה! ים התנפל על הבורקס ופספס את התור שלו!`);
+          setTimeout(() => {
+            startPlayerTurn();
+          }, 2000);
+          return true;
+        }
+      },
+      {
+        name: "⚡ Duo Ultimate X-Slash (100% TP)",
+        action: () => {
+          if (playerTp < 100) {
+            writeConsole(`* אין מספיק TP! צריך 100% TP למכה האולטימטיבית!`);
+            return;
+          }
+          playerTp = 0;
+          bossHp = Math.max(bossHp - 55, 0);
+          updateHpBars();
+          triggerXSlashVfx();
+          playSfx("audio/hit.mp3");
+          triggerVibration([150, 100, 150]);
+          writeConsole(`* מכה אולטימטיבית משולבת (DUO ULTIMATE X-SLASH)! הנחתתם 55 נזק קריטי על ים!`);
+        }
+      },
       {
         name: "🔍 בדוק (CHECK)",
         action: () => {

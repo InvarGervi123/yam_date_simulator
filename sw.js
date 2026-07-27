@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v35-yam-shadow-choice';
+const CACHE_NAME = 'yam-date-sim-v40-yellow-heart-color-fix';
 const ASSETS = [
   './',
   './index.html',
