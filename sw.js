@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v43-dev-stage-skip-shortcut';
+const CACHE_NAME = 'yam-date-sim-v44-player-name-isha';
 const ASSETS = [
   './',
   './index.html',
