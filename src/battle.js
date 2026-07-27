@@ -197,6 +197,18 @@ function runDeltaruneBattle(config) {
     writeConsole(turnMsg);
   }
 
+  // Dev Stage Skip Shortcut (P / p / פ)
+  window.addEventListener("keydown", (e) => {
+    const k = e.key ? e.key.toLowerCase() : "";
+    if (e.code === "KeyP" || k === "p" || k === "פ") {
+      if (overlay.style.display !== "none" && !isGameOver) {
+        if (arena.style.display !== "block") {
+          startEnemyTurn();
+        }
+      }
+    }
+  });
+
   function startEnemyTurn() {
     if (window.battleArena && typeof window.battleArena.startEnemyTurn === "function") {
       window.battleArena.startEnemyTurn(battleCtx);

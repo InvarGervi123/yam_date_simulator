@@ -79,28 +79,37 @@ window.battleArena = {
       if (k === "d" || e.code === "KeyD" || k === "ג") keysPressed["d"] = true;
 
       // Blue Soul Jump
-      if (soulMode === "blue" && (e.code === "Space" || e.code === "KeyW" || e.key === "ArrowUp")) {
+      if (soulMode === "blue" && (e.code === "Space" || e.code === "KeyW" || e.key === "ArrowUp" || k === "w" || k === "ק" || k === "׳")) {
         if (ctx.heartY >= boardHeight - 22) {
           heartVy = -8.8;
           ctx.playSfx("audio/click.mp3");
         }
       }
 
-      // Green Soul Shield Rotate
+      // Green Soul Shield Rotate (Layout-Independent: Arrow Keys, Physical e.code, and Hebrew Key Equivalents)
       if (soulMode === "green") {
         const prevDir = shieldDir;
-        if (e.key === "ArrowUp" || k === "w") shieldDir = "up";
-        if (e.key === "ArrowDown" || k === "s") shieldDir = "down";
-        if (e.key === "ArrowLeft" || k === "a") shieldDir = "left";
-        if (e.key === "ArrowRight" || k === "d") shieldDir = "right";
+        if (e.key === "ArrowUp" || e.code === "KeyW" || k === "w" || k === "ק" || k === "׳") shieldDir = "up";
+        if (e.key === "ArrowDown" || e.code === "KeyS" || k === "s" || k === "ד") shieldDir = "down";
+        if (e.key === "ArrowLeft" || e.code === "KeyA" || k === "a" || k === "ש") shieldDir = "left";
+        if (e.key === "ArrowRight" || e.code === "KeyD" || k === "d" || k === "ג") shieldDir = "right";
         if (prevDir !== shieldDir) {
           ctx.playSfx("audio/click.mp3");
         }
       }
 
       // Yellow Soul Shoot Laser
-      if (soulMode === "yellow" && (e.code === "Space" || e.code === "KeyZ" || e.code === "Enter")) {
+      if (soulMode === "yellow" && (e.code === "Space" || e.code === "KeyZ" || e.code === "Enter" || k === "z" || k === "ז")) {
         spawnPlayerLaser();
+      }
+
+      // Dev Stage Skip Shortcut (P / p / פ / KeyP)
+      if (e.code === "KeyP" || k === "p" || k === "פ") {
+        ctx.playSfx("audio/click.mp3");
+        this.showGrazeText(ctx, "⏩ STAGE SKIPPED!");
+        this.cleanupEnemyTurn(ctx);
+        ctx.startPlayerTurn();
+        return;
       }
     };
 
@@ -321,51 +330,66 @@ window.battleArena = {
       projectiles.push({ el: proj, x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed });
     }
 
-    // --- Dispatch 8 Attack Patterns ---
+    // --- Dispatch 8 Smart Attack Patterns ---
     if (currentPattern === 0) {
-      // Stage 1: Single Lasers
-      const spawnLaser = (dir) => {
+      // Stage 1: Crosshair Lasers & Trap Cans
+      const spawnCrosshairLaser = () => {
         if (ctx.isGameOver) return;
         const targetX = ctx.heartX + 10;
         const targetY = ctx.heartY + 10;
-        const warn = document.createElement("div");
-        warn.className = "laser-warning";
-        if (dir === "vertical") {
-          warn.style.left = (targetX - 3) + "px"; warn.style.top = "0px"; warn.style.width = "6px"; warn.style.height = boardHeight + "px";
-        } else {
-          warn.style.left = "0px"; warn.style.top = (targetY - 3) + "px"; warn.style.width = boardWidth + "px"; warn.style.height = "6px";
-        }
-        ctx.board.appendChild(warn);
+        
+        const warnV = document.createElement("div");
+        warnV.className = "laser-warning";
+        warnV.style.left = (targetX - 3) + "px"; warnV.style.top = "0px"; warnV.style.width = "6px"; warnV.style.height = boardHeight + "px";
+        ctx.board.appendChild(warnV);
+
+        const warnH = document.createElement("div");
+        warnH.className = "laser-warning";
+        warnH.style.left = "0px"; warnH.style.top = (targetY - 3) + "px"; warnH.style.width = boardWidth + "px"; warnH.style.height = "6px";
+        ctx.board.appendChild(warnH);
         ctx.playSfx("audio/hit.mp3");
 
+        // Corner trap cans
+        for (let corner = 0; corner < 2; corner++) {
+          const trap = document.createElement("div");
+          trap.className = "projectile";
+          trap.textContent = "🥫";
+          const tx = corner === 0 ? 10 : boardWidth - 30;
+          trap.style.left = tx + "px"; trap.style.top = "-20px";
+          ctx.arena.appendChild(trap);
+          projectiles.push({ el: trap, x: tx, y: -20, vx: (corner === 0 ? 1.4 : -1.4), vy: 1.2 });
+        }
+
         setTimeout(() => {
-          if (ctx.isGameOver) { warn.remove(); return; }
-          warn.remove();
-          const beam = document.createElement("div");
-          beam.className = "laser-beam";
-          if (dir === "vertical") {
-            beam.style.left = (targetX - 25) + "px"; beam.style.top = "0px"; beam.style.width = "50px"; beam.style.height = boardHeight + "px";
-          } else {
-            beam.style.left = "0px"; beam.style.top = (targetY - 25) + "px"; beam.style.width = boardWidth + "px"; beam.style.height = "50px";
-          }
-          ctx.board.appendChild(beam);
+          if (ctx.isGameOver) { warnV.remove(); warnH.remove(); return; }
+          warnV.remove(); warnH.remove();
+
+          const beamV = document.createElement("div");
+          beamV.className = "laser-beam";
+          beamV.style.left = (targetX - 25) + "px"; beamV.style.top = "0px"; beamV.style.width = "50px"; beamV.style.height = boardHeight + "px";
+          ctx.board.appendChild(beamV);
+
+          const beamH = document.createElement("div");
+          beamH.className = "laser-beam";
+          beamH.style.left = "0px"; beamH.style.top = (targetY - 25) + "px"; beamH.style.width = boardWidth + "px"; beamH.style.height = "50px";
+          ctx.board.appendChild(beamH);
           ctx.playSfx("audio/hit.mp3");
-          setTimeout(() => beam.remove(), 450);
-        }, 800);
+
+          setTimeout(() => { beamV.remove(); beamH.remove(); }, 450);
+        }, 750);
       };
 
-      window.laser1Timeout = setTimeout(() => spawnLaser("vertical"), 600);
-      window.laser2Timeout = setTimeout(() => spawnLaser("horizontal"), 2400);
+      window.laser1Timeout = setTimeout(() => spawnCrosshairLaser(), 500);
 
     } else if (currentPattern === 1) {
-      // Stage 2: Rotating Croissants & Zzzs
+      // Stage 2: Pulsing Orbit Croissants & Zzz Drops
       for (let j = 0; j < 4; j++) {
         const orb = document.createElement("div");
         orb.className = "projectile";
         orb.textContent = "🥐";
         orb.style.fontSize = "24px";
         ctx.arena.appendChild(orb);
-        projectiles.push({ el: orb, isOrbiter: true, angleOffset: (j * Math.PI / 2), radius: 85, x: 0, y: 0 });
+        projectiles.push({ el: orb, isOrbiter: true, angleOffset: (j * Math.PI / 2), x: 0, y: 0 });
       }
 
       window.battleSpawnInterval = setInterval(() => {
@@ -375,37 +399,41 @@ window.battleArena = {
         const x = Math.random() * (boardWidth - 20);
         proj.style.left = x + "px"; proj.style.top = "-20px";
         ctx.arena.appendChild(proj);
-        projectiles.push({ el: proj, x: x, y: -20, vx: 0, vy: 2.8 });
-      }, 550);
+        projectiles.push({ el: proj, x: x, y: -20, vx: 0, vy: 3.2 });
+      }, 500);
 
     } else if (currentPattern === 2) {
-      // Stage 3: Targeted Tuna Cans
+      // Stage 3: Curved Homing Tuna Cans
       let round = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (round >= 5) return;
-        const spawnTargeted = (sx, sy) => {
+        if (round >= 6) return;
+        const spawnHoming = (sx, sy) => {
           if (ctx.isGameOver) return;
           const proj = document.createElement("div");
           proj.className = "projectile";
           proj.textContent = "🥫";
           proj.style.left = sx + "px"; proj.style.top = sy + "px";
           ctx.arena.appendChild(proj);
+
           const angle = Math.atan2(ctx.heartY - sy, ctx.heartX - sx);
-          const speed = 3.6;
-          projectiles.push({ el: proj, x: sx, y: sy, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed });
+          projectiles.push({ el: proj, x: sx, y: sy, vx: Math.cos(angle) * 3.2, vy: Math.sin(angle) * 3.2, isHoming: true });
         };
-        spawnTargeted(Math.random() * boardWidth, -20);
-        spawnTargeted(Math.random() * boardWidth, boardHeight + 20);
+        spawnHoming(Math.random() * boardWidth, -20);
+        spawnHoming(Math.random() * boardWidth, boardHeight + 20);
         round++;
-      }, 950);
+      }, 850);
 
     } else if (currentPattern === 3) {
-      // Stage 4: Dizengoff Bus
-      const spawnBus = (yPosition, delay) => {
+      // Stage 4: Double Bus Trap (Horizontal then Vertical)
+      const spawnBus = (isVert, pos, delay) => {
         if (ctx.isGameOver) return;
         const warn = document.createElement("div");
         warn.className = "bus-warning";
-        warn.style.left = "0px"; warn.style.top = yPosition + "px"; warn.style.width = boardWidth + "px"; warn.style.height = "55px";
+        if (isVert) {
+          warn.style.left = pos + "px"; warn.style.top = "0px"; warn.style.width = "55px"; warn.style.height = boardHeight + "px";
+        } else {
+          warn.style.left = "0px"; warn.style.top = pos + "px"; warn.style.width = boardWidth + "px"; warn.style.height = "55px";
+        }
         ctx.board.appendChild(warn);
         ctx.playSfx("audio/hit.mp3");
 
@@ -415,17 +443,23 @@ window.battleArena = {
           const bus = document.createElement("div");
           bus.className = "bus-projectile";
           bus.textContent = "🚌";
-          bus.style.left = "-80px"; bus.style.top = yPosition + "px"; bus.style.width = "70px"; bus.style.height = "50px";
+          if (isVert) {
+            bus.style.left = pos + "px"; bus.style.top = "-80px"; bus.style.width = "50px"; bus.style.height = "70px";
+            projectiles.push({ el: bus, x: pos, y: -80, vx: 0, vy: 9.0, isBus: true });
+          } else {
+            bus.style.left = "-80px"; bus.style.top = pos + "px"; bus.style.width = "70px"; bus.style.height = "50px";
+            projectiles.push({ el: bus, x: -80, y: pos, vx: 9.0, vy: 0, isBus: true });
+          }
           ctx.arena.appendChild(bus);
           ctx.playSfx("audio/hit.mp3");
-          projectiles.push({ el: bus, x: -80, y: yPosition, vx: 8.5, vy: 0, isBus: true });
         }, delay);
       };
 
-      window.bus1Timeout = setTimeout(() => spawnBus(boardHeight / 2 - 25, 900), 500);
+      window.bus1Timeout = setTimeout(() => spawnBus(false, boardHeight / 2 - 25, 800), 400);
+      window.bus2Timeout = setTimeout(() => spawnBus(true, boardWidth / 2 - 25, 800), 1600);
 
     } else if (currentPattern === 4) {
-      // Stage 5: Splitting Pillow Storm + Blue Soul Gravity
+      // Stage 5: Splitting Pillow Storm + Blue Soul Gravity + Wind Gust
       let pillowsSpawned = 0;
       window.battleSpawnInterval = setInterval(() => {
         if (pillowsSpawned >= 4) return;
@@ -433,17 +467,16 @@ window.battleArena = {
         pillow.className = "projectile";
         pillow.textContent = "🛋️";
         pillow.style.fontSize = "26px";
-        const x = Math.random() * (boardWidth - 40) + 20;
+        const x = Math.random() * (boardWidth - 60) + 30;
         pillow.style.left = x + "px"; pillow.style.top = "-30px";
         ctx.arena.appendChild(pillow);
 
-        projectiles.push({ el: pillow, x: x, y: -30, vx: (Math.random() - 0.5) * 3, vy: 3.2, isPillow: true });
+        projectiles.push({ el: pillow, x: x, y: -30, vx: (Math.random() - 0.5) * 3, vy: 3.4, isPillow: true });
         pillowsSpawned++;
-      }, 1100);
+      }, 1000);
 
     } else if (currentPattern === 5) {
-      // Stage 6: Green Shield Soul Deflector Mode (Undyne Style)
-      // Projectiles spawn at outer perimeter travelling INWARDS to center (cx, cy)
+      // Stage 6: Green Shield Fast Rhythm Pairs
       const cx = boardWidth / 2 - 10;
       const cy = boardHeight / 2 - 10;
       const dirs = [
@@ -453,55 +486,87 @@ window.battleArena = {
         { angle: Math.PI }       // Left (3)
       ];
 
-      let spawnCount = 0;
+      let pairCount = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (ctx.isGameOver || spawnCount >= 10) return;
-        const dirObj = dirs[Math.floor(Math.random() * dirs.length)];
-        const dist = 160; // spawn distance outside center
-        const sx = cx + Math.cos(dirObj.angle) * dist;
-        const sy = cy + Math.sin(dirObj.angle) * dist;
+        if (ctx.isGameOver || pairCount >= 6) return;
+        const dir1 = dirs[Math.floor(Math.random() * dirs.length)];
+        let dir2 = dirs[Math.floor(Math.random() * dirs.length)];
+        while (dir2 === dir1) dir2 = dirs[Math.floor(Math.random() * dirs.length)];
 
-        const proj = document.createElement("div");
-        proj.className = "projectile";
-        proj.textContent = "🥐";
-        proj.style.fontSize = "22px";
-        proj.style.left = sx + "px";
-        proj.style.top = sy + "px";
-        ctx.arena.appendChild(proj);
+        const spawnBullet = (dirObj, delayMs) => {
+          setTimeout(() => {
+            if (ctx.isGameOver) return;
+            const dist = 160;
+            const sx = cx + Math.cos(dirObj.angle) * dist;
+            const sy = cy + Math.sin(dirObj.angle) * dist;
 
-        // Velocity travels INWARDS to center
-        const speed = 4.2;
-        const vx = -Math.cos(dirObj.angle) * speed;
-        const vy = -Math.sin(dirObj.angle) * speed;
-        projectiles.push({ el: proj, x: sx, y: sy, vx: vx, vy: vy });
-        spawnCount++;
-      }, 550);
+            const proj = document.createElement("div");
+            proj.className = "projectile";
+            proj.textContent = "🥐";
+            proj.style.fontSize = "22px";
+            proj.style.left = sx + "px"; proj.style.top = sy + "px";
+            ctx.arena.appendChild(proj);
+
+            const speed = 4.4;
+            projectiles.push({ el: proj, x: sx, y: sy, vx: -Math.cos(dirObj.angle) * speed, vy: -Math.sin(dirObj.angle) * speed });
+          }, delayMs);
+        };
+
+        spawnBullet(dir1, 0);
+        spawnBullet(dir2, 280);
+        pairCount++;
+      }, 900);
 
     } else if (currentPattern === 6) {
-      // Stage 7: Dual Crosshair Lasers + Cyan/Orange Bullets
-      let cyanOrangeCount = 0;
+      // Stage 7: Cyan & Orange Mixed Pairs
+      let pairWave = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (cyanOrangeCount >= 8) return;
-        const isCyan = cyanOrangeCount % 2 === 0;
-        const proj = document.createElement("div");
-        proj.className = "projectile " + (isCyan ? "proj-cyan" : "proj-orange");
-        proj.textContent = isCyan ? "🧊" : "🔥";
-        const x = Math.random() * (boardWidth - 20);
-        proj.style.left = x + "px"; proj.style.top = "-20px";
-        ctx.arena.appendChild(proj);
+        if (pairWave >= 5) return;
+        const x = Math.random() * (boardWidth - 40) + 20;
 
-        projectiles.push({ el: proj, x: x, y: -20, vx: 0, vy: 3.0, isCyan: isCyan, isOrange: !isCyan });
-        cyanOrangeCount++;
-      }, 700);
+        // Cyan (Stand still)
+        const cyanProj = document.createElement("div");
+        cyanProj.className = "projectile proj-cyan";
+        cyanProj.textContent = "🧊";
+        cyanProj.style.left = x + "px"; cyanProj.style.top = "-20px";
+        ctx.arena.appendChild(cyanProj);
+        projectiles.push({ el: cyanProj, x: x, y: -20, vx: 0, vy: 3.4, isCyan: true, isOrange: false });
+
+        // Orange (Keep moving) - 180ms right behind
+        setTimeout(() => {
+          if (ctx.isGameOver) return;
+          const orangeProj = document.createElement("div");
+          orangeProj.className = "projectile proj-orange";
+          orangeProj.textContent = "🔥";
+          orangeProj.style.left = x + "px"; orangeProj.style.top = "-20px";
+          ctx.arena.appendChild(orangeProj);
+          projectiles.push({ el: orangeProj, x: x, y: -20, vx: 0, vy: 3.4, isCyan: false, isOrange: true });
+        }, 220);
+
+        pairWave++;
+      }, 1000);
 
     } else {
-      // Stage 8: Ultimate Sloth Overdrive + Yellow Soul Shooter
-      let spawnCount = 0;
+      // Stage 8: Yellow Soul Target Core Wall Intercept
+      let wallWave = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (spawnCount >= 10) return;
-        spawnRandomProjectile();
-        spawnCount++;
-      }, 500);
+        if (wallWave >= 3) return;
+        const cols = 5;
+        const gapCol = Math.floor(Math.random() * cols);
+        const colWidth = boardWidth / cols;
+
+        for (let c = 0; c < cols; c++) {
+          if (c === gapCol) continue; // Gap for player to shoot/pass through
+          const cx = c * colWidth + colWidth / 2 - 10;
+          const proj = document.createElement("div");
+          proj.className = "projectile";
+          proj.textContent = "🥫";
+          proj.style.left = cx + "px"; proj.style.top = "-30px";
+          ctx.arena.appendChild(proj);
+          projectiles.push({ el: proj, x: cx, y: -30, vx: 0, vy: 2.8 });
+        }
+        wallWave++;
+      }, 1400);
     }
 
     // --- Dodging Collision and Update Loop ---
@@ -557,21 +622,27 @@ window.battleArena = {
           p.y = boardHeight / 2 - 10 + Math.sin(p.angleOffset) * currentRadius;
           p.el.style.left = p.x + "px"; p.el.style.top = p.y + "px";
         } else {
+          if (p.isHoming) {
+            const hAngle = Math.atan2(ctx.heartY - p.y, ctx.heartX - p.x);
+            p.vx += Math.cos(hAngle) * 0.12;
+            p.vy += Math.sin(hAngle) * 0.12;
+          }
+
           p.x += p.vx;
           p.y += p.vy;
           p.el.style.left = p.x + "px"; p.el.style.top = p.y + "px";
 
-          // Pillow splitting into feathers
+          // Pillow splitting into 5-feather fan
           if (p.isPillow && p.y > boardHeight / 2 && !p.splitDone) {
             p.splitDone = true;
-            for (let f = 0; f < 3; f++) {
+            for (let f = -2; f <= 2; f++) {
               const feather = document.createElement("div");
               feather.className = "projectile";
               feather.textContent = "🪶";
               feather.style.left = p.x + "px"; feather.style.top = p.y + "px";
               ctx.arena.appendChild(feather);
-              const fa = (f - 1) * 0.8;
-              projectiles.push({ el: feather, x: p.x, y: p.y, vx: Math.sin(fa) * 4, vy: Math.cos(fa) * 3 });
+              const fa = f * 0.45;
+              projectiles.push({ el: feather, x: p.x, y: p.y, vx: Math.sin(fa) * 3.8, vy: Math.cos(fa) * 3.2 });
             }
           }
         }
