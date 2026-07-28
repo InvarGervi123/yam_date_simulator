@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v48-laser-damage-fix';
+const CACHE_NAME = 'yam-date-sim-v49-baldi-sound-bgm';
 const ASSETS = [
   './',
   './index.html',
@@ -59,7 +59,8 @@ const ASSETS = [
   './audio/truimph.mp3',
   './audio/the_clockwork_void.mp3',
   './audio/the_clockwork_void_extend.mp3',
-  './audio/Panic.mp3'
+  './audio/Panic.mp3',
+  './audio/baldi_sound.mp3'
 ];
 
 // Install Service Worker and cache all resources

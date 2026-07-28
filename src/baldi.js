@@ -14,6 +14,10 @@ function runBaldiMinigame(config) {
   nextBtn.style.display = "none";
   minigameBtn.style.display = "none";
 
+  if (typeof playMusic === "function") {
+    playMusic("audio/baldi_sound.mp3");
+  }
+
   // Build the 3D Raycaster HTML structure
   minigameVisual.innerHTML = `
     <div class="baldi-container">
@@ -559,6 +563,10 @@ function runBaldiMinigame(config) {
     setTimeout(() => {
       minigameOverlay.style.display = "none";
       minigameBtn.style.display = "block"; // restore button state
+      
+      if (typeof playMusic === "function") {
+        playMusic("audio/main.mp3");
+      }
       
       if (success) {
         playSfx("audio/healing.mp3");
