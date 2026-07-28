@@ -60,6 +60,30 @@ function runDeltaruneBattle(config) {
    * @property {number} bossAttackPower - Attack damage modifier of the Boss.
    * @property {Object} keysPressed - Dictionary of actively held keyboard keys.
    * @property {Array<Object>} projectiles - Active bullets/hazards inside the dodging arena.
+   * @property {Function|null} activeKeyDownHandler - Active keyboard down listener reference.
+   * @property {Function|null} activeKeyUpHandler - Active keyboard up listener reference.
+   * @property {Function|null} activeTouchHandler - Active mobile touch move/start listener reference.
+   * @property {HTMLElement} overlay - Root battle overlay container node.
+   * @property {HTMLElement} bossHpBar - Boss HP visual bar DOM node.
+   * @property {HTMLElement} bossHpText - Boss HP numeric label DOM node.
+   * @property {HTMLElement} playerHpBar - Player HP visual bar DOM node.
+   * @property {HTMLElement} playerHpText - Player HP numeric label DOM node.
+   * @property {HTMLElement} consoleEl - Dialogue typewriter console text node.
+   * @property {HTMLElement} arena - Bullet hell active arena container node.
+   * @property {HTMLElement} actions - Action buttons container node (FIGHT, ACT, ITEM, SPARE).
+   * @property {HTMLElement} subMenu - Sub-action menu modal container node.
+   * @property {HTMLElement} subList - List wrapper for sub-menu choices.
+   * @property {HTMLElement} closeSub - Close button element for sub-menus.
+   * @property {HTMLElement} heart - Dodging heart sprite element.
+   * @property {HTMLElement} board - Arena board bounding rectangle container.
+   * @property {Object} config - Turn battle configuration options.
+   * @property {HTMLElement|null} soundToggle - Background music toggle button.
+   * @property {Function} playSfx - Audio SFX playback helper.
+   * @property {Function} triggerVibration - Haptic vibration pattern helper.
+   * @property {Function} loseBattle - Defeat state handler callback.
+   * @property {Function} winBattle - Victory state handler callback.
+   * @property {Function} updateHpBars - Re-renders player and boss HP/TP status bars.
+   * @property {Function} startPlayerTurn - Resets turn state and opens action menu.
    */
   const battleCtx = {
     get playerHp() { return playerHp; },
