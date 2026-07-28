@@ -326,13 +326,13 @@ window.battleArena = {
       ctx.arena.appendChild(proj);
 
       const angle = Math.atan2(ctx.heartY - y, ctx.heartX - x);
-      const speed = 3.0 + Math.random() * 2;
+      const speed = 3.6 + Math.random() * 2;
       projectiles.push({ el: proj, x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed });
     }
 
-    // --- Dispatch 8 Smart Attack Patterns ---
+    // --- Dispatch 8 High-Density Rapid-Fire Attack Patterns ---
     if (currentPattern === 0) {
-      // Stage 1: Crosshair Lasers & Trap Cans
+      // Stage 1: Fast Crosshair Lasers & Continuous Corner Cans
       const spawnCrosshairLaser = () => {
         if (ctx.isGameOver) return;
         const targetX = ctx.heartX + 10;
@@ -349,17 +349,6 @@ window.battleArena = {
         ctx.board.appendChild(warnH);
         ctx.playSfx("audio/hit.mp3");
 
-        // Corner trap cans
-        for (let corner = 0; corner < 2; corner++) {
-          const trap = document.createElement("div");
-          trap.className = "projectile";
-          trap.textContent = "🥫";
-          const tx = corner === 0 ? 10 : boardWidth - 30;
-          trap.style.left = tx + "px"; trap.style.top = "-20px";
-          ctx.arena.appendChild(trap);
-          projectiles.push({ el: trap, x: tx, y: -20, vx: (corner === 0 ? 1.4 : -1.4), vy: 1.2 });
-        }
-
         setTimeout(() => {
           if (ctx.isGameOver) { warnV.remove(); warnH.remove(); return; }
           warnV.remove(); warnH.remove();
@@ -375,19 +364,71 @@ window.battleArena = {
           ctx.board.appendChild(beamH);
           ctx.playSfx("audio/hit.mp3");
 
-          setTimeout(() => { beamV.remove(); beamH.remove(); }, 450);
-        }, 750);
+          // Active Laser Damage Check during beam flash
+          let laserHitDone = false;
+          const checkLaserDamage = () => {
+            if (ctx.isGameOver || laserHitDone) return;
+            const hRect = ctx.heart.getBoundingClientRect();
+            const vRect = beamV.getBoundingClientRect();
+            const hRectBeam = beamH.getBoundingClientRect();
+
+            const hitV = !(hRect.right < vRect.left || hRect.left > vRect.right || hRect.bottom < vRect.top || hRect.top > vRect.bottom);
+            const hitH = !(hRect.right < hRectBeam.left || hRect.left > hRectBeam.right || hRect.bottom < hRectBeam.top || hRect.top > hRectBeam.bottom);
+
+            if (hitV || hitH) {
+              laserHitDone = true;
+              if (ctx.hasShield) {
+                ctx.playSfx("audio/healing.mp3");
+                this.showGrazeText(ctx, "BLOCKED!");
+                ctx.hasShield = false;
+                return;
+              }
+
+              ctx.playerHp -= 30; // 30 Damage per laser hit!
+              ctx.playSfx("audio/hit.mp3");
+              ctx.triggerVibration([200, 100, 200]);
+              ctx.overlay.classList.add("battle-dmg-flash");
+              setTimeout(() => ctx.overlay.classList.remove("battle-dmg-flash"), 200);
+
+              if (ctx.playerHp <= 0) {
+                ctx.loseBattle();
+              }
+            }
+          };
+
+          const laserCheckInt = setInterval(checkLaserDamage, 30);
+
+          setTimeout(() => {
+            clearInterval(laserCheckInt);
+            beamV.remove();
+            beamH.remove();
+          }, 400);
+        }, 500);
       };
 
-      window.laser1Timeout = setTimeout(() => spawnCrosshairLaser(), 500);
+      window.laser1Timeout = setTimeout(() => spawnCrosshairLaser(), 200);
+      window.laser2Timeout = setTimeout(() => spawnCrosshairLaser(), 1600);
+
+      let trapCount = 0;
+      window.battleSpawnInterval = setInterval(() => {
+        if (trapCount >= 10) return;
+        const trap = document.createElement("div");
+        trap.className = "projectile";
+        trap.textContent = "🥫";
+        const tx = Math.random() * (boardWidth - 30);
+        trap.style.left = tx + "px"; trap.style.top = "-20px";
+        ctx.arena.appendChild(trap);
+        projectiles.push({ el: trap, x: tx, y: -20, vx: (Math.random() - 0.5) * 2.5, vy: 3.2 });
+        trapCount++;
+      }, 300);
 
     } else if (currentPattern === 1) {
-      // Stage 2: Pulsing Orbit Croissants & Zzz Drops
+      // Stage 2: 4 Pulsing Orbit Croissants & Smooth Zzz Drops
       for (let j = 0; j < 4; j++) {
         const orb = document.createElement("div");
         orb.className = "projectile";
         orb.textContent = "🥐";
-        orb.style.fontSize = "24px";
+        orb.style.fontSize = "22px";
         ctx.arena.appendChild(orb);
         projectiles.push({ el: orb, isOrbiter: true, angleOffset: (j * Math.PI / 2), x: 0, y: 0 });
       }
@@ -399,14 +440,14 @@ window.battleArena = {
         const x = Math.random() * (boardWidth - 20);
         proj.style.left = x + "px"; proj.style.top = "-20px";
         ctx.arena.appendChild(proj);
-        projectiles.push({ el: proj, x: x, y: -20, vx: 0, vy: 3.2 });
-      }, 500);
+        projectiles.push({ el: proj, x: x, y: -20, vx: (Math.random() - 0.5) * 1.2, vy: 2.4 });
+      }, 550);
 
     } else if (currentPattern === 2) {
-      // Stage 3: Curved Homing Tuna Cans
+      // Stage 3: Rapid Homing Tuna Cans
       let round = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (round >= 6) return;
+        if (round >= 12) return;
         const spawnHoming = (sx, sy) => {
           if (ctx.isGameOver) return;
           const proj = document.createElement("div");
@@ -416,15 +457,19 @@ window.battleArena = {
           ctx.arena.appendChild(proj);
 
           const angle = Math.atan2(ctx.heartY - sy, ctx.heartX - sx);
-          projectiles.push({ el: proj, x: sx, y: sy, vx: Math.cos(angle) * 3.2, vy: Math.sin(angle) * 3.2, isHoming: true });
+          projectiles.push({ el: proj, x: sx, y: sy, vx: Math.cos(angle) * 3.6, vy: Math.sin(angle) * 3.6, isHoming: true });
         };
-        spawnHoming(Math.random() * boardWidth, -20);
-        spawnHoming(Math.random() * boardWidth, boardHeight + 20);
+        const edge = round % 4;
+        let sx = Math.random() * boardWidth, sy = -20;
+        if (edge === 1) { sx = boardWidth + 20; sy = Math.random() * boardHeight; }
+        else if (edge === 2) { sx = Math.random() * boardWidth; sy = boardHeight + 20; }
+        else if (edge === 3) { sx = -20; sy = Math.random() * boardHeight; }
+        spawnHoming(sx, sy);
         round++;
-      }, 850);
+      }, 350);
 
     } else if (currentPattern === 3) {
-      // Stage 4: Double Bus Trap (Horizontal then Vertical)
+      // Stage 4: Triple Bus & Falling Cans
       const spawnBus = (isVert, pos, delay) => {
         if (ctx.isGameOver) return;
         const warn = document.createElement("div");
@@ -445,24 +490,31 @@ window.battleArena = {
           bus.textContent = "🚌";
           if (isVert) {
             bus.style.left = pos + "px"; bus.style.top = "-80px"; bus.style.width = "50px"; bus.style.height = "70px";
-            projectiles.push({ el: bus, x: pos, y: -80, vx: 0, vy: 9.0, isBus: true });
+            projectiles.push({ el: bus, x: pos, y: -80, vx: 0, vy: 9.5, isBus: true });
           } else {
             bus.style.left = "-80px"; bus.style.top = pos + "px"; bus.style.width = "70px"; bus.style.height = "50px";
-            projectiles.push({ el: bus, x: -80, y: pos, vx: 9.0, vy: 0, isBus: true });
+            projectiles.push({ el: bus, x: -80, y: pos, vx: 9.5, vy: 0, isBus: true });
           }
           ctx.arena.appendChild(bus);
           ctx.playSfx("audio/hit.mp3");
         }, delay);
       };
 
-      window.bus1Timeout = setTimeout(() => spawnBus(false, boardHeight / 2 - 25, 800), 400);
-      window.bus2Timeout = setTimeout(() => spawnBus(true, boardWidth / 2 - 25, 800), 1600);
+      window.bus1Timeout = setTimeout(() => spawnBus(false, boardHeight / 2 - 25, 600), 300);
+      window.bus2Timeout = setTimeout(() => spawnBus(true, boardWidth / 2 - 25, 600), 1200);
+
+      let canDrop = 0;
+      window.battleSpawnInterval = setInterval(() => {
+        if (canDrop >= 8) return;
+        spawnRandomProjectile();
+        canDrop++;
+      }, 300);
 
     } else if (currentPattern === 4) {
       // Stage 5: Splitting Pillow Storm + Blue Soul Gravity + Wind Gust
       let pillowsSpawned = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (pillowsSpawned >= 4) return;
+        if (pillowsSpawned >= 6) return;
         const pillow = document.createElement("div");
         pillow.className = "projectile";
         pillow.textContent = "🛋️";
@@ -471,12 +523,12 @@ window.battleArena = {
         pillow.style.left = x + "px"; pillow.style.top = "-30px";
         ctx.arena.appendChild(pillow);
 
-        projectiles.push({ el: pillow, x: x, y: -30, vx: (Math.random() - 0.5) * 3, vy: 3.4, isPillow: true });
+        projectiles.push({ el: pillow, x: x, y: -30, vx: (Math.random() - 0.5) * 3.5, vy: 3.8, isPillow: true });
         pillowsSpawned++;
-      }, 1000);
+      }, 450);
 
     } else if (currentPattern === 5) {
-      // Stage 6: Green Shield Fast Rhythm Pairs
+      // Stage 6: Green Shield Rhythm Deflector
       const cx = boardWidth / 2 - 10;
       const cy = boardHeight / 2 - 10;
       const dirs = [
@@ -507,21 +559,21 @@ window.battleArena = {
             proj.style.left = sx + "px"; proj.style.top = sy + "px";
             ctx.arena.appendChild(proj);
 
-            const speed = 4.4;
+            const speed = 3.1;
             projectiles.push({ el: proj, x: sx, y: sy, vx: -Math.cos(dirObj.angle) * speed, vy: -Math.sin(dirObj.angle) * speed });
           }, delayMs);
         };
 
         spawnBullet(dir1, 0);
-        spawnBullet(dir2, 280);
+        spawnBullet(dir2, 320);
         pairCount++;
-      }, 900);
+      }, 750);
 
     } else if (currentPattern === 6) {
-      // Stage 7: Cyan & Orange Mixed Pairs
+      // Stage 7: Cyan & Orange Rapid Mixed Pairs
       let pairWave = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (pairWave >= 5) return;
+        if (pairWave >= 8) return;
         const x = Math.random() * (boardWidth - 40) + 20;
 
         // Cyan (Stand still)
@@ -530,9 +582,9 @@ window.battleArena = {
         cyanProj.textContent = "🧊";
         cyanProj.style.left = x + "px"; cyanProj.style.top = "-20px";
         ctx.arena.appendChild(cyanProj);
-        projectiles.push({ el: cyanProj, x: x, y: -20, vx: 0, vy: 3.4, isCyan: true, isOrange: false });
+        projectiles.push({ el: cyanProj, x: x, y: -20, vx: 0, vy: 3.8, isCyan: true, isOrange: false });
 
-        // Orange (Keep moving) - 180ms right behind
+        // Orange (Keep moving) - 160ms right behind
         setTimeout(() => {
           if (ctx.isGameOver) return;
           const orangeProj = document.createElement("div");
@@ -540,17 +592,17 @@ window.battleArena = {
           orangeProj.textContent = "🔥";
           orangeProj.style.left = x + "px"; orangeProj.style.top = "-20px";
           ctx.arena.appendChild(orangeProj);
-          projectiles.push({ el: orangeProj, x: x, y: -20, vx: 0, vy: 3.4, isCyan: false, isOrange: true });
-        }, 220);
+          projectiles.push({ el: orangeProj, x: x, y: -20, vx: 0, vy: 3.8, isCyan: false, isOrange: true });
+        }, 160);
 
         pairWave++;
-      }, 1000);
+      }, 450);
 
     } else {
       // Stage 8: Yellow Soul Target Core Wall Intercept
       let wallWave = 0;
       window.battleSpawnInterval = setInterval(() => {
-        if (wallWave >= 3) return;
+        if (wallWave >= 5) return;
         const cols = 5;
         const gapCol = Math.floor(Math.random() * cols);
         const colWidth = boardWidth / cols;
@@ -563,10 +615,10 @@ window.battleArena = {
           proj.textContent = "🥫";
           proj.style.left = cx + "px"; proj.style.top = "-30px";
           ctx.arena.appendChild(proj);
-          projectiles.push({ el: proj, x: cx, y: -30, vx: 0, vy: 2.8 });
+          projectiles.push({ el: proj, x: cx, y: -30, vx: 0, vy: 3.2 });
         }
         wallWave++;
-      }, 1400);
+      }, 650);
     }
 
     // --- Dodging Collision and Update Loop ---
@@ -742,6 +794,16 @@ window.battleArena = {
       }
     }, 16);
 
+    // --- 0.8s Crisp Safety Window (Wipe all hazards & bullets at 4.0s) ---
+    window.safetyTimeout = setTimeout(() => {
+      clearInterval(window.battleSpawnInterval);
+      document.querySelectorAll(".laser-warning, .laser-beam, .bus-warning").forEach(el => el.remove());
+      if (ctx.projectiles) {
+        ctx.projectiles.forEach(p => p.el.remove());
+        ctx.projectiles = [];
+      }
+    }, 4000);
+
     window.battleTurnTimeout = setTimeout(() => {
       // Clean player shots
       playerShots.forEach(s => s.el.remove());
@@ -749,7 +811,7 @@ window.battleArena = {
 
       this.cleanupEnemyTurn(ctx);
       ctx.startPlayerTurn();
-    }, 6500);
+    }, 4800);
   },
 
   showGrazeText: function(ctx, textVal) {
@@ -774,6 +836,7 @@ window.battleArena = {
     clearInterval(window.battleSpawnInterval);
     clearInterval(window.battleUpdateInterval);
     clearTimeout(window.battleTurnTimeout);
+    clearTimeout(window.safetyTimeout);
     clearTimeout(window.laser1Timeout);
     clearTimeout(window.laser2Timeout);
     clearTimeout(window.bus1Timeout);

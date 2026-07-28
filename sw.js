@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v44-player-name-isha';
+const CACHE_NAME = 'yam-date-sim-v48-laser-damage-fix';
 const ASSETS = [
   './',
   './index.html',
