@@ -203,7 +203,7 @@ function runMathMinigame(config) {
   minigameBtn.style.display = "none"; // Hide standard button
 
   minigameTitle.textContent = "מבחן המתמטיקה של ים!";
-  minigameInstruction.textContent = "פתרו את הבעיה בזמן! מותר להשתמש בדף הנוסחאות.";
+  minigameInstruction.textContent = "פתרו את הבעיה בזמן! מותר להשתמש בדף הנוסחאות או ב-DevTools Hack.";
 
   const questions = [
     {
@@ -220,6 +220,31 @@ function runMathMinigame(config) {
       text: "אם ינוור נולד בפתח תקווה, והיא לא קיימת, מהו מיקום הישות שלו במרחב הממשי ℝ?",
       options: ["PT ∉ ℝ (הוא לא קיים)", "PT ∈ ℝ (הוא קיים)", "הוא גר בדיסקורד"],
       correct: 0
+    },
+    {
+      text: "אם ים אכל 3 בורקסים גבינה בבוקר ו-5 בורקסים תפוח-אדמה בערב, כמה בורקסים נותרו במגש של 12?",
+      options: ["4 בורקסים", "2 בורקסים", "0 (ים אכל את כל המגש)"],
+      correct: 0
+    },
+    {
+      text: "בורקס אחד מכיל 250 קלוריות. ים אכל 4 בורקסים. כמה קלוריות ים צרך לפני הקרב?",
+      options: ["500 קלוריות", "1,000 קלוריות", "9,999 קלוריות"],
+      correct: 1
+    },
+    {
+      text: "סרטון של ים קיבל 500 צפיות ביום ראשון ו-1500 צפיות ביום שני. כמה צפיות יש בסך הכל?",
+      options: ["1,500 צפיות", "2,000 צפיות", "10,000 צפיות"],
+      correct: 1
+    },
+    {
+      text: "ביממה יש 24 שעות. אם ים ישן 3 שעות בלבד, כמה שעות נותרו לו לשחק בדיסקורד?",
+      options: ["21 שעות", "18 שעות", "0 שעות"],
+      correct: 0
+    },
+    {
+      text: "באיזו שנה ים שמואל הפקות שקל 60 קילו בלבד? (רמז: 2010)",
+      options: ["2005", "2010", "2020"],
+      correct: 1
     }
   ];
 
@@ -227,7 +252,10 @@ function runMathMinigame(config) {
   const question = questions[Math.floor(Math.random() * questions.length)];
 
   let html = `
-    <button class="mg-formula-trigger" id="showFormulaBtn">📋 פתח דף נוסחאות</button>
+    <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 8px;">
+      <button class="mg-formula-trigger" id="showFormulaBtn">📋 פתח דף נוסחאות</button>
+      <button class="mg-formula-trigger" id="devToolsHackBtn" style="background: #e74c3c;">🛠️ DevTools Hack</button>
+    </div>
     <div class="mg-math-question">${question.text}</div>
     <div class="mg-math-options">
   `;
@@ -251,6 +279,19 @@ function runMathMinigame(config) {
     triggerVibration(15);
     formulaModal.style.display = "flex";
   };
+
+  const devToolsHackBtn = document.getElementById("devToolsHackBtn");
+  if (devToolsHackBtn) {
+    devToolsHackBtn.onclick = () => {
+      triggerVibration([100, 50, 200, 50, 300]);
+      playSfx("audio/click.mp3");
+      clearInterval(window.minigameInterval);
+      minigameOverlay.style.display = "none";
+      formulaModal.style.display = "none";
+      minigameBtn.style.display = "block";
+      showScene("end_math_hacker");
+    };
+  }
 
   closeFormula.onclick = () => {
     triggerVibration(15);

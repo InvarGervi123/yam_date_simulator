@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v50-yam-math-bank';
+const CACHE_NAME = 'yam-date-sim-v50-math-quiz-devtools-hack';
 const ASSETS = [
   './',
   './index.html',

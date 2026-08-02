@@ -279,29 +279,15 @@ function runBaldiMinigame(config) {
     keys.w = keys.s = keys.a = keys.d = false; // Reset movements
     padModal.style.display = "flex";
     
-    // Dynamic Yam Math Question Bank
-    const easyQuestions = [
-      { q: "3 בורקסים בבוקר + 5 בערב = כמה בורקסים?", ans: 8 },
-      { q: "בורקס מכיל 250 קלוריות. ים אכל 4. כמה קלוריות?", ans: 1000 },
-      { q: "מגש בורקסים עם 6 שורות ו-4 טורים. כמה בורקסים?", ans: 24 },
-      { q: "ביממה 24 שעות. ים ישן 3 שעות. כמה שעות דיסקורד?", ans: 21 },
-      { q: "40 מודים בשרת, ים נתן באן ל-15 סוררים. כמה נותרו?", ans: 25 },
-      { q: "סרטון קיבל 500 צפיות בראשון ו-1500 בשני. כמה בסך הכל?", ans: 2000 },
-      { q: "באיזו שנה ים שקל 60 קילו בלבד? (רמז: 2010)", ans: 2010 }
-    ];
-
-    const mediumQuestions = [
-      { q: "בורקס גבינה 18 ש\"ח, קולה 7 ש\"ח. כמה עולה ארוחה?", ans: 25 },
-      { q: "ים ערך 3 סרטונים, כל סרטון 20 דקות. כמה דקות עריכה?", ans: 60 },
-      { q: "היקף מגש בורקס שצלעותיו 8 ס\"מ ו-12 ס\"מ?", ans: 40 },
-      { q: "100 חברי דיסקורד, כל יום מצטרפים 25. כמה אחרי 4 ימים?", ans: 200 },
-      { q: "מבחן מתמטיקה 50 שאלות. ענית נכון על 80%. כמה צדקת?", ans: 40 }
-    ];
-
-    const q1 = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
-    const q2 = mediumQuestions[Math.floor(Math.random() * mediumQuestions.length)];
-
     let step = 1;
+
+    let a1 = Math.floor(Math.random() * 8) + 2;
+    let b1 = Math.floor(Math.random() * 8) + 2;
+    let ans1 = a1 + b1;
+
+    let a2 = Math.floor(Math.random() * 4) + 2;
+    let b2 = Math.floor(Math.random() * 4) + 2;
+    let ans2 = a2 * b2;
 
     padScreen.classList.remove("baldi-red-alert");
     padTeacherImg.classList.remove("baldi-glitch-face");
@@ -318,7 +304,7 @@ function runBaldiMinigame(config) {
 
     // Render Problem 1
     padProbNum.textContent = "Problem 1 of 3";
-    padQText.textContent = q1.q;
+    padQText.textContent = `${a1} + ${b1} = ?`;
     padInput.focus();
 
     padInput.onkeydown = (e) => {
@@ -333,7 +319,7 @@ function runBaldiMinigame(config) {
       triggerVibration(15);
 
       if (step === 1) {
-        if (val === q1.ans) {
+        if (val === ans1) {
           correctAnswers++;
         } else {
           mistakesCount++;
@@ -342,10 +328,10 @@ function runBaldiMinigame(config) {
         step = 2;
         padInput.value = "";
         padProbNum.textContent = "Problem 2 of 3";
-        padQText.textContent = q2.q;
+        padQText.textContent = `${a2} × ${b2} = ?`;
         padInput.focus();
       } else if (step === 2) {
-        if (val === q2.ans) {
+        if (val === ans2) {
           correctAnswers++;
         } else {
           mistakesCount++;
@@ -360,7 +346,7 @@ function runBaldiMinigame(config) {
         padTeacherImg.classList.add("baldi-glitch-face");
 
         padProbNum.textContent = "Problem 3 of 3";
-        padQText.textContent = `${Math.floor(Math.random() * 9000) + 1000} + (בורקס × ░▒▓█) = ?`;
+        padQText.textContent = `${Math.floor(Math.random() * 9000) + 1000} + ▓░▒█ × ░▒ = ?`;
         padInput.focus();
       } else if (step === 3) {
         mistakesCount++; // Q3 glitch is always wrong
