@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v49-baldi-sound-bgm';
+const CACHE_NAME = 'yam-date-sim-v50-yam-math-bank';
 const ASSETS = [
   './',
   './index.html',
