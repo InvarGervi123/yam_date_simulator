@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v62-polish-chocolate-ch2-full';
+const CACHE_NAME = 'yam-date-sim-v63-polish-chocolate-ch3-full';
 const ASSETS = [
   './',
   './index.html',
@@ -29,6 +29,7 @@ const ASSETS = [
   './src/story/yam_shadow_story.js',
   './src/story/polish_chocolate.js',
   './src/story/polish_chocolate_ch2.js',
+  './src/story/polish_chocolate_ch3.js',
   './src/yam_shadow_battle.js',
   './src/yam_shadow_renderer.js',
   './images/characters/yam_sleepy.png',
