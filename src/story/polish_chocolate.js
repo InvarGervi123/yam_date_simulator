@@ -9,6 +9,7 @@ Object.assign(window.story, {
       const unlocked = (typeof getUnlockedEndings === 'function') ? getUnlockedEndings() : [];
       const ch1Done = unlocked.includes("end_polish_chocolate_ch1");
       const ch2Done = unlocked.some(k => k.startsWith("end_ch2_"));
+      const ch3Done = unlocked.some(k => k.startsWith("end_ch3_"));
       
       scene.choices = [
         { text: "▶️ שוקולד פולני — פרק 1: החוזה השבור", next: "polish_shop_start" },
@@ -24,6 +25,12 @@ Object.assign(window.story, {
             : "⚠️ פרק 3: התפר בין העולמות (אזהרת ספוילרים)", 
           next: "ch3_seam_entrance" 
         },
+        { 
+          text: ch3Done 
+            ? "🔓 פרק 4: החוט המקורי (סוף הקשת הראשונה!)" 
+            : "⚠️ פרק 4: החוט המקורי (אזהרת ספוילרים)", 
+          next: "ch4_return_world" 
+        },
         { text: "🔙 חזרה לתפריט הנתיבים המיוחדים", next: "room_intro_special" }
       ];
     },
@@ -32,6 +39,7 @@ Object.assign(window.story, {
       { text: "▶️ שוקולד פולני — פרק 1", next: "polish_shop_start" },
       { text: "▶️ פרק 2: ארכיון השמות האבודים", next: "ch2_archive_entrance" },
       { text: "▶️ פרק 3: התפר בין העולמות", next: "ch3_seam_entrance" },
+      { text: "▶️ פרק 4: החוט המקורי (סוף הקשת)", next: "ch4_return_world" },
       { text: "🔙 חזרה לתפריט הנתיבים המיוחדים", next: "room_intro_special" }
     ]
   },
