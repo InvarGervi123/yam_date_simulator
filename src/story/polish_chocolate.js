@@ -5,10 +5,25 @@ Object.assign(window.story, {
     speaker: "תפריט DLC והרפתקאות צד",
     background: "images/backgrounds/room.jpg",
     music: "audio/main.mp3",
+    onEnter: function(scene) {
+      const unlocked = (typeof getUnlockedEndings === 'function') ? getUnlockedEndings() : [];
+      const ch1Done = unlocked.includes("end_polish_chocolate_ch1");
+      
+      scene.choices = [
+        { text: "▶️ שוקולד פולני: החוזה השבור — פרק 1", next: "polish_shop_start" },
+        { 
+          text: ch1Done 
+            ? "🔓 פרק 2: ארכיון השמות האבודים (פתוח!)" 
+            : "⚠️ פרק 2: ארכיון השמות האבודים (אזהרת ספוילרים - מומלץ לשחק קודם בפרק 1!)", 
+          next: "ch2_archive_entrance" 
+        },
+        { text: "🔙 חזרה לתפריט הנתיבים המיוחדים", next: "room_intro_special" }
+      ];
+    },
     text: "📦 תפריט הרפתקאות צד ו-DLC\n\nברוכים הבאים למרחב סיפורי הצד! בחרו את הפרק שברצונכם לשחק:",
     choices: [
-      { text: "▶️ שוקולד פולני: החוזה השבור — פרק 1 (פעיל)", next: "polish_shop_start" },
-      { text: "▶️ שוקולד פולני: החוזה השבור — פרק 2 (פתיחה)", next: "ch2_start" },
+      { text: "▶️ שוקולד פולני: החוזה השבור — פרק 1", next: "polish_shop_start" },
+      { text: "▶️ פרק 2: ארכיון השמות האבודים", next: "ch2_archive_entrance" },
       { text: "🔙 חזרה לתפריט הנתיבים המיוחדים", next: "room_intro_special" }
     ]
   },
