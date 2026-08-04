@@ -69,7 +69,7 @@ Object.assign(window.story, {
         "next": "yam_shadow_part1_start"
       },
       {
-        "text": "🍫 להיכנס למסלול הצד: שוקולד פולני - החוזה השבור (DLC)",
+        "text": "🍫 מסלול צד (DLC): שוקולד פולני - החוזה השבור (פרק 1)",
         "next": "polish_shop_start"
       },
       {
