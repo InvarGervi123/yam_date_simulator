@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v65-release-audit-verified';
+const CACHE_NAME = 'yam-date-sim-v66-typewriter-haptic-vibration';
 const ASSETS = [
   './',
   './index.html',

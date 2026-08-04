@@ -345,6 +345,7 @@ function showScene(id) {
         text.textContent += currentFullText[charIndex];
         if (charIndex % 2 === 0) {
           playVoiceBeep(scene.speaker);
+          triggerVibration(8);
         }
         charIndex++;
         typewriterTimer = setTimeout(typeNextChar, 18);
