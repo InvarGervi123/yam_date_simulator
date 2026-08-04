@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v64-polish-chocolate-arc1-finale';
+const CACHE_NAME = 'yam-date-sim-v65-release-audit-verified';
 const ASSETS = [
   './',
   './index.html',
