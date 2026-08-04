@@ -449,20 +449,32 @@ function getCookie(name) {
 }
 
 function getUnlockedEndings() {
-  const cookieVal = getCookie("unlocked_endings");
-  if (!cookieVal) return [];
+  let raw = null;
   try {
-    return JSON.parse(cookieVal);
+    raw = localStorage.getItem("unlocked_endings");
+  } catch (e) {}
+  if (!raw) {
+    raw = getCookie("unlocked_endings");
+  }
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
     return [];
   }
 }
 
 function unlockEnding(endingId) {
+  if (!endingId) return;
   const unlocked = getUnlockedEndings();
   if (!unlocked.includes(endingId)) {
     unlocked.push(endingId);
-    setCookie("unlocked_endings", JSON.stringify(unlocked));
+    const jsonStr = JSON.stringify(unlocked);
+    try {
+      localStorage.setItem("unlocked_endings", jsonStr);
+    } catch (e) {}
+    setCookie("unlocked_endings", jsonStr);
   }
 }
 
@@ -479,10 +491,13 @@ function openEndingsGallery() {
   // Dynamic Ending Scanning
   const endings = [];
   for (let key in story) {
-    if (story[key].end) {
-      const rawText = story[key].text || "";
-      // Clean up emojis and get first line of ending text
-      const cleanName = rawText.split('\n')[0].replace(/^[🎨🤖📹📻💀🖼💔⚖🏳🎬🏆🏎🧆🍿🎥⭐🚌💸💬📷😬🌿🧬⚙️📁😭🧺💍🦾🖤☔🛏🫳]*/g, '').trim();
+    if (story[key] && story[key].end) {
+      // Execute onEnter if present to evaluate dynamic titles/text
+      if (typeof story[key].onEnter === "function" && !story[key].text) {
+        try { story[key].onEnter(story[key]); } catch (e) {}
+      }
+      const rawText = story[key].text || story[key].speaker || key;
+      const cleanName = rawText.split('\n')[0].replace(/^[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]*/gu, '').trim() || key;
       endings.push({
         id: key,
         speaker: story[key].speaker || "סוף",

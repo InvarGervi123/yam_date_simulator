@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v51-math-quiz-time-bonus';
+const CACHE_NAME = 'yam-date-sim-v54-unlocked-endings-localstorage-fix';
 const ASSETS = [
   './',
   './index.html',
@@ -27,6 +27,7 @@ const ASSETS = [
   './src/story/endings.js',
   './src/story/dialogue_expansions.js',
   './src/story/yam_shadow_story.js',
+  './src/story/polish_chocolate.js',
   './src/yam_shadow_battle.js',
   './src/yam_shadow_renderer.js',
   './images/characters/yam_sleepy.png',

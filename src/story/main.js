@@ -69,6 +69,7 @@ Object.assign(window.story, {
     text: "בחרת לחקור נתיבים מיוחדים והרפתקאות מחוץ לקופסה. לאן נמשיך?",
     choices: [
       { text: "👁️ להתחקות אחר הצל שמאחורי ים (נתיב ינוור ו-THE ECHO)", next: "yam_shadow_part1_start" },
+      { text: "🍫 להיכנס למסלול הצד: שוקולד פולני - החוזה השבור (DLC)", next: "polish_shop_start" },
       { text: "להכריז על קרב בוס אפי! (DELTARUNE BOSS FIGHT!)", next: "boss_fight_intro" },
       { text: "לפתור איתו תרגילים בטאבלט הלימודי שלו (Baldi's Basics!)", next: "baldi_intro" },
       { text: "לנסוע לאורנית לחפש את ים בביתו (נתיב אורנית והקסם!)", next: "oranit_travel" },

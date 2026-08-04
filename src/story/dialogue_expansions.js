@@ -69,6 +69,10 @@ Object.assign(window.story, {
         "next": "yam_shadow_part1_start"
       },
       {
+        "text": "🍫 להיכנס למסלול הצד: שוקולד פולני - החוזה השבור (DLC)",
+        "next": "polish_shop_start"
+      },
+      {
         "text": "להכריז על קרב בוס אפי! (DELTARUNE BOSS FIGHT!)",
         "next": "boss_fight_intro"
       },
