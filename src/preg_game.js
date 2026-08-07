@@ -349,7 +349,39 @@ function runPregnancyGame(onSuccess, onFail) {
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("keyup", handleKeyUp);
 
-  // Mobile Button Actions
+  // Dodge Stance Handlers (Mouse & Touch support)
+  function startDodge(e) {
+    if (e) e.preventDefault();
+    if (ctx.isGameOver || ctx.isPhaseTransitioning || ctx.isGasping) return;
+    if (ctx.playerStance !== "dodging") {
+      if (ctx.playerStamina < 10) {
+        spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
+        return;
+      }
+      ctx.playerStamina = Math.max(0, ctx.playerStamina - 10); // Flat entry cost
+      ctx.playerStance = "dodging";
+      if (playerStanceText) {
+        playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
+        playerStanceText.style.color = "#3498db";
+      }
+      ctx.crouchY = 25;
+      registerComboInput("s"); // Add S to Combo recipe evaluation
+    }
+  }
+
+  function stopDodge(e) {
+    if (e) e.preventDefault();
+    if (ctx.playerStance === "dodging") {
+      ctx.playerStance = "ready";
+      if (playerStanceText) {
+        playerStanceText.textContent = "עמידה: 🛡️ מוכן";
+        playerStanceText.style.color = "#ffd447";
+      }
+    }
+    ctx.crouchY = 0;
+  }
+
+  // Mobile & Mouse Button Actions
   if (btnAttack) {
     btnAttack.onclick = (e) => {
       e.preventDefault();
@@ -361,36 +393,12 @@ function runPregnancyGame(onSuccess, onFail) {
   }
 
   if (btnDodge) {
-    btnDodge.ontouchstart = (e) => {
-      e.preventDefault();
-      if (ctx.isGameOver || ctx.isPhaseTransitioning || ctx.isGasping) return;
-      if (ctx.playerStance !== "dodging") {
-        if (ctx.playerStamina < 10) {
-          spawnFloatingText("🥵 EXHAUSTED!", "#ff3f3f");
-          return;
-        }
-        ctx.playerStamina = Math.max(0, ctx.playerStamina - 10); // Flat entry cost
-        ctx.playerStance = "dodging";
-        if (playerStanceText) {
-          playerStanceText.textContent = "עמידה: 🛡️ התחמקות (כפוף)";
-          playerStanceText.style.color = "#3498db";
-        }
-        ctx.crouchY = 25;
-        registerComboInput("s"); // Add S to Combo recipe evaluation on mobile
-      }
-    };
-
-    btnDodge.ontouchend = (e) => {
-      e.preventDefault();
-      if (ctx.playerStance === "dodging") {
-        ctx.playerStance = "ready";
-        if (playerStanceText) {
-          playerStanceText.textContent = "עמידה: 🛡️ מוכן";
-          playerStanceText.style.color = "#ffd447";
-        }
-      }
-      ctx.crouchY = 0;
-    };
+    btnDodge.onmousedown = startDodge;
+    btnDodge.onmouseup = stopDodge;
+    btnDodge.onmouseleave = stopDodge;
+    btnDodge.ontouchstart = startDodge;
+    btnDodge.ontouchend = stopDodge;
+    btnDodge.ontouchcancel = stopDodge;
   }
 
   // Player Attack Trigger with Stamina Drain
@@ -742,8 +750,12 @@ function runPregnancyGame(onSuccess, onFail) {
     window.removeEventListener("keyup", handleKeyUp);
     if (btnAttack) btnAttack.onclick = null;
     if (btnDodge) {
+      btnDodge.onmousedown = null;
+      btnDodge.onmouseup = null;
+      btnDodge.onmouseleave = null;
       btnDodge.ontouchstart = null;
       btnDodge.ontouchend = null;
+      btnDodge.ontouchcancel = null;
     }
 
     // Reset layout styles

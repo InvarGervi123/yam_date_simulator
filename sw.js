@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v67-preg-game-hebrew-keyboard-fix';
+const CACHE_NAME = 'yam-date-sim-v68-preg-game-mouse-dodge-fix';
 const ASSETS = [
   './',
   './index.html',
