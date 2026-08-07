@@ -274,16 +274,24 @@ function runPregnancyGame(onSuccess, onFail) {
     }, 400);
   }
 
-  // Keyboard Listeners
+  // Keyboard Listeners (Layout-independent Hebrew & English support)
   const handleKeyDown = (e) => {
     if (ctx.isGameOver || ctx.isPhaseTransitioning) return;
-    const k = e.key.toLowerCase();
+    const k = (e.key || "").toLowerCase();
+    const code = e.code || "";
+
+    const isW = code === "KeyW" || code === "KeyE" || code === "ArrowUp" || code === "Space" || code === "Enter" || code === "NumpadEnter" ||
+                k === "w" || k === "ק" || k === "׳" || k === "'" || k === "e" || k === "ג" || k === " " || k === "enter";
+
+    const isS = code === "KeyS" || code === "KeyX" || code === "ArrowDown" ||
+                k === "s" || k === "ד" || k === "x" || k === "ס";
+
     ctx.keysPressed[k] = true;
-    if (k === "ק" || k === "׳" || e.code === "KeyW") ctx.keysPressed["w"] = true;
-    if (k === "ד" || e.code === "KeyS") ctx.keysPressed["s"] = true;
+    if (isW) ctx.keysPressed["w"] = true;
+    if (isS) ctx.keysPressed["s"] = true;
 
     // Dodge (S / ArrowDown / ד)
-    if (e.key === "ArrowDown" || k === "s" || k === "ד" || e.code === "KeyS") {
+    if (isS) {
       e.preventDefault();
       if (ctx.isGasping) return; // Cannot dodge while gasping
       if (ctx.playerStance !== "dodging") {
@@ -302,8 +310,8 @@ function runPregnancyGame(onSuccess, onFail) {
       }
     }
 
-    // Attack (W, Up, Space, ק, ׳)
-    if (e.key === "ArrowUp" || k === "w" || k === "ק" || k === "׳" || e.code === "KeyW" || e.key === " ") {
+    // Attack (W, Up, Space, Enter, ק, ׳)
+    if (isW) {
       e.preventDefault();
       if (ctx.isGasping) return; // Cannot attack while gasping
       if (ctx.playerStance !== "dodging" && Date.now() > ctx.attackCooldown) {
@@ -313,11 +321,20 @@ function runPregnancyGame(onSuccess, onFail) {
   };
 
   const handleKeyUp = (e) => {
-    const k = e.key.toLowerCase();
+    const k = (e.key || "").toLowerCase();
+    const code = e.code || "";
+
+    const isW = code === "KeyW" || code === "KeyE" || code === "ArrowUp" || code === "Space" || code === "Enter" || code === "NumpadEnter" ||
+                k === "w" || k === "ק" || k === "׳" || k === "'" || k === "e" || k === "ג" || k === " " || k === "enter";
+
+    const isS = code === "KeyS" || code === "KeyX" || code === "ArrowDown" ||
+                k === "s" || k === "ד" || k === "x" || k === "ס";
+
     ctx.keysPressed[k] = false;
-    if (k === "ק" || k === "׳" || e.code === "KeyW") ctx.keysPressed["w"] = false;
-    if (k === "ד" || e.code === "KeyS") ctx.keysPressed["s"] = false;
-    if (e.key === "ArrowDown" || k === "s" || k === "ד" || e.code === "KeyS") {
+    if (isW) ctx.keysPressed["w"] = false;
+    if (isS) ctx.keysPressed["s"] = false;
+
+    if (isS) {
       if (ctx.playerStance === "dodging") {
         ctx.playerStance = "ready";
         if (playerStanceText) {

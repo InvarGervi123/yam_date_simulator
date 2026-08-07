@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v66-typewriter-haptic-vibration';
+const CACHE_NAME = 'yam-date-sim-v67-preg-game-hebrew-keyboard-fix';
 const ASSETS = [
   './',
   './index.html',
