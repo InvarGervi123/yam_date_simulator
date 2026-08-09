@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v79-flatline-sound-and-intense-pulse-haptics';
+const CACHE_NAME = 'yam-date-sim-v88-all-force-choices-pulse-wired-everywhere';
 const ASSETS = [
   './',
   './index.html',

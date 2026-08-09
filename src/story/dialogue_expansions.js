@@ -32,35 +32,50 @@ Object.assign(window.story, {
   },
   "room_intro_force": {
     "speaker": "המספר",
-    "text": "בחרת בגישה פיזית, קשוחה או דרמטית.\n\nהמשחק מציג אזהרה:\n\"פעולה זו דורשת הרשאות Administrator, ביטוח צד ג', וחתימה של ועד הבית.\"\n\nבדיסקורד כבר עשו לך פינג:\n@everyone היא באמת הולכת לגעת בפרודקשן.\n\nים מחבק את השמיכה כמו מתכנת שמישהו ביקש ממנו למחוק את תיקיית node_modules בלי גיבוי. המיטה מפעילה מצב הגנה, הכרית נטענת כנשק, והמאוורר בחדר מתחיל להרעיש כאילו פתחת Chrome עם שלוש לשוניות.\n\nמה התוכנית שלך?",
+    "text": "בחרת בגישה פיזית, קשוחה או דרמטית.\n\n⚠️ אזהרת מד דופק (Nintendo Wii Vitality Sensor):\nכל פעולה דרמטית או פיזית תעלה את דופק הלב שלך בזמן אמת! שמר על הדופק מתחת ל-165 BPM כדי למנוע התקף לב!\n\nים מחבק את השמיכה כמו מתכנת שמישהו ביקש ממנו למחוק את תיקיית node_modules בלי גיבוי. המיטה מפעילה מצב הגנה, הכרית נטענת כנשק, והמאוורר בחדר מתחיל להרעיש.\n\nמה התוכנית שלך?",
+    "onEnter": function() {
+      if (typeof startWiiPulseGame === "function" && (!window.wiiPulseCtx || !window.wiiPulseCtx.isActive)) {
+        startWiiPulseGame(
+          function() { if (window.engine) window.engine.showScene("wii_romance_success"); },
+          function() { if (window.engine) window.engine.showScene("wii_pulse_heart_attack_scene"); }
+        );
+      }
+    },
     "choices": [
       {
-        "text": "💓 לנסות מחווה רומנטית אקסטרים (זהירות: מד דופק מוגבר!)",
-        "next": "wii_pulse_intro"
+        "text": "💓 לנסות מחווה רומנטית אקסטרים",
+        "next": "wii_pulse_intro",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(25); }
       },
       {
-        "text": "לנסות לפרוץ למגירה הסודית שלו בזמן שהוא ישן (משחק עיתוי!)",
-        "next": "steal_drawer_prep"
+        "text": "🔓 לנסות לפרוץ למגירה הסודית שלו בזמן שהוא ישן",
+        "next": "steal_drawer_prep",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(35); }
       },
       {
-        "text": "לנסות לגרור אותו בכוח מהמיטה (משחק לחיצות!)",
-        "next": "drag_yam_prep"
+        "text": "💪 לנסות לגרור אותו בכוח מהמיטה",
+        "next": "drag_yam_prep",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(40); }
       },
       {
-        "text": "לעשות נאום דרמטי כאילו זה סוף העולם",
-        "next": "dramatic_speech"
+        "text": "🎭 לעשות נאום דרמטי כאילו זה סוף העולם",
+        "next": "dramatic_speech",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(30); }
       },
       {
-        "text": "להגיד לו שאני עוברת לינוור",
-        "next": "yinover_threat"
+        "text": "😱 להגיד לו שאני עוברת לינוור",
+        "next": "yinover_threat",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(45); }
       },
       {
-        "text": "להציע לו לחסום את כביש 4 כי הבטיחו עוגת גבינה חינם לחוסמים",
-        "next": "block_highway_protest"
+        "text": "🛣️ להציע לו לחסום את כביש 4",
+        "next": "block_highway_protest",
+        "onSelect": function() { if (typeof applyRomanticAction === "function") applyRomanticAction(35); }
       },
       {
         "text": "🔙 חזרה לאפשרויות הראשיות",
-        "next": "room_intro"
+        "next": "room_intro",
+        "onSelect": function() { if (typeof stopWiiPulseGame === "function") stopWiiPulseGame(); }
       }
     ]
   },

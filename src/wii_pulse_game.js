@@ -318,7 +318,7 @@ function applyRomanticAction(bpmDelta, actionName) {
     return;
   }
 
-  if (ctx.targetBpm >= 165) {
+  if (ctx.targetBpm >= 145) {
     triggerDarkWiiWarning();
     return;
   }
@@ -345,6 +345,11 @@ function triggerDarkWiiWarning() {
   const ctx = window.wiiPulseCtx;
   if (ctx.darkWarningElement) {
     ctx.darkWarningElement.style.display = "flex";
+    ctx.darkWarningElement.style.zIndex = "999999";
+  }
+
+  if (window.audioEngine && typeof window.audioEngine.playSfx === "function") {
+    try { window.audioEngine.playSfx("audio/break.mp3"); } catch (e) {}
   }
 
   if (navigator.vibrate) {

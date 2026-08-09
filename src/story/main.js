@@ -32,6 +32,9 @@ Object.assign(window.story, {
   room_intro: {
     speaker: "המספר",
     text: "את נכנסת לחדר.\nים במיטה.\nהחדר חשוך.\nהאוויר כבד.\nהכרית נראית כאילו היא כבר שמעה את כל התירוצים שלו ומבקשת חסינות דיפלומטית.",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
     choices: [
       { text: "🌸 לנסות גישה רגועה ורומנטית...", next: "room_intro_normal" },
       { text: "🔥 לנסות גישה פיזית ודרמטית...", next: "room_intro_force" },
@@ -68,12 +71,12 @@ Object.assign(window.story, {
   // --- Wii Pulse Romance Minigame Story Sequence ---
   wii_pulse_intro: {
     speaker: "המספר",
-    text: "💓 מחווה רומנטית אקסטרים — מנגנון מד הדופק (Nintendo Wii Vitality Sensor)\n\nאת מתקרבת אל ים במיטה עם מבט רומנטי סוחף.\nאך מרוב התרגשות ותשוקה, מד הדופק שלך (BPM) מתחיל לזנק בזמן אמת!\n\n⚠️ כללים:\n• מחוות רומנטיות אנטנסיביות מעלות את הדופק שלך.\n• אם הדופק עובר את ה-165 BPM, תופיע אזהרה חמורה של נינטנדו!\n• אם הדופק עובר את ה-190 BPM — הלב שלך יקבל התקף לב והמשחק יתרסק!\n• השתמשי בפעולות הרגעה כדי להוריד דופק, והשלימי את המסלול הרומנטי מתחת ל-150 BPM כדי לנצח!",
+    text: "את צועדת באיטיות לעבר המיטה של ים, עינייך נוצצות בנחישות רומנטית.\n\nים מתכסה עד האף בשמיכה, עיניו חצי סגורות מול מסך הטלפון:\n'רגע... מה זה המבט הזה?! למה את מתקרבת אליי בצעדים דרמטיים של סרט טורקי משנות ה-80?!'\n\nפתאום, הלב שלך מתחיל לפעום בעוצמה חזקה. הטלפון בידך רוטט בקצב פעימות הלב, ומד EKG (Nintendo Wii Vitality Sensor) מופיע בראש המסך מול עינייך!",
     onEnter: function() {
       if (typeof startWiiPulseGame === "function") {
         startWiiPulseGame(
           function() { if (window.engine) window.engine.showScene("wii_romance_success"); },
-          function() { if (window.engine) window.engine.showScene("end_wii_heart_attack"); }
+          function() { if (window.engine) window.engine.showScene("wii_pulse_heart_attack_scene"); }
         );
       }
     },
@@ -89,21 +92,21 @@ Object.assign(window.story, {
         text: "👀 להתקרב אל ים ולפתוח בקשר עין חודר ורומנטי",
         next: "wii_pulse_stage2",
         onSelect: function() {
-          if (typeof applyRomanticAction === "function") applyRomanticAction(25, "eye_contact");
+          if (typeof applyRomanticAction === "function") applyRomanticAction(45, "eye_contact");
         }
       },
       {
-        text: "💌 ללחוש לו וידוי תשוקה דרמטי ומסעיר מקרוב",
+        text: "🔥 לדחוק את התשוקה בבת אחת בלחישה מסעירה מקרוב",
         next: "wii_pulse_stage2",
         onSelect: function() {
-          if (typeof applyRomanticAction === "function") applyRomanticAction(35, "confession");
+          if (typeof applyRomanticAction === "function") applyRomanticAction(60, "confession");
         }
       },
       {
         text: "🫁 לעצום עיניים, לקחת נשימה עמוקה ולהרגיע את הלב",
         next: "wii_pulse_stage1",
         onSelect: function() {
-          if (typeof applyCalmingAction === "function") applyCalmingAction(30, "deep_breath");
+          if (typeof applyCalmingAction === "function") applyCalmingAction(25, "deep_breath");
         }
       }
     ]
@@ -112,7 +115,7 @@ Object.assign(window.story, {
   wii_pulse_stage2: {
     speaker: "ים",
     character: "images/characters/yam_curious.png",
-    text: "ים מוציא את פניו מהכרית ומביט בך במבוכה:\n'רגע... מה את עושה?! למה המבט והלחישות האלו?!'\nפניו מסמיקות קלות. הלב שלך מתחיל לפעום בעוצמה חזקה יותר! כיצד תמשיכי?",
+    text: "ים מוציא את פניו מהכרית ומביט בך במבוכה:\n'רגע... מה את עושה?! למה הנשימה שלך נהייתה כבדה כל כך?! והלב שלך... שומעים אותו דופק מבעד לשמיכה!'\n\nפניו מסמיקות קלות. הלב שלך מתחיל לפעום בעוצמה חזקה יותר! כיצד תמשיכי?",
     choices: [
       {
         text: "🤝 לאחוז בידו בעדינות ולחבק אותו קרוב אליך",
@@ -122,46 +125,50 @@ Object.assign(window.story, {
         }
       },
       {
-        text: "❤️‍🔥 להתעלם מהדופק המזנק ולהתנפל על ים בנשיקת תשוקה מטורפת!",
-        next: "wii_pulse_heart_attack_scene",
+        text: "❤️‍🔥 להתעלם מכל האזהרות ולהבטיח לו דייט סוער בנשיקת תשוקה!",
+        next: "wii_pulse_stage3",
         onSelect: function() {
-          if (typeof applyRomanticAction === "function") applyRomanticAction(50, "extreme_kiss");
+          if (typeof applyRomanticAction === "function") applyRomanticAction(55, "extreme_kiss");
         }
       },
       {
         text: "🫁 לעצום עיניים, לנשום עמוק ולהוריד את הדופק",
         next: "wii_pulse_stage2",
         onSelect: function() {
-          if (typeof applyCalmingAction === "function") applyCalmingAction(30, "count_5");
+          if (typeof applyCalmingAction === "function") applyCalmingAction(40, "count_5");
         }
       }
     ]
   },
 
   wii_pulse_stage3: {
-    speaker: "המספר",
+    speaker: "ים",
     character: "images/characters/yam_surpise.png",
-    text: "האוויר בחדר מתחמם! ים יושב על קצה המיטה, המום לחלוטין מהמחווה הרומנטית הסוחפת.\nהוא מביט בך בעיניים גדולות. הלב שלך פועם בעוצמה גבוהה! נותרה עוד מחווה אחת אחרונה!",
+    text: "ים נבהל למראה פנייך המוצפות אדום וזיעה קרה:\n'אוי ואבוי!! הפנים שלך אדומות מדם, והלב שלך דופק כמו מנוע סילון שעומד להתפוצץ!! את חייבת להירגע, את תקבלי התקף לב!!'\n\nנותרה עוד מחווה אחת אחרונה לפני שים נשבר!",
     choices: [
       {
-        text: "🌹 להושיט לו יד, להביט בו בחיוך כבוש ולהזמין אותו לקום",
+        text: "🌹 להושיט לו יד בעדינות, להביט בו בחיוך כבוש ולבקש שיקום",
         next: "wii_pulse_stage4",
         onSelect: function() {
-          if (typeof applyRomanticAction === "function") applyRomanticAction(25, "final_hand");
+          if (typeof applyRomanticAction === "function") applyRomanticAction(20, "final_hand");
         }
       },
       {
-        text: "💥 לדחוק את הלב עד הקצה ולבצע נאום רומנטי סופני ללא הפסקה!",
-        next: "wii_pulse_heart_attack_scene",
+        text: "☠️ להתעלם מאזהרת הלב, לדחוק את הדופק עד הסוף ולצעוק תשוקה!",
+        next: "wii_pulse_flatline_scene",
         onSelect: function() {
           if (typeof applyRomanticAction === "function") applyRomanticAction(55, "extreme_speech");
         }
       },
       {
-        text: "🫁 לעצום עיניים, לנשום עמוק ולהוריד את הדופק לפני הצעד האחרון",
+        text: "😱 להיכנס להיפר-וונטילציה מוחלטת מרוב לחץ וחרדה!",
+        next: "end_wii_panic_stroke"
+      },
+      {
+        text: "🫁 לעצום עיניים, לנשום עמוק ולהוריד את הדופק בדחיפות",
         next: "wii_pulse_stage3",
         onSelect: function() {
-          if (typeof applyCalmingAction === "function") applyCalmingAction(35, "deep_breath_final");
+          if (typeof applyCalmingAction === "function") applyCalmingAction(50, "deep_breath_final");
         }
       }
     ]
@@ -179,6 +186,21 @@ Object.assign(window.story, {
     },
     choices: [
       { text: "💔 המשך לסיום התקפת הלב...", next: "end_wii_heart_attack" }
+    ]
+  },
+
+  wii_pulse_flatline_scene: {
+    speaker: "המספר",
+    character: "images/characters/yam_surpise.png",
+    effect: "shake",
+    text: "🏥 קו ישר מוחי-קרדיולוגי (ICU Cardiac Flatline)\n\nהדופק חצה את ה-200 BPM! צליל ה-EKG נשאר על קו ישר רצוף (*ביפפפפפפפפפ!*).\nהמכשיר הרפואי הוציא דוח רשמי: 'סיבת המוות: יותר מדי רומנטיקה ואפס נשימות עמוקות'.",
+    onEnter: function() {
+      if (typeof triggerWiiFitHeartAttack === "function") {
+        triggerWiiFitHeartAttack();
+      }
+    },
+    choices: [
+      { text: "🏥 המשך לסיום הקו הישר...", next: "end_wii_flatline_gameover" }
     ]
   },
 
@@ -586,9 +608,20 @@ Object.assign(window.story, {
     speaker: "את",
     text: "את נעמדת באמצע החדר ופותחת נאום כאילו כל האנושות תלויה בזה.\n\n'ים! העולם קר, האהבה יקרה, והחיים מרגישים כמו טופס שלא נשמר אחרי שעתיים. אבל היום אתה תקום!'",
     choices: [
-      { text: "להמשיך לנאום עוד יותר מוגזם", next: "speech_level_2" },
-      { text: "לסיים במשפט על פחיות", next: "cans_too_soon" },
-      { text: "להתחרט באמצע", next: "end_speech_crash" }
+      {
+        text: "להמשיך לנאום עוד יותר מוגזם",
+        next: "speech_level_2",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(40); }
+      },
+      {
+        text: "לסיים במשפט על פחיות",
+        next: "cans_too_soon",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(30); }
+      },
+      {
+        text: "להתחרט באמצע",
+        next: "end_speech_crash"
+      }
     ]
   },
 
@@ -596,9 +629,21 @@ Object.assign(window.story, {
     speaker: "את",
     text: "'אתה לא רק בחור במיטה!\nאתה אימפריה!\nאתה ערוץ!\nאתה הפקה!\nאתה אולי אפילו בן אדם עם תאריך יציאה מהחדר!'\n\nים דומע. או שזה אבק. אף אחד לא בודק.",
     choices: [
-      { text: "לצעוק: קום יא מלך שבור", next: "place_choice" },
-      { text: "להציע חוזה דייט רשמי", next: "date_contract" },
-      { text: "להגזים עד שהמשחק קורס עלילתית", next: "end_writer_breakdown" }
+      {
+        text: "לצעוק: קום יא מלך שבור",
+        next: "place_choice",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(45); }
+      },
+      {
+        text: "להציע חוזה דייט רשמי",
+        next: "date_contract",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(35); }
+      },
+      {
+        text: "להגזים עד שהמשחק קורס עלילתית",
+        next: "end_writer_breakdown",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(55); }
+      }
     ]
   },
 
@@ -668,9 +713,21 @@ Object.assign(window.story, {
     speaker: "ים",
     text: "ים קופא.\nהמילה 'ינוור' תלויה באוויר כמו קללה עתיקה שנכתבה בקומנט ביוטיוב.\n\n'מה אמרת?'",
     choices: [
-      { text: "אני עוברת לינוור", next: "end_yinover_canon" },
-      { text: "סתם! בדקתי אם אתה מקשיב", next: "yinover_recover" },
-      { text: "INVARIRON יותר טוב", next: "invariron_flattery" }
+      {
+        text: "אני עוברת לינוור",
+        next: "end_yinover_canon",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(55); }
+      },
+      {
+        text: "סתם! בדקתי אם אתה מקשיב",
+        next: "yinover_recover",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(30); }
+      },
+      {
+        text: "INVARIRON יותר טוב",
+        next: "invariron_flattery",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(40); }
+      }
     ]
   },
 
@@ -717,7 +774,11 @@ Object.assign(window.story, {
     speaker: "המספר",
     text: "את מתגנבת על קצות האצבעות לכיוון שידת הלילה של ים.\nשם, מתחת לערימה של קבלים מפוצלים ושאריות בורקס יבש משנת 2024, נמצאת המגירה הנעולה.\nהנשימה של ים כבדה, הוא חולם כנראה על שרת דיסקורד שנמחק בטעות.\nהאם תצליחי לפתוח את המנעול עם סיכת ראש?",
     choices: [
-      { text: "לנסות לפרוץ! (משחק עיתוי!)", next: "drawer_lockpick_game" },
+      {
+        text: "🔓 לנסות לפרוץ! (משחק עיתוי ודופק!)",
+        next: "drawer_lockpick_game",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(40); }
+      },
       { text: "לסגת, זה מסוכן מדי", next: "room_intro" }
     ]
   },
@@ -811,7 +872,11 @@ Object.assign(window.story, {
     speaker: "את",
     text: "אני לא מחכה יותר. הגיע הזמן לפיזיקה פשוטה.\nאת תופסת את ים בשתי הידיים ומתחילה למשוך בכל הכוח.\nים מתנגד כמו שק תפוחי אדמה רטוב.\nהמיטה מפעילה כוח כבידה נגדי של חור שחור.\nחייבים למשוך חזק ומהר!",
     choices: [
-      { text: "למשוך בכל הכוח! (משחק לחיצות מהיר!)", next: "drag_yam_game" }
+      {
+        text: "💪 למשוך בכל הכוח! (משחק לחיצות ודופק שיא!)",
+        next: "drag_yam_game",
+        onSelect: function() { if (typeof applyRomanticAction === "function") applyRomanticAction(45); }
+      }
     ]
   },
 

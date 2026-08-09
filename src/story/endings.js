@@ -840,6 +840,26 @@ Object.assign(window.story, {
       if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
     },
     end: true
+  },
+
+  end_wii_panic_stroke: {
+    speaker: "סוף: התמוטטות היפר-וונטילציה",
+    vibrate: [200, 100, 200, 100, 500],
+    text: "🧠 סוף: התמוטטות חרדה נשימתית מוגברת\n\nמרוב היפר-וונטילציה ולחץ דם מטורף, התעלפת על הריצפה מול המיטה של ים.\nים התקשר ל-101 וצעק לפרמדיקים: 'היא פשוט הסתכלה עליי וקפצה לה סירנת חירום בראש!'\n\n⚠️ תזכורת: נשימה עמוקה מורידה דופק במצבי חרדה!",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
+    end: true
+  },
+
+  end_wii_flatline_gameover: {
+    speaker: "סוף: קו ישר רפואי",
+    vibrate: [800, 200, 800],
+    text: "🏥 סוף: קו ישר מוחי-קרדיולוגי (ICU Cardiac Flatline)\n\nצליל ה-EKG נשאר על קו ישר רצוף (*ביפפפפפפפ!*).\nהמכשיר הרפואי הוציא דוח רשמי: 'סיבת המוות: יותר מדי רומנטיקה ואפס נשימות עמוקות'.\nתמונה שלך הופיעה באזהרת הבטיחות של נינטנדו כדוגמה למה אסור לעשות.",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
+    end: true
   }
 
 });
