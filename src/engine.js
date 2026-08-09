@@ -160,13 +160,21 @@ function clearChoices() {
   choices.innerHTML = "";
 }
 
-function addChoice(label, nextScene) {
+function addChoice(label, nextScene, onSelect) {
   const btn = document.createElement("button");
   btn.className = "choiceBtn";
   btn.textContent = label;
-  btn.onclick = () => {
+  btn.onclick = (e) => {
+    if (btn.dataset.clicked === "true") return;
+    btn.dataset.clicked = "true";
+    setTimeout(() => { btn.dataset.clicked = "false"; }, 300);
+
     triggerVibration(15);
-    showScene(nextScene);
+    if (typeof onSelect === "function") {
+      try { onSelect(); } catch (err) { console.error("Error in choice onSelect:", err); }
+    }
+    const target = (typeof nextScene === "function") ? nextScene() : nextScene;
+    showScene(target);
   };
   choices.appendChild(btn);
 }
@@ -194,9 +202,10 @@ function glitchText(str) {
 /**
  * Renders a visual novel scene by updating text, character sprite animations,
  * background images, sounds, visual screen effects, and choices in the HUD.
- * @param {string} id - The unique identifier of the story scene (e.g. 'start', 'room_intro').
+ * @param {string|Function} target - The unique identifier of the story scene or a getter function returning it.
  */
-function showScene(id) {
+function showScene(target) {
+  const id = (typeof target === "function") ? target() : target;
   const scene = story[id];
 
   if (scene && typeof scene.onEnter === "function") {
@@ -407,7 +416,7 @@ function showScene(id) {
 
   if (scene.choices && scene.choices.length > 0) {
     nextBtn.style.display = "none";
-    scene.choices.forEach(choice => addChoice(choice.text, choice.next));
+    scene.choices.forEach(choice => addChoice(choice.text, choice.next, choice.onSelect));
     return;
   }
 

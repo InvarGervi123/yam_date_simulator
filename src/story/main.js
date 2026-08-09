@@ -55,12 +55,159 @@ Object.assign(window.story, {
     speaker: "המספר",
     text: "בחרת בגישה פיזית, קשוחה או דרמטית. מה התוכנית שלך?",
     choices: [
+      { text: "💓 לנסות מחווה רומנטית אקסטרים (זהירות: מד דופק מוגבר!)", next: "wii_pulse_intro" },
       { text: "לנסות לפרוץ למגירה הסודית שלו בזמן שהוא ישן (משחק עיתוי!)", next: "steal_drawer_prep" },
       { text: "לנסות לגרור אותו בכוח מהמיטה (משחק לחיצות!)", next: "drag_yam_prep" },
       { text: "לעשות נאום דרמטי כאילו זה סוף העולם", next: "dramatic_speech" },
       { text: "להגיד לו שאני עוברת לינוור", next: "yinover_threat" },
       { text: "להציע לו לחסום את כביש 4 כי הבטיחו עוגת גבינה חינם לחוסמים", next: "block_highway_protest" },
       { text: "🔙 חזרה לאפשרויות הראשיות", next: "room_intro" }
+    ]
+  },
+
+  // --- Wii Pulse Romance Minigame Story Sequence ---
+  wii_pulse_intro: {
+    speaker: "המספר",
+    text: "💓 מחווה רומנטית אקסטרים — מנגנון מד הדופק (Nintendo Wii Vitality Sensor)\n\nאת מתקרבת אל ים במיטה עם מבט רומנטי סוחף.\nאך מרוב התרגשות ותשוקה, מד הדופק שלך (BPM) מתחיל לזנק בזמן אמת!\n\n⚠️ כללים:\n• מחוות רומנטיות אנטנסיביות מעלות את הדופק שלך.\n• אם הדופק עובר את ה-165 BPM, תופיע אזהרה חמורה של נינטנדו!\n• אם הדופק עובר את ה-190 BPM — הלב שלך יקבל התקף לב והמשחק יתרסק!\n• השתמשי בפעולות הרגעה כדי להוריד דופק, והשלימי את המסלול הרומנטי מתחת ל-150 BPM כדי לנצח!",
+    onEnter: function() {
+      if (typeof startWiiPulseGame === "function") {
+        startWiiPulseGame(
+          function() { if (window.engine) window.engine.showScene("wii_romance_success"); },
+          function() { if (window.engine) window.engine.showScene("end_wii_heart_attack"); }
+        );
+      }
+    },
+    next: "wii_pulse_stage1"
+  },
+
+  wii_pulse_stage1: {
+    speaker: "המספר",
+    character: "images/characters/yam_sleepy.png",
+    text: "את צועדת אט-אט אל עבר המיטה. ים מציץ מבעד לשמיכה, עיניו חצי סגורות.\nמד ה-EKG בראש המסך פועם בזמן אמת, והטלפון פועם בידייך בקצב הלב!\n\nאיך תפתחי במחווה הרומנטית?",
+    choices: [
+      {
+        text: "👀 להתקרב אל ים ולפתוח בקשר עין חודר ורומנטי",
+        next: "wii_pulse_stage2",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(25, "eye_contact");
+        }
+      },
+      {
+        text: "💌 ללחוש לו וידוי תשוקה דרמטי ומסעיר מקרוב",
+        next: "wii_pulse_stage2",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(35, "confession");
+        }
+      },
+      {
+        text: "🫁 לעצום עיניים, לקחת נשימה עמוקה ולהרגיע את הלב",
+        next: "wii_pulse_stage1",
+        onSelect: function() {
+          if (typeof applyCalmingAction === "function") applyCalmingAction(30, "deep_breath");
+        }
+      }
+    ]
+  },
+
+  wii_pulse_stage2: {
+    speaker: "ים",
+    character: "images/characters/yam_curious.png",
+    text: "ים מוציא את פניו מהכרית ומביט בך במבוכה:\n'רגע... מה את עושה?! למה המבט והלחישות האלו?!'\nפניו מסמיקות קלות. הלב שלך מתחיל לפעום בעוצמה חזקה יותר! כיצד תמשיכי?",
+    choices: [
+      {
+        text: "🤝 לאחוז בידו בעדינות ולחבק אותו קרוב אליך",
+        next: "wii_pulse_stage3",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(30, "embrace");
+        }
+      },
+      {
+        text: "❤️‍🔥 להתעלם מהדופק המזנק ולהתנפל על ים בנשיקת תשוקה מטורפת!",
+        next: "wii_pulse_heart_attack_scene",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(50, "extreme_kiss");
+        }
+      },
+      {
+        text: "🫁 לעצום עיניים, לנשום עמוק ולהוריד את הדופק",
+        next: "wii_pulse_stage2",
+        onSelect: function() {
+          if (typeof applyCalmingAction === "function") applyCalmingAction(30, "count_5");
+        }
+      }
+    ]
+  },
+
+  wii_pulse_stage3: {
+    speaker: "המספר",
+    character: "images/characters/yam_surpise.png",
+    text: "האוויר בחדר מתחמם! ים יושב על קצה המיטה, המום לחלוטין מהמחווה הרומנטית הסוחפת.\nהוא מביט בך בעיניים גדולות. הלב שלך פועם בעוצמה גבוהה! נותרה עוד מחווה אחת אחרונה!",
+    choices: [
+      {
+        text: "🌹 להושיט לו יד, להביט בו בחיוך כבוש ולהזמין אותו לקום",
+        next: "wii_pulse_stage4",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(25, "final_hand");
+        }
+      },
+      {
+        text: "💥 לדחוק את הלב עד הקצה ולבצע נאום רומנטי סופני ללא הפסקה!",
+        next: "wii_pulse_heart_attack_scene",
+        onSelect: function() {
+          if (typeof applyRomanticAction === "function") applyRomanticAction(55, "extreme_speech");
+        }
+      },
+      {
+        text: "🫁 לעצום עיניים, לנשום עמוק ולהוריד את הדופק לפני הצעד האחרון",
+        next: "wii_pulse_stage3",
+        onSelect: function() {
+          if (typeof applyCalmingAction === "function") applyCalmingAction(35, "deep_breath_final");
+        }
+      }
+    ]
+  },
+
+  wii_pulse_heart_attack_scene: {
+    speaker: "המספר",
+    character: "images/characters/yam_surpise.png",
+    effect: "redflash",
+    text: "💥 הלב שלך חצה את ה-190 BPM והגיע לקצה גבול היכולת האנושית!\n\nהראייה שלך נצבעת באדום מוחלט. צליל פעימות הלב הופך לשריקת אלקטרוקרדיוגרם רצופה... *ביפפפפפפפפפפפפ!\nים קופץ בבהלה ותופס אותך בצעקה:\n'אוי לא!! היא התעלפה! הלב שלה הפסיק לפעום מרוב רומנטיקה!!'\n\nמערכת ה-Wii Fit משעה את המשחק ברגע זה!",
+    onEnter: function() {
+      if (typeof triggerWiiFitHeartAttack === "function") {
+        triggerWiiFitHeartAttack();
+      }
+    },
+    choices: [
+      { text: "💔 המשך לסיום התקפת הלב...", next: "end_wii_heart_attack" }
+    ]
+  },
+
+  wii_pulse_stage4: {
+    speaker: "המספר",
+    onEnter: function() {
+      const ctx = window.wiiPulseCtx;
+      if (ctx && ctx.bpm >= 165) {
+        if (typeof triggerDarkWiiWarning === "function") triggerDarkWiiWarning();
+      } else if (ctx && ctx.bpm < 150) {
+        if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+        if (window.engine) window.engine.showScene("wii_romance_success");
+      }
+    },
+    text: "את ממתינה בנשימה עמוקה לתגובה של ים...",
+    choices: [
+      { text: "המשך...", next: "wii_romance_success" }
+    ]
+  },
+
+  wii_romance_success: {
+    speaker: "ים",
+    character: "images/characters/yam_horny.png",
+    text: "ים מביט בך בהלם וברושם עמוק:\n'ואו... הצלחת לשמור על קור רוח ודופק יציב כזה מול כל הרומנטיקה הזו?! מטורף! בסדר, שכנעת אותי. אני קם מהמיטה ובא איתך לדייט!'",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
+    choices: [
+      { text: "🎉 לצאת לדייט המוצלח עם ים!", next: "true_date_offer" }
     ]
   },
 

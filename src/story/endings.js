@@ -830,6 +830,16 @@ Object.assign(window.story, {
     vibrate: [100, 50, 200, 50, 300],
     text: "📢 סוף הקשת הראשונה: החוזה החשוף\n\nינוור מפיץ את החוזים המשפחתיים הסודיים לערוצים הגלויים, ומערכת החוזים התאגידיים מתחילה להתערער במלואה!\n\n🎬 סוף הקשת הראשונה של שוקולד פולני: החוזה השבור.",
     end: true
+  },
+
+  end_wii_heart_attack: {
+    speaker: "סוף: התקפת לב רומנטית",
+    vibrate: [400, 100, 400, 100, 800],
+    text: "💔 סוף: התקפת לב רומנטית (Nintendo Wii Safety Warning)\n\nלבך לא עמד בעוצמת התשוקה והרומנטיקה! מד הדופק חצה 190 BPM, והמערכת הושעתה עקב חריגה מהוראות הבריאות והבטיחות של Nintendo Wii Fit.\n\n⚠️ אנא קח הפסקה, תירגע ותנשום לפני ניסיון נוסף!",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
+    end: true
   }
 
 });

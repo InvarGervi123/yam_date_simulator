@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v68-preg-game-mouse-dodge-fix';
+const CACHE_NAME = 'yam-date-sim-v79-flatline-sound-and-intense-pulse-haptics';
 const ASSETS = [
   './',
   './index.html',
@@ -31,6 +31,7 @@ const ASSETS = [
   './src/story/polish_chocolate_ch2.js',
   './src/story/polish_chocolate_ch3.js',
   './src/story/polish_chocolate_ch4.js',
+  './src/wii_pulse_game.js',
   './src/yam_shadow_battle.js',
   './src/yam_shadow_renderer.js',
   './images/characters/yam_sleepy.png',

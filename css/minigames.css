@@ -985,3 +985,332 @@
   font-weight: bold;
 }
 
+/* --- Wii Vitality Sensor / Wii Fit Heart Attack Meme Styles --- */
+
+.wii-vignette-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* EKG Pulse Monitor Widget */
+.wii-ekg-widget {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 10, 15, 0.92);
+  border: 1.5px solid rgba(46, 204, 113, 0.6);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(46, 204, 113, 0.1);
+  border-radius: 12px;
+  padding: 10px 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  direction: rtl;
+  pointer-events: none;
+}
+
+.wii-ekg-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wii-ekg-icon {
+  font-size: 20px;
+  animation: wiiHeartIconPulse 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes wiiHeartIconPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.25); }
+}
+
+.wii-ekg-bpm {
+  font-size: 20px;
+  font-weight: 900;
+  color: #2ecc71;
+  text-shadow: 0 0 8px #2ecc71;
+  font-family: monospace;
+}
+
+.wii-ekg-status {
+  font-size: 13px;
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+.wii-ekg-canvas {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Image 1: Dark Wii Warning Overlay */
+.wii-dark-warning-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  direction: rtl;
+}
+
+.wii-dark-box {
+  width: 100%;
+  max-width: 580px;
+  background: #0a0a0a;
+  border: 2px solid #ff1a1a;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  color: #ff2a2a;
+}
+
+.wii-dark-icon {
+  margin-bottom: 12px;
+}
+
+.wii-figure-bow {
+  font-size: 54px;
+  filter: drop-shadow(0 0 10px #ff0000);
+}
+
+.wii-dark-title {
+  color: #ff1a1a;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 5px 0;
+  text-shadow: 0 0 12px #ff0000;
+}
+
+.wii-dark-subtitle {
+  color: #ff4d4d;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.wii-dark-text-body p {
+  color: #ff3333;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 8px 0;
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+}
+
+.wii-dark-bold {
+  font-weight: bold;
+  font-size: 18px !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 10px #ff0000 !important;
+}
+
+.wii-btn-calm {
+  margin-top: 20px;
+  background: #ff1a1a;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+  transition: transform 0.2s, background 0.2s;
+  font-family: inherit;
+}
+
+.wii-btn-calm:hover {
+  background: #ff4d4d;
+  transform: scale(1.04);
+}
+
+/* Image 2: Wii Fit Heart Attack Screen Overlay */
+.wii-fit-attack-overlay {
+  position: fixed;
+  inset: 0;
+  background: #f2f2f2;
+  color: #222222;
+  z-index: 10001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  direction: rtl;
+}
+
+.wii-fit-container {
+  width: 100%;
+  max-width: 820px;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 35px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wii-fit-header h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #222222;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333333;
+}
+
+.wii-red-underline {
+  color: #cc0000;
+  border-bottom: 3px solid #cc0000;
+  padding-bottom: 2px;
+}
+
+.wii-fit-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.wii-fit-left {
+  flex: 1;
+}
+
+.wii-fit-subheading {
+  font-size: 17px;
+  color: #555555;
+  margin-bottom: 15px;
+}
+
+.wii-fit-instructions {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.wii-fit-instructions li {
+  font-size: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.wii-fit-instructions li::before {
+  content: "• ";
+  color: #555555;
+  font-weight: bold;
+}
+
+.wii-red-text {
+  color: #cc0000 !important;
+  font-weight: bold;
+}
+
+.wii-fit-notice-box {
+  background: #f9f9f9;
+  border-right: 4px solid #cc0000;
+  padding: 14px 18px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #444444;
+  margin-top: 15px;
+}
+
+.wii-fit-right {
+  width: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wii-human-diagram {
+  width: 90px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.wii-human-head {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e07a5f;
+  margin-bottom: 6px;
+}
+
+.wii-human-torso {
+  width: 56px;
+  height: 80px;
+  background: #e07a5f;
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wii-heart-cross {
+  font-size: 28px;
+  animation: wiiHeartPulse 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes wiiHeartPulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 2px #ff0000); }
+  100% { transform: scale(1.3); filter: drop-shadow(0 0 12px #ff0000); }
+}
+
+.wii-human-legs {
+  width: 56px;
+  height: 70px;
+  background: #333333;
+}
+
+.wii-fit-footer {
+  font-size: 12px;
+  color: #777777;
+  border-top: 1px solid #eeeeee;
+  padding-top: 12px;
+  line-height: 1.4;
+}
+
+.wii-btn-close {
+  align-self: flex-start;
+  background: #cc0000;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.wii-btn-close:hover {
+  background: #ff0000;
+}
+
