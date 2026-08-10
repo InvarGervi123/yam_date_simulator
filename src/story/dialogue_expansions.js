@@ -36,8 +36,10 @@ Object.assign(window.story, {
   },
   "room_intro_force": {
     "speaker": "המספר",
+    "music": "audio/main.mp3",
     "text": "בחרת בגישה פיזית, קשוחה או דרמטית.\n\n⚠️ אזהרת מד דופק (Nintendo Wii Vitality Sensor):\nכל פעולה דרמטית או פיזית תעלה את דופק הלב שלך בזמן אמת! שמר על הדופק מתחת ל-165 BPM כדי למנוע התקף לב!\n\nים מחבק את השמיכה כמו מתכנת שמישהו ביקש ממנו למחוק את תיקיית node_modules בלי גיבוי. המיטה מפעילה מצב הגנה, הכרית נטענת כנשק, והמאוורר בחדר מתחיל להרעיש.\n\nמה התוכנית שלך?",
     "onEnter": function() {
+      if (typeof playMusic === "function") playMusic("audio/main.mp3");
       if (typeof startWiiPulseGame === "function" && (!window.wiiPulseCtx || !window.wiiPulseCtx.isActive)) {
         startWiiPulseGame(
           function() { if (window.engine) window.engine.showScene("wii_romance_success"); },

@@ -31,9 +31,11 @@ Object.assign(window.story, {
 
   room_intro: {
     speaker: "המספר",
+    music: "audio/ים דייט סימולטור - תפריט ראשי.mp3",
     text: "את נכנסת לחדר.\nים במיטה.\nהחדר חשוך.\nהאוויר כבד.\nהכרית נראית כאילו היא כבר שמעה את כל התירוצים שלו ומבקשת חסינות דיפלומטית.",
     onEnter: function() {
       if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+      if (typeof playMusic === "function") playMusic("audio/ים דייט סימולטור - תפריט ראשי.mp3");
     },
     choices: [
       {
@@ -43,8 +45,20 @@ Object.assign(window.story, {
           if (typeof playMusic === "function") playMusic("audio/בואי תמי (גרסא לדייטים).mp3");
         }
       },
-      { text: "🔥 לנסות גישה פיזית ודרמטית...", next: "room_intro_force" },
-      { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" }
+      {
+        text: "🔥 לנסות גישה פיזית ודרמטית...",
+        next: "room_intro_force",
+        onSelect: function() {
+          if (typeof playMusic === "function") playMusic("audio/main.mp3");
+        }
+      },
+      {
+        text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...",
+        next: "room_intro_special",
+        onSelect: function() {
+          if (typeof playMusic === "function") playMusic("audio/main.mp3");
+        }
+      }
     ]
   },
 

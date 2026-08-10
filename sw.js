@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v93-removed-boi-tami-from-wii-pulse-minigame';
+const CACHE_NAME = 'yam-date-sim-v97-menu-song-through-hub-selection';
 const ASSETS = [
   './',
   './index.html',
