@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v97-menu-song-through-hub-selection';
+const CACHE_NAME = 'yam-date-sim-v98-fixed-ekg-widget-persistence-on-game-restart';
 const ASSETS = [
   './',
   './index.html',

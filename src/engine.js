@@ -224,6 +224,11 @@ function showScene(target) {
 
   currentScene = id;
 
+  // Stop minigames/overlays when returning to main menu
+  if (id === "start" || id === "main_menu") {
+    if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+  }
+
   // Determine if this is part of the horror route
   const isHorrorRoute = id.startsWith("slender") || id.includes("horror") || id === "yinover_threat";
   window.asciiModeEnabled = isHorrorRoute;
@@ -408,6 +413,7 @@ function showScene(target) {
   }
 
   if (scene.end) {
+    if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
     unlockEnding(id);
     nextBtn.style.display = "none";
     addChoice("לשחק שוב מההתחלה", "start");

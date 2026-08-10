@@ -5,6 +5,9 @@ Object.assign(window.story, {
     music: "audio/ים דייט סימולטור - תפריט ראשי.mp3",
     character: "images/characters/yam_horny.png",
     text: "ברוכה הבאה לים דייט סימולטור: גרסת האסון הרומנטי.\n\nהמטרה פשוטה: לשכנע את ים לצאת איתך לדייט.\nהבעיה: ים שוכב במיטה כאילו המיטה חתמה איתו חוזה בלעדיות ל־40 שנה.",
+    onEnter: function() {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    },
     choices: [
       { text: "להיכנס לחדר של ים", next: "room_intro" },
       { text: "💬 לבדוק עדכונים, תאימות ומקשים", next: "game_info_scene" },
