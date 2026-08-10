@@ -2,7 +2,7 @@
 Object.assign(window.story, {
   start: {
     speaker: "המספר",
-    music: "audio/main.mp3",
+    music: "audio/ים דייט סימולטור - תפריט ראשי.mp3",
     character: "images/characters/yam_horny.png",
     text: "ברוכה הבאה לים דייט סימולטור: גרסת האסון הרומנטי.\n\nהמטרה פשוטה: לשכנע את ים לצאת איתך לדייט.\nהבעיה: ים שוכב במיטה כאילו המיטה חתמה איתו חוזה בלעדיות ל־40 שנה.",
     choices: [
@@ -36,7 +36,13 @@ Object.assign(window.story, {
       if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
     },
     choices: [
-      { text: "🌸 לנסות גישה רגועה ורומנטית...", next: "room_intro_normal" },
+      {
+        text: "🌸 לנסות גישה רגועה ורומנטית...",
+        next: "room_intro_normal",
+        onSelect: function() {
+          if (typeof playMusic === "function") playMusic("audio/בואי תמי (גרסא לדייטים).mp3");
+        }
+      },
       { text: "🔥 לנסות גישה פיזית ודרמטית...", next: "room_intro_force" },
       { text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...", next: "room_intro_special" }
     ]
@@ -44,7 +50,11 @@ Object.assign(window.story, {
 
   room_intro_normal: {
     speaker: "המספר",
+    music: "audio/בואי תמי (גרסא לדייטים).mp3",
     text: "בחרת בגישה רגועה ורומנטית. כיצד תרצי לפנות אליו?",
+    onEnter: function() {
+      if (typeof playMusic === "function") playMusic("audio/בואי תמי (גרסא לדייטים).mp3");
+    },
     choices: [
       { text: "ים, בוא לדייט קטן וזהו", next: "simple_offer" },
       { text: "אני אביא בורקס", next: "burekas_path" },
@@ -71,6 +81,7 @@ Object.assign(window.story, {
   // --- Wii Pulse Romance Minigame Story Sequence ---
   wii_pulse_intro: {
     speaker: "המספר",
+    music: "audio/main.mp3",
     text: "את צועדת באיטיות לעבר המיטה של ים, עינייך נוצצות בנחישות רומנטית.\n\nים מתכסה עד האף בשמיכה, עיניו חצי סגורות מול מסך הטלפון:\n'רגע... מה זה המבט הזה?! למה את מתקרבת אליי בצעדים דרמטיים של סרט טורקי משנות ה-80?!'\n\nפתאום, הלב שלך מתחיל לפעום בעוצמה חזקה. הטלפון בידך רוטט בקצב פעימות הלב, ומד EKG (Nintendo Wii Vitality Sensor) מופיע בראש המסך מול עינייך!",
     onEnter: function() {
       if (typeof startWiiPulseGame === "function") {

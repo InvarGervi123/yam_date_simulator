@@ -26,14 +26,17 @@ if (sfx) {
 
 /**
  * Plays a background music track, loops it, and respects the mute state.
+ * Supports Hebrew audio filenames and spaces via safe URI encoding.
  * @param {string} src - Relative file path to the audio track.
  */
 function playMusic(src) {
   if (!src || !music) return;
 
-  const current = music.getAttribute("src");
-  if (current !== src) {
-    music.src = src;
+  const safeSrc = encodeURI(src);
+  const currentAttr = music.getAttribute("src");
+
+  if (!currentAttr || decodeURIComponent(currentAttr) !== decodeURIComponent(src)) {
+    music.src = safeSrc;
     music.setAttribute("src", src);
   }
 
@@ -47,12 +50,14 @@ function playMusic(src) {
 
 /**
  * Plays a sound effect or voice beep immediately, if SFX is not muted.
+ * Supports Hebrew audio filenames and spaces via safe URI encoding.
  * @param {string} src - Relative file path to the sound effect.
  */
 function playSfx(src) {
   if (!src || !sfx || window.isSfxMuted) return;
 
-  sfx.src = src;
+  const safeSrc = encodeURI(src);
+  sfx.src = safeSrc;
   sfx.currentTime = 0;
   sfx.play().catch(() => {});
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v88-all-force-choices-pulse-wired-everywhere';
+const CACHE_NAME = 'yam-date-sim-v93-removed-boi-tami-from-wii-pulse-minigame';
 const ASSETS = [
   './',
   './index.html',
@@ -65,7 +65,9 @@ const ASSETS = [
   './audio/the_clockwork_void.mp3',
   './audio/the_clockwork_void_extend.mp3',
   './audio/Panic.mp3',
-  './audio/baldi_sound.mp3'
+  './audio/baldi_sound.mp3',
+  './audio/בואי תמי (גרסא לדייטים).mp3',
+  './audio/ים דייט סימולטור - תפריט ראשי.mp3'
 ];
 
 // Install Service Worker and cache all resources
