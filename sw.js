@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v102-added-amnesia-reset-and-advanced-settings';
+const CACHE_NAME = 'yam-date-sim-v102-added-universal-gamepad-controls-and-dual-rumble-haptics';
 const ASSETS = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const ASSETS = [
   './src/ascii_converter.js',
   './src/preg_game.js',
   './src/preg_game_renderer.js',
+  './src/gamepad.js',
   './src/atmosphere.js',
   './src/engine.js',
   './src/story/setup.js',
