@@ -170,3 +170,123 @@
   color: #e6e6fa;
   text-shadow: 0 0 10px #9370db;
 }
+
+/* --- Particle System & Dynamic Overlays --- */
+#particleOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+/* 1. Burekas Particle */
+.particle-burekas {
+  position: absolute;
+  font-size: 26px;
+  user-select: none;
+  animation: burekasFall 4s linear forwards;
+}
+
+@keyframes burekasFall {
+  0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.9; }
+  85% { opacity: 0.9; }
+  100% { transform: translateY(650px) rotate(360deg); opacity: 0; }
+}
+
+/* 2. Romantic Heart Particle */
+.particle-heart {
+  position: absolute;
+  font-size: 22px;
+  user-select: none;
+  animation: heartFloat 3.5s ease-out forwards;
+}
+
+@keyframes heartFloat {
+  0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+  20% { opacity: 0.95; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-350px) scale(1.3) rotate(20deg); opacity: 0; }
+}
+
+/* 3. Heartbreak Shatter Particle */
+.particle-heartbreak {
+  position: absolute;
+  font-size: 24px;
+  user-select: none;
+  animation: heartbreakFall 3s ease-in forwards;
+}
+
+@keyframes heartbreakFall {
+  0% { transform: translateY(0) scale(1.2); opacity: 1; }
+  100% { transform: translateY(400px) scale(0.6) rotate(-45deg); opacity: 0; }
+}
+
+/* 4. Discord & YouTube Analytics Notification Drift */
+.particle-analytics {
+  position: absolute;
+  background: rgba(18, 22, 36, 0.88);
+  border: 1px solid #5865f2;
+  color: #5865f2;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+  user-select: none;
+  animation: analyticsDriftAnim 4.5s ease-out forwards;
+}
+
+@keyframes analyticsDriftAnim {
+  0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+  20% { transform: translateY(0) scale(1.0); opacity: 1; }
+  80% { transform: translateY(-80px) scale(1.0); opacity: 1; }
+  100% { transform: translateY(-130px) scale(0.9); opacity: 0; }
+}
+
+/* 5. Thunder & Lightning Flash Overlay */
+#thunderFlashOverlay {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0;
+}
+
+.flash-active {
+  animation: thunderFlashAnim 0.45s ease-out forwards;
+}
+
+@keyframes thunderFlashAnim {
+  0% { opacity: 0.95; background: #ffffff; }
+  30% { opacity: 0.1; }
+  50% { opacity: 0.85; background: #9370db; }
+  100% { opacity: 0; }
+}
+
+/* 6. Comic Action Slap / Impact Popups */
+.comic-impact-popup {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  font-family: 'Rubik', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  color: #ffe600;
+  text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, 0 0 20px #ff0000;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  animation: comicPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes comicPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(-15deg); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(5deg); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9) rotate(10deg); }
+}
