@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v99-added-physical-and-special-route-audio-tracks';
+const CACHE_NAME = 'yam-date-sim-v100-added-dynamic-animated-atmosphere-system';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './css/minigames.css',
   './css/battle.css',
   './css/baldi.css',
+  './css/atmosphere.css',
   './src/audio.js',
   './src/minigames.js',
   './src/battle.js',
@@ -17,6 +18,7 @@ const ASSETS = [
   './src/ascii_converter.js',
   './src/preg_game.js',
   './src/preg_game_renderer.js',
+  './src/atmosphere.js',
   './src/engine.js',
   './src/story/setup.js',
   './src/story/main.js',

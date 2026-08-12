@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="css/minigames.css" />
   <link rel="stylesheet" href="css/battle.css" />
   <link rel="stylesheet" href="css/baldi.css" />
+  <link rel="stylesheet" href="css/atmosphere.css" />
 </head>
 <body>
   <main id="game">
@@ -224,6 +225,13 @@
               <span class="slider"></span>
             </label>
           </div>
+          <div class="settings-item">
+            <span>✨ אווירה ותאורה דינמית</span>
+            <label class="switch">
+              <input type="checkbox" id="settingAtmosphere">
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -337,6 +345,7 @@
   <script src="src/slender.js"></script>
   <script src="src/preg_game_renderer.js"></script>
   <script src="src/preg_game.js"></script>
+  <script src="src/atmosphere.js"></script>
   <script src="src/engine.js"></script>
   <script>
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {

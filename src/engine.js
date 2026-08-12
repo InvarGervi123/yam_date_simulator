@@ -344,6 +344,11 @@ function showScene(target) {
     displayText = glitchText(displayText);
   }
 
+  // Trigger Dynamic Atmosphere & Story Mood System
+  if (window.atmosphereEngine) {
+    window.atmosphereEngine.autoDetectStoryMood(displayText, id, scene);
+  }
+
   // Handle Typewriter Text Effect
   if (typewriterTimer) clearTimeout(typewriterTimer);
   currentFullText = displayText;
@@ -613,8 +618,10 @@ if (settingsToggle && settingsModal && closeSettings) {
     
     const settingAnimation = document.getElementById("settingAnimation");
     const settingOled = document.getElementById("settingOled");
+    const settingAtmosphere = document.getElementById("settingAtmosphere");
     if (settingAnimation) settingAnimation.checked = animationsEnabled;
     if (settingOled) settingOled.checked = oledModeEnabled;
+    if (settingAtmosphere && window.atmosphereEngine) settingAtmosphere.checked = window.atmosphereEngine.isAtmosphereEnabled();
     
     settingsModal.style.display = "flex";
     triggerVibration(15);
@@ -676,6 +683,7 @@ if (settingsToggle && settingsModal && closeSettings) {
 
   const settingAnimation = document.getElementById("settingAnimation");
   const settingOled = document.getElementById("settingOled");
+  const settingAtmosphere = document.getElementById("settingAtmosphere");
 
   if (settingAnimation) {
     settingAnimation.onchange = () => {
@@ -705,6 +713,15 @@ if (settingsToggle && settingsModal && closeSettings) {
         } else {
           gameElem.classList.remove("oled-mode");
         }
+      }
+    };
+  }
+
+  if (settingAtmosphere) {
+    settingAtmosphere.onchange = () => {
+      if (window.atmosphereEngine) {
+        window.atmosphereEngine.setAtmosphereEnabled(settingAtmosphere.checked);
+        triggerVibration(10);
       }
     };
   }
