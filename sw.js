@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v98-fixed-ekg-widget-persistence-on-game-restart';
+const CACHE_NAME = 'yam-date-sim-v99-added-physical-and-special-route-audio-tracks';
 const ASSETS = [
   './',
   './index.html',
@@ -67,7 +67,9 @@ const ASSETS = [
   './audio/Panic.mp3',
   './audio/baldi_sound.mp3',
   './audio/בואי תמי (גרסא לדייטים).mp3',
-  './audio/ים דייט סימולטור - תפריט ראשי.mp3'
+  './audio/גישה פיזית ודרמטית.mp3',
+  './audio/ים דייט סימולטור - תפריט ראשי.mp3',
+  './audio/נתיבים מיוחדים והרפתקאות.mp3'
 ];
 
 // Install Service Worker and cache all resources

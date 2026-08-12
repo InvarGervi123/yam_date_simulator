@@ -36,10 +36,10 @@ Object.assign(window.story, {
   },
   "room_intro_force": {
     "speaker": "המספר",
-    "music": "audio/main.mp3",
+    "music": "audio/גישה פיזית ודרמטית.mp3",
     "text": "בחרת בגישה פיזית, קשוחה או דרמטית.\n\n⚠️ אזהרת מד דופק (Nintendo Wii Vitality Sensor):\nכל פעולה דרמטית או פיזית תעלה את דופק הלב שלך בזמן אמת! שמר על הדופק מתחת ל-165 BPM כדי למנוע התקף לב!\n\nים מחבק את השמיכה כמו מתכנת שמישהו ביקש ממנו למחוק את תיקיית node_modules בלי גיבוי. המיטה מפעילה מצב הגנה, הכרית נטענת כנשק, והמאוורר בחדר מתחיל להרעיש.\n\nמה התוכנית שלך?",
     "onEnter": function() {
-      if (typeof playMusic === "function") playMusic("audio/main.mp3");
+      if (typeof playMusic === "function") playMusic("audio/גישה פיזית ודרמטית.mp3");
       if (typeof startWiiPulseGame === "function" && (!window.wiiPulseCtx || !window.wiiPulseCtx.isActive)) {
         startWiiPulseGame(
           function() { if (window.engine) window.engine.showScene("wii_romance_success"); },
@@ -87,7 +87,11 @@ Object.assign(window.story, {
   },
   "room_intro_special": {
     "speaker": "המספר",
+    "music": "audio/נתיבים מיוחדים והרפתקאות.mp3",
     "text": "פתחת את תפריט הנתיבים המיוחדים — האזור שה־QA סימן עליו \"לא בדקנו, אבל אצל המפתח זה עובד\".\n\nמאחורי הקלעים נטענים בו זמנית קרב בוס, בית משפט, אורנית, תל אביב, דיזינגוף סנטר, מתמטיקה וטאבלט חשוד משנת 2009. הקונסול מלא באזהרות, אבל אין שגיאות אדומות, ולכן מבחינה ישראלית זה נחשב יציב.\n\nבשרת הדיסקורד פתחו הימורים:\n50% שתגיעי לסוף טוב,\n30% שהמיטה תתבע אותך,\n20% שפתח תקווה תיעלם מה־map.\n\nלאיזה אסון מתוכנן נמשיך?",
+    "onEnter": function() {
+      if (typeof playMusic === "function") playMusic("audio/נתיבים מיוחדים והרפתקאות.mp3");
+    },
     "choices": [
       {
         "text": "👁️ להתחקות אחר הצל שמאחורי ים (נתיב ינוור ו-THE ECHO)",

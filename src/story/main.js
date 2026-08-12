@@ -52,14 +52,14 @@ Object.assign(window.story, {
         text: "🔥 לנסות גישה פיזית ודרמטית...",
         next: "room_intro_force",
         onSelect: function() {
-          if (typeof playMusic === "function") playMusic("audio/main.mp3");
+          if (typeof playMusic === "function") playMusic("audio/גישה פיזית ודרמטית.mp3");
         }
       },
       {
         text: "🔮 לחקור נתיבים מיוחדים והרפתקאות...",
         next: "room_intro_special",
         onSelect: function() {
-          if (typeof playMusic === "function") playMusic("audio/main.mp3");
+          if (typeof playMusic === "function") playMusic("audio/נתיבים מיוחדים והרפתקאות.mp3");
         }
       }
     ]
@@ -83,7 +83,11 @@ Object.assign(window.story, {
 
   room_intro_force: {
     speaker: "המספר",
+    music: "audio/גישה פיזית ודרמטית.mp3",
     text: "בחרת בגישה פיזית, קשוחה או דרמטית. מה התוכנית שלך?",
+    onEnter: function() {
+      if (typeof playMusic === "function") playMusic("audio/גישה פיזית ודרמטית.mp3");
+    },
     choices: [
       { text: "💓 לנסות מחווה רומנטית אקסטרים (זהירות: מד דופק מוגבר!)", next: "wii_pulse_intro" },
       { text: "לנסות לפרוץ למגירה הסודית שלו בזמן שהוא ישן (משחק עיתוי!)", next: "steal_drawer_prep" },
