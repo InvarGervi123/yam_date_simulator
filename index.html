@@ -205,33 +205,50 @@
             </label>
           </div>
           <div class="settings-item">
-            <span>✍️ כתיבה הדרגתית</span>
+            <span>⚡ מהירות כתיבת טקסט</span>
+            <select id="settingSpeed" class="settings-select">
+              <option value="slow">🐢 איטי</option>
+              <option value="normal" selected>⚡ רגיל</option>
+              <option value="fast">🚀 מהיר</option>
+              <option value="instant">💥 מיידי</option>
+            </select>
+          </div>
+          <div class="settings-item">
+            <span>🗣️ צפצופי דיבור דמויות</span>
             <label class="switch">
-              <input type="checkbox" id="settingTypewriter">
+              <input type="checkbox" id="settingVoiceBeeps">
               <span class="slider"></span>
             </label>
           </div>
           <div class="settings-item">
-            <span>🎭 תנועת דמויות (אנימציה)</span>
+            <span>📳 רטט ומשוב פיזי</span>
             <label class="switch">
-              <input type="checkbox" id="settingAnimation">
+              <input type="checkbox" id="settingVibration">
               <span class="slider"></span>
             </label>
           </div>
           <div class="settings-item">
-            <span>🔋 חיסכון בסוללה (OLED שחור)</span>
+            <span>🥐 ערכת נושא "בורקס זהב"</span>
             <label class="switch">
-              <input type="checkbox" id="settingOled">
+              <input type="checkbox" id="settingGoldenTheme">
               <span class="slider"></span>
             </label>
           </div>
-          <div class="settings-item">
-            <span>✨ אווירה ותאורה דינמית</span>
-            <label class="switch">
-              <input type="checkbox" id="settingAtmosphere">
-              <span class="slider"></span>
-            </label>
+          <div class="settings-item" style="border-top: 1px solid rgba(255,255,255,0.15); margin-top: 10px; padding-top: 12px;">
+            <button id="btnResetAmnesia" class="settings-action-btn">📜 חתימה על הסכם אמנזיה עם ים (איפוס סופים)</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amnesia Dramatic Reset Modal -->
+    <div id="amnesiaModal" style="display: none;">
+      <div id="amnesiaBox">
+        <h3>📜 הסכם אמנזיה דרמטי עם ים</h3>
+        <p>ים מסתכל עליך בעיניים פעורות:<br><em>"אתה באמת רוצה למחוק לי את הזיכרון כאילו אכלתי בורקס מקולקל בשנת 2012?! כל הסופים שפתחת בגלרייה ייעלמו!"</em></p>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+          <button id="confirmAmnesiaBtn" style="background: #e74c3c; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;">🔥 למחוק את הזיכרון של ים!</button>
+          <button id="cancelAmnesiaBtn" style="background: #7f8c8d; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;">🔙 לא, ים תזכור הכל!</button>
         </div>
       </div>
     </div>

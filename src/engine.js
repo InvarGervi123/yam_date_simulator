@@ -9,13 +9,17 @@ let isTextTyping = false;
 let typewriterEnabled = localStorage.getItem("gameTypewriter") !== "false";
 let animationsEnabled = localStorage.getItem("gameAnimations") !== "false";
 let oledModeEnabled = localStorage.getItem("gameOled") === "true";
+window.typewriterSpeed = localStorage.getItem("gameTypewriterSpeed") || "normal";
+window.voiceBeepsEnabled = localStorage.getItem("gameVoiceBeeps") !== "false";
+window.vibrationEnabled = localStorage.getItem("gameVibration") !== "false";
+window.goldenThemeEnabled = localStorage.getItem("gameGoldenTheme") === "true";
 
 // Autoplay tracking state to prevent browser warning spam
 window.hasUserInteracted = false;
 
 let audioCtx = null;
 function playVoiceBeep(speaker) {
-  if (window.isSfxMuted || !window.hasUserInteracted) return;
+  if (!window.voiceBeepsEnabled || window.isSfxMuted || !window.hasUserInteracted) return;
   try {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -43,9 +47,9 @@ function playVoiceBeep(speaker) {
       type = "sine";
       vol = 0.06;
     } else if (name.includes("ינוור") || name.includes("invar")) {
-      freq = 180;
+      freq = 70;
       type = "sawtooth";
-      vol = 0.04;
+      vol = 0.15;
     }
     
     osc.type = type;
@@ -358,21 +362,31 @@ function showScene(target) {
     text.textContent = "";
     let charIndex = 0;
     
-    function typeNextChar() {
-      if (!isTextTyping) return;
-      if (charIndex < currentFullText.length) {
-        text.textContent += currentFullText[charIndex];
-        if (charIndex % 2 === 0) {
-          playVoiceBeep(scene.speaker);
-          triggerVibration(8);
+    let speedDelay = 18;
+    if (window.typewriterSpeed === "slow") speedDelay = 35;
+    else if (window.typewriterSpeed === "fast") speedDelay = 8;
+    else if (window.typewriterSpeed === "instant") speedDelay = 0;
+
+    if (speedDelay === 0) {
+      isTextTyping = false;
+      text.textContent = currentFullText;
+    } else {
+      function typeNextChar() {
+        if (!isTextTyping) return;
+        if (charIndex < currentFullText.length) {
+          text.textContent += currentFullText[charIndex];
+          if (charIndex % 2 === 0) {
+            playVoiceBeep(scene.speaker);
+            triggerVibration(8);
+          }
+          charIndex++;
+          typewriterTimer = setTimeout(typeNextChar, speedDelay);
+        } else {
+          isTextTyping = false;
         }
-        charIndex++;
-        typewriterTimer = setTimeout(typeNextChar, 18);
-      } else {
-        isTextTyping = false;
       }
+      typeNextChar();
     }
-    typeNextChar();
   } else {
     isTextTyping = false;
     text.textContent = currentFullText;
@@ -725,6 +739,85 @@ if (settingsToggle && settingsModal && closeSettings) {
       }
     };
   }
+
+  // New Setting Listeners
+  const settingSpeed = document.getElementById("settingSpeed");
+  const settingVoiceBeeps = document.getElementById("settingVoiceBeeps");
+  const settingVibration = document.getElementById("settingVibration");
+  const settingGoldenTheme = document.getElementById("settingGoldenTheme");
+  const btnResetAmnesia = document.getElementById("btnResetAmnesia");
+  const amnesiaModal = document.getElementById("amnesiaModal");
+  const confirmAmnesiaBtn = document.getElementById("confirmAmnesiaBtn");
+  const cancelAmnesiaBtn = document.getElementById("cancelAmnesiaBtn");
+
+  if (settingSpeed) {
+    settingSpeed.value = window.typewriterSpeed;
+    settingSpeed.onchange = () => {
+      window.typewriterSpeed = settingSpeed.value;
+      localStorage.setItem("gameTypewriterSpeed", window.typewriterSpeed);
+      triggerVibration(10);
+    };
+  }
+
+  if (settingVoiceBeeps) {
+    settingVoiceBeeps.checked = window.voiceBeepsEnabled;
+    settingVoiceBeeps.onchange = () => {
+      window.voiceBeepsEnabled = settingVoiceBeeps.checked;
+      localStorage.setItem("gameVoiceBeeps", window.voiceBeepsEnabled);
+      triggerVibration(10);
+    };
+  }
+
+  if (settingVibration) {
+    settingVibration.checked = window.vibrationEnabled;
+    settingVibration.onchange = () => {
+      window.vibrationEnabled = settingVibration.checked;
+      localStorage.setItem("gameVibration", window.vibrationEnabled);
+      if (window.vibrationEnabled) triggerVibration(20);
+    };
+  }
+
+  if (settingGoldenTheme) {
+    settingGoldenTheme.checked = window.goldenThemeEnabled;
+    settingGoldenTheme.onchange = () => {
+      window.goldenThemeEnabled = settingGoldenTheme.checked;
+      localStorage.setItem("gameGoldenTheme", window.goldenThemeEnabled);
+      triggerVibration(10);
+
+      const gameElem = document.getElementById("game");
+      if (gameElem) {
+        if (window.goldenThemeEnabled) gameElem.classList.add("golden-burekas-theme");
+        else gameElem.classList.remove("golden-burekas-theme");
+      }
+    };
+  }
+
+  // Dramatic Amnesia Reset Handlers
+  if (btnResetAmnesia && amnesiaModal) {
+    btnResetAmnesia.onclick = () => {
+      amnesiaModal.style.display = "flex";
+      triggerVibration(15);
+    };
+  }
+
+  if (cancelAmnesiaBtn && amnesiaModal) {
+    cancelAmnesiaBtn.onclick = () => {
+      amnesiaModal.style.display = "none";
+      triggerVibration(10);
+    };
+  }
+
+  if (confirmAmnesiaBtn && amnesiaModal) {
+    confirmAmnesiaBtn.onclick = () => {
+      localStorage.removeItem("unlockedEndings");
+      amnesiaModal.style.display = "none";
+      if (settingsModal) settingsModal.style.display = "none";
+      triggerVibration(50);
+      playSfx("audio/break.mp3");
+      alert("📜 הסכם האמנזיה נחתם בהצלחה! ים שכח את כל הסופים שפתחת.");
+      showScene("start");
+    };
+  }
 }
 
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
@@ -743,10 +836,15 @@ const startAudioOnInteraction = () => {
 window.addEventListener("click", startAudioOnInteraction);
 window.addEventListener("keydown", startAudioOnInteraction);
 
-// Apply initial OLED settings from localStorage
+// Apply initial OLED & Golden Theme settings from localStorage
 const gameElem = document.getElementById("game");
-if (gameElem && localStorage.getItem("gameOled") === "true") {
-  gameElem.classList.add("oled-mode");
+if (gameElem) {
+  if (localStorage.getItem("gameOled") === "true") {
+    gameElem.classList.add("oled-mode");
+  }
+  if (localStorage.getItem("gameGoldenTheme") === "true") {
+    gameElem.classList.add("golden-burekas-theme");
+  }
 }
 
 // Start Simulator

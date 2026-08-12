@@ -727,3 +727,88 @@ input:checked + .slider:before {
 #game.oled-mode #asciiBackground {
   display: none !important;
 }
+
+/* Golden Burekas Theme Cosmetic Override */
+.golden-burekas-theme .choiceBtn {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+  background: rgba(35, 28, 10, 0.9) !important;
+  color: #fff8dc !important;
+}
+.golden-burekas-theme .choiceBtn:hover {
+  background: #ffd700 !important;
+  color: #1a1200 !important;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.8) !important;
+}
+
+/* Settings Dropdown Select */
+.settings-select {
+  background: rgba(20, 25, 35, 0.9);
+  color: #ffd447;
+  border: 1px solid rgba(255, 212, 71, 0.4);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Settings Action Button */
+.settings-action-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #c0392b, #962d22);
+  color: #ffffff;
+  border: 1px solid #e74c3c;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.3);
+}
+.settings-action-btn:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
+}
+
+/* Amnesia Reset Modal */
+#amnesiaModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  direction: rtl;
+}
+
+#amnesiaBox {
+  background: #1a1e29;
+  border: 2px solid #e74c3c;
+  box-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+  padding: 25px 30px;
+  border-radius: 16px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Rubik', sans-serif;
+}
+#amnesiaBox h3 {
+  color: #e74c3c;
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+#amnesiaBox p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #cbd5e1;
+}

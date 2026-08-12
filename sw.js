@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v101-added-all-5-interactive-particle-effects';
+const CACHE_NAME = 'yam-date-sim-v102-added-amnesia-reset-and-advanced-settings';
 const ASSETS = [
   './',
   './index.html',
