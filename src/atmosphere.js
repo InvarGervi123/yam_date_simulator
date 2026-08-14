@@ -247,13 +247,15 @@
         this.spawnAnalyticsDrift();
       }
 
-      // Thunder Flash on Dramatic Speeches or Threats
-      if (sceneStr.includes('dramatic') || sceneStr.includes('yinover_threat') || txtStr.includes('סוף העולם') || txtStr.includes('קליר')) {
+      // Thunder Flash on Dramatic Speeches, Threats or Courtroom Objections
+      if (sceneStr.includes('dramatic') || sceneStr.includes('yinover_threat') || sceneStr.includes('court') || txtStr.includes('סוף העולם') || txtStr.includes('קליר') || txtStr.includes('התנגדות')) {
         this.triggerThunderFlash();
       }
 
-      // Comic Impact Slap on Physical Actions
-      if (sceneStr.includes('drag_yam') || sceneStr.includes('steal_drawer') || txtStr.includes('בכוח') || txtStr.includes('לפרוץ')) {
+      // Comic Impact Slap on Physical Actions or Court Objections
+      if (txtStr.includes('objection') || txtStr.includes('התנגדות')) {
+        this.triggerComicImpact('💥 OBJECTION!');
+      } else if (sceneStr.includes('drag_yam') || sceneStr.includes('steal_drawer') || txtStr.includes('בכוח') || txtStr.includes('לפרוץ')) {
         this.triggerComicImpact();
       }
     }

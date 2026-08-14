@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v102-added-universal-gamepad-controls-and-dual-rumble-haptics';
+const CACHE_NAME = 'yam-date-sim-v103-phoenix-wright-courtroom-soundtrack';
 const ASSETS = [
   './',
   './index.html',
@@ -72,7 +72,8 @@ const ASSETS = [
   './audio/בואי תמי (גרסא לדייטים).mp3',
   './audio/גישה פיזית ודרמטית.mp3',
   './audio/ים דייט סימולטור - תפריט ראשי.mp3',
-  './audio/נתיבים מיוחדים והרפתקאות.mp3'
+  './audio/נתיבים מיוחדים והרפתקאות.mp3',
+  './audio/פיניקס בייט_ הסנגור לענייני קלוריות.mp3'
 ];
 
 // Install Service Worker and cache all resources

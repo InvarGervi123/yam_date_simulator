@@ -122,8 +122,11 @@ Object.assign(window.story, {
         "next": "center_bed_intro"
       },
       {
-        "text": "להעמיד את ים למשפט על הזנחת הערוץ והדייט! (Ace Attorney!)",
-        "next": "court_intro"
+        "text": "⚖️ להעמיד את ים למשפט על הזנחת הערוץ והדייט! (Ace Attorney!)",
+        "next": "court_intro",
+        "onSelect": function() {
+          if (typeof playMusic === "function") playMusic("audio/פיניקס בייט_ הסנגור לענייני קלוריות.mp3");
+        }
       },
       {
         "text": "לראות סרטון של 'נמר הכסף' בשביל המוטיבציה",

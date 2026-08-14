@@ -276,7 +276,13 @@ Object.assign(window.story, {
       { text: "לנסוע לאורנית לחפש את ים בביתו (נתיב אורנית והקסם!)", next: "oranit_travel" },
       { text: "לדבר איתו על החלום שלו לעבור לתל אביב", next: "tel_aviv_dream" },
       { text: "לגרור את ים בדיזינגוף סנטר כשהוא עדיין בתוך המיטה (דייט סנטר!)", next: "center_bed_intro" },
-      { text: "להעמיד את ים למשפט על הזנחת הערוץ והדייט! (Ace Attorney!)", next: "court_intro" },
+      {
+        text: "⚖️ להעמיד את ים למשפט על הזנחת הערוץ והדייט! (Ace Attorney!)",
+        next: "court_intro",
+        onSelect: function() {
+          if (typeof playMusic === "function") playMusic("audio/פיניקס בייט_ הסנגור לענייני קלוריות.mp3");
+        }
+      },
       { text: "לראות סרטון של 'נמר הכסף' בשביל המוטיבציה", next: "namer_kasef_intro" },
       { text: "לבקש מים שילמד אותך מתמטיקה לקראת המבחן", next: "math_study_intro" },
       { text: "🔙 חזרה לאפשרויות הראשיות", next: "room_intro" }
