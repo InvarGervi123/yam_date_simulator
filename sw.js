@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v103-phoenix-wright-courtroom-soundtrack';
+const CACHE_NAME = 'yam-date-sim-v104-ace-attorney-beth-din-saga';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './css/battle.css',
   './css/baldi.css',
   './css/atmosphere.css',
+  './css/court.css',
   './src/audio.js',
   './src/minigames.js',
   './src/battle.js',
@@ -20,6 +21,7 @@ const ASSETS = [
   './src/preg_game_renderer.js',
   './src/gamepad.js',
   './src/atmosphere.js',
+  './src/court_engine.js',
   './src/engine.js',
   './src/story/setup.js',
   './src/story/main.js',
@@ -52,7 +54,12 @@ const ASSETS = [
   './images/characters/yam_alien.png',
   './images/characters/yam_dead.png',
   './images/characters/invar.png',
+  './images/characters/ינוור החרדי.png',
+  './images/characters/ים חרדי.png',
   './images/backgrounds/room.jpg',
+  './images/backgrounds/בית משפט.png',
+  './images/backgrounds/התנגדות.png',
+  './images/backgrounds/לוגו מוסד.png',
   './audio/boss_fight.mp3',
   './audio/break.mp3',
   './audio/click.mp3',

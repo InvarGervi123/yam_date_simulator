@@ -1,0 +1,331 @@
+/* --- Ace Attorney Haredi Rabbinical Court CSS --- */
+
+/* 1. Courtroom Main Container Layout */
+.courtroom-active #background {
+  filter: brightness(0.92) contrast(1.1) saturate(1.15);
+}
+
+.courtroom-active #game::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: linear-gradient(180deg, rgba(20, 10, 5, 0.95) 0%, rgba(35, 18, 10, 0.85) 80%, transparent 100%);
+  border-bottom: 2px solid #d4af37;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 2. Court Header HUD (Logo, Beth Din Title, HP Meter, Court Record Button) */
+#courtHud {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  right: 12px;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 25;
+  pointer-events: auto;
+}
+
+.courtroom-active #courtHud {
+  display: flex;
+}
+
+.court-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+.court-mossad-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.8));
+}
+
+/* 3. Player HP & Penalty Bar */
+.court-hp-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 8, 4, 0.85);
+  border: 1px solid #d4af37;
+  border-radius: 20px;
+  padding: 4px 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.court-hp-label {
+  font-family: 'Rubik', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #ff4757;
+  letter-spacing: 1px;
+}
+
+.court-hp-bar-bg {
+  width: 120px;
+  height: 12px;
+  background: #2f3542;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #1e272e;
+}
+
+.court-hp-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #2ed573 0%, #ffa502 60%, #ff4757 100%);
+  transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.court-penalties {
+  display: flex;
+  gap: 4px;
+  font-size: 14px;
+  color: #ff4757;
+  text-shadow: 0 0 6px #ff4757;
+}
+
+/* 4. Court Record Button */
+#btnCourtRecord {
+  background: linear-gradient(180deg, #d4af37 0%, #aa8010 100%);
+  color: #120a05;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+#btnCourtRecord:hover {
+  transform: scale(1.06);
+  filter: brightness(1.15);
+}
+
+/* 5. Parchment Beth Din Dialog Box & Name Badges */
+.courtroom-active #dialogBox {
+  background: radial-gradient(circle at 50% 50%, #f7f1e3 0%, #eedbc5 100%) !important;
+  border: 3px solid #8b5a2b !important;
+  box-shadow: inset 0 0 15px rgba(139, 90, 43, 0.3), 0 8px 30px rgba(0, 0, 0, 0.9) !important;
+  border-radius: 12px !important;
+}
+
+.courtroom-active #speaker {
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 16px !important;
+  padding: 4px 16px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+  border: 2px solid #5d3a1a !important;
+  margin-bottom: 6px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Character Specific Badges */
+.speaker-invar #speaker {
+  background: linear-gradient(180deg, #1e3799 0%, #0c2461 100%) !important;
+  color: #ffffff !important;
+  border-color: #4a69bd !important;
+  text-shadow: 0 0 6px #6a89cc !important;
+}
+
+.speaker-yam #speaker {
+  background: linear-gradient(180deg, #eb2f06 0%, #b71540 100%) !important;
+  color: #ffffff !important;
+  border-color: #e55039 !important;
+  text-shadow: 0 0 6px #f6b93b !important;
+}
+
+.speaker-judge #speaker {
+  background: linear-gradient(180deg, #f6b93b 0%, #e58e26 100%) !important;
+  color: #000000 !important;
+  border-color: #fa983a !important;
+}
+
+.speaker-liliya #speaker {
+  background: linear-gradient(180deg, #6c5ce7 0%, #341f97 100%) !important;
+  color: #ffffff !important;
+  border-color: #a29bfe !important;
+  text-shadow: 0 0 8px #fd79a8 !important;
+}
+
+.courtroom-active #text {
+  font-family: 'Heebo', sans-serif !important;
+  font-weight: 600 !important;
+  color: #2c1b0b !important;
+  font-size: 19px !important;
+  line-height: 1.55 !important;
+  text-shadow: none !important;
+}
+
+/* 6. Fullscreen Animated OBJECTION! Cut-in */
+#courtObjectionOverlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+#courtObjectionOverlay.active {
+  display: flex;
+}
+
+.objection-cutin-img {
+  width: 85%;
+  max-width: 700px;
+  animation: objectionSlam 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  filter: drop-shadow(0 0 35px rgba(255, 0, 0, 0.9));
+}
+
+@keyframes objectionSlam {
+  0% { transform: scale(3.5) rotate(-15deg); opacity: 0; }
+  35% { transform: scale(1.05) rotate(4deg); opacity: 1; }
+  70% { transform: scale(1.0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(0.95) rotate(-2deg); opacity: 0; }
+}
+
+/* 7. Court Record Modal (Evidence Binder) */
+#courtRecordModal {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(8, 4, 2, 0.88);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+}
+
+.court-record-box {
+  width: 90%;
+  max-width: 620px;
+  background: radial-gradient(circle at 50% 50%, #2c180e 0%, #150a05 100%);
+  border: 3px solid #d4af37;
+  border-radius: 14px;
+  padding: 18px 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
+  color: #f5f6fa;
+  font-family: 'Rubik', sans-serif;
+  position: relative;
+}
+
+.court-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #d4af37;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.court-record-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.court-record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.evidence-card {
+  background: rgba(45, 25, 15, 0.9);
+  border: 2px solid #8b5a2b;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.evidence-card:hover, .evidence-card.selected {
+  transform: translateY(-3px);
+  border-color: #ffd700;
+  background: rgba(90, 50, 30, 0.95);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+}
+
+.evidence-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.evidence-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f1f2f6;
+  line-height: 1.2;
+}
+
+.evidence-detail-pane {
+  margin-top: 14px;
+  background: rgba(10, 5, 2, 0.7);
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #dcdde1;
+  min-height: 55px;
+}
+
+.court-record-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-present-evidence {
+  background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+  color: #ffffff;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-present-evidence:hover {
+  transform: scale(1.05);
+}
+
+.btn-close-record {
+  background: #57606f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}

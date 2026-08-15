@@ -228,6 +228,22 @@ function showScene(target) {
 
   currentScene = id;
 
+  // Handle Courtroom Beth Din Mode activation & Speaker styling
+  const isCourtScene = id.startsWith("court_") || id.startsWith("end_court");
+  if (window.courtEngine) {
+    window.courtEngine.setCourtActive(isCourtScene);
+  }
+
+  const gameContainer = document.getElementById("game");
+  if (gameContainer) {
+    gameContainer.classList.remove("speaker-invar", "speaker-yam", "speaker-judge", "speaker-liliya");
+    const spk = String(scene.speaker || "");
+    if (spk.includes("ינוור")) gameContainer.classList.add("speaker-invar");
+    else if (spk.includes("ים")) gameContainer.classList.add("speaker-yam");
+    else if (spk.includes("שופט") || spk.includes("בית הדין")) gameContainer.classList.add("speaker-judge");
+    else if (spk.includes("ליליה")) gameContainer.classList.add("speaker-liliya");
+  }
+
   // Stop minigames/overlays when returning to main menu
   if (id === "start" || id === "main_menu") {
     if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
@@ -239,7 +255,6 @@ function showScene(target) {
 
   const bgPre = document.getElementById("asciiBackground");
   const charPre = document.getElementById("asciiCharacter");
-  const gameContainer = document.getElementById("game");
 
   // Toggle grayscale filter based on horror route
   if (isHorrorRoute) {
