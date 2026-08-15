@@ -233,6 +233,45 @@
               <span class="slider"></span>
             </label>
           </div>
+
+          <!-- Expandable Special Settings Toggle Button -->
+          <button id="btnToggleSpecialSettings" class="special-settings-toggle" type="button">
+            <span>🎛️ הגדרות מיוחדות ותצוגה</span>
+            <span id="specialSettingsArrow">▼</span>
+          </button>
+
+          <!-- Hidden Expandable Submenu Container -->
+          <div id="specialSettingsContainer" class="special-settings-container" style="display: none;">
+            <!-- Contrast Stepper -->
+            <div class="settings-item">
+              <span>🎨 ניגודיות מסך (Contrast)</span>
+              <div class="settings-stepper">
+                <button id="btnContrastDown" class="stepper-btn" aria-label="הפחת ניגודיות">◀</button>
+                <span id="labelContrast" class="stepper-value">100%</span>
+                <button id="btnContrastUp" class="stepper-btn" aria-label="הגבר ניגודיות">▶</button>
+              </div>
+            </div>
+
+            <!-- Music Volume Stepper -->
+            <div class="settings-item">
+              <span>🎵 עוצמת מוזיקה</span>
+              <div class="settings-stepper">
+                <button id="btnMusicVolDown" class="stepper-btn" aria-label="הנמך מוזיקה">◀</button>
+                <span id="labelMusicVol" class="stepper-value">50%</span>
+                <button id="btnMusicVolUp" class="stepper-btn" aria-label="הגבר מוזיקה">▶</button>
+              </div>
+            </div>
+
+            <!-- SFX Volume Stepper -->
+            <div class="settings-item">
+              <span>🔊 עוצמת אפקטים (SFX)</span>
+              <div class="settings-stepper">
+                <button id="btnSfxVolDown" class="stepper-btn" aria-label="הנמך אפקטים">◀</button>
+                <span id="labelSfxVol" class="stepper-value">80%</span>
+                <button id="btnSfxVolUp" class="stepper-btn" aria-label="הגבר אפקטים">▶</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

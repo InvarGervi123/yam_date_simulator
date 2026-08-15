@@ -15,14 +15,29 @@ window.isMusicMuted = localStorage.getItem("gameMusicMuted") === "true";
  */
 window.isSfxMuted = localStorage.getItem("gameSfxMuted") === "true";
 
+let currentMusicVol = parseInt(localStorage.getItem("gameMusicVol") || "50") / 100;
+let currentSfxVol = parseInt(localStorage.getItem("gameSfxVol") || "80") / 100;
+
 if (music) {
   music.muted = window.isMusicMuted;
-  music.volume = 0.45;
+  music.volume = currentMusicVol;
   music.loop = true;
 }
 if (sfx) {
-  sfx.volume = 0.8;
+  sfx.volume = currentSfxVol;
 }
+
+window.setMusicVolume = function(percent) {
+  currentMusicVol = Math.max(0, Math.min(100, percent)) / 100;
+  localStorage.setItem("gameMusicVol", String(percent));
+  if (music) music.volume = currentMusicVol;
+};
+
+window.setSfxVolume = function(percent) {
+  currentSfxVol = Math.max(0, Math.min(100, percent)) / 100;
+  localStorage.setItem("gameSfxVol", String(percent));
+  if (sfx) sfx.volume = currentSfxVol;
+};
 
 /**
  * Plays a background music track, loops it, and respects the mute state.

@@ -339,6 +339,13 @@ function showScene(target) {
   } else {
     fileExistsFallbackImage(bg, bgSrc);
     fileExistsFallbackImage(character, charSrc);
+
+    const savedContrast = parseInt(localStorage.getItem("gameContrast") || "100");
+    if (savedContrast !== 100) {
+      bg.style.filter = `contrast(${savedContrast}%)`;
+    } else {
+      bg.style.filter = "";
+    }
   }
 
   // Trigger Character Animations (bounce, shake, slide_in, float)
@@ -743,6 +750,81 @@ if (settingsToggle && settingsModal && closeSettings) {
         window.atmosphereEngine.setAtmosphereEnabled(settingAtmosphere.checked);
         triggerVibration(10);
       }
+    };
+  }
+
+  // --- Advanced Display & Sound Steppers ---
+  let gameContrast = parseInt(localStorage.getItem("gameContrast") || "100");
+  let gameMusicVol = parseInt(localStorage.getItem("gameMusicVol") || "50");
+  let gameSfxVol = parseInt(localStorage.getItem("gameSfxVol") || "80");
+
+  const labelContrast = document.getElementById("labelContrast");
+  const labelMusicVol = document.getElementById("labelMusicVol");
+  const labelSfxVol = document.getElementById("labelSfxVol");
+
+  function applyContrast(val) {
+    gameContrast = Math.max(70, Math.min(160, val));
+    localStorage.setItem("gameContrast", String(gameContrast));
+    if (labelContrast) labelContrast.textContent = `${gameContrast}%`;
+    const bgElem = document.getElementById("background");
+    if (bgElem) bgElem.style.filter = `contrast(${gameContrast}%)`;
+    triggerVibration(8);
+  }
+
+  function applyMusicVol(val) {
+    gameMusicVol = Math.max(0, Math.min(100, val));
+    if (labelMusicVol) labelMusicVol.textContent = `${gameMusicVol}%`;
+    if (typeof window.setMusicVolume === "function") {
+      window.setMusicVolume(gameMusicVol);
+    }
+    triggerVibration(8);
+  }
+
+  function applySfxVol(val) {
+    gameSfxVol = Math.max(0, Math.min(100, val));
+    if (labelSfxVol) labelSfxVol.textContent = `${gameSfxVol}%`;
+    if (typeof window.setSfxVolume === "function") {
+      window.setSfxVolume(gameSfxVol);
+    }
+    if (typeof playSfx === "function") playSfx("audio/click.mp3");
+    triggerVibration(8);
+  }
+
+  // Initial display setup
+  applyContrast(gameContrast);
+  if (labelMusicVol) labelMusicVol.textContent = `${gameMusicVol}%`;
+  if (labelSfxVol) labelSfxVol.textContent = `${gameSfxVol}%`;
+
+  // Contrast buttons
+  const btnContrastDown = document.getElementById("btnContrastDown");
+  const btnContrastUp = document.getElementById("btnContrastUp");
+  if (btnContrastDown) btnContrastDown.onclick = () => applyContrast(gameContrast - 10);
+  if (btnContrastUp) btnContrastUp.onclick = () => applyContrast(gameContrast + 10);
+
+  // Music Volume buttons
+  const btnMusicVolDown = document.getElementById("btnMusicVolDown");
+  const btnMusicVolUp = document.getElementById("btnMusicVolUp");
+  if (btnMusicVolDown) btnMusicVolDown.onclick = () => applyMusicVol(gameMusicVol - 10);
+  if (btnMusicVolUp) btnMusicVolUp.onclick = () => applyMusicVol(gameMusicVol + 10);
+
+  // SFX Volume buttons
+  const btnSfxVolDown = document.getElementById("btnSfxVolDown");
+  const btnSfxVolUp = document.getElementById("btnSfxVolUp");
+  if (btnSfxVolDown) btnSfxVolDown.onclick = () => applySfxVol(gameSfxVol - 10);
+  if (btnSfxVolUp) btnSfxVolUp.onclick = () => applySfxVol(gameSfxVol + 10);
+
+  // Special Settings Submenu Toggle (Expand / Collapse)
+  const btnToggleSpecial = document.getElementById("btnToggleSpecialSettings");
+  const specialContainer = document.getElementById("specialSettingsContainer");
+  const specialArrow = document.getElementById("specialSettingsArrow");
+
+  if (btnToggleSpecial && specialContainer) {
+    btnToggleSpecial.onclick = () => {
+      const isHidden = specialContainer.style.display === "none";
+      specialContainer.style.display = isHidden ? "flex" : "none";
+      if (specialArrow) specialArrow.textContent = isHidden ? "▲" : "▼";
+      triggerVibration(12);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
     };
   }
 }

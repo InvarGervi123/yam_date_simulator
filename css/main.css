@@ -670,6 +670,101 @@ button {
   direction: rtl;
 }
 
+.special-settings-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(255, 212, 71, 0.15) 0%, rgba(255, 170, 0, 0.08) 100%);
+  border: 1px solid rgba(255, 212, 71, 0.35);
+  border-radius: 10px;
+  color: #ffd447;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  direction: rtl;
+  margin-top: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.special-settings-toggle:hover {
+  background: linear-gradient(135deg, rgba(255, 212, 71, 0.28) 0%, rgba(255, 170, 0, 0.18) 100%);
+  border-color: #ffd447;
+  transform: translateY(-1px);
+}
+
+.special-settings-toggle:active {
+  transform: translateY(1px);
+}
+
+.special-settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(255, 212, 71, 0.25);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 4px;
+  animation: fadeInDown 0.25s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 3px 8px;
+  direction: ltr;
+}
+
+.stepper-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffd447;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.stepper-btn:hover {
+  background: #ffd447;
+  color: #030305;
+  transform: scale(1.12);
+}
+
+.stepper-btn:active {
+  transform: scale(0.92);
+}
+
+.stepper-value {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #f1f2f6;
+  min-width: 44px;
+  text-align: center;
+  user-select: none;
+}
+
 .settings-item span {
   font-family: 'Heebo', sans-serif;
   font-weight: 500;

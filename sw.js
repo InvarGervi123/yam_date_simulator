@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v107-fixed-game-over-and-record-presentation';
+const CACHE_NAME = 'yam-date-sim-v109-expandable-special-settings';
 const ASSETS = [
   './',
   './index.html',

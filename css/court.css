@@ -1,10 +1,6 @@
 /* --- Ace Attorney Haredi Rabbinical Court CSS --- */
 
 /* 1. Courtroom Main Container Layout */
-.courtroom-active #background {
-  filter: brightness(0.92) contrast(1.1) saturate(1.15);
-}
-
 .courtroom-active #game::before {
   content: "";
   position: absolute;
