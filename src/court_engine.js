@@ -165,11 +165,17 @@
       }
 
       if (playerHp <= 0) {
+        // Clear choices immediately to prevent returning to testimony
+        const choicesContainer = document.getElementById("choices");
+        if (choicesContainer) choicesContainer.innerHTML = "";
+
         setTimeout(() => {
-          if (window.engine) {
-            window.engine.showScene("end_courtroom_guilty_gameover");
+          if (typeof showScene === "function") {
+            showScene("end_courtroom_guilty_gameover");
+          } else if (typeof window.showScene === "function") {
+            window.showScene("end_courtroom_guilty_gameover");
           }
-        }, 800);
+        }, 900);
       }
     },
 
@@ -270,8 +276,33 @@
 
       if (typeof onPresentCallback === "function") {
         onPresentCallback(chosenId);
-      } else if (window.engine && window.story[window.currentScene] && typeof window.story[window.currentScene].onEvidencePresented === "function") {
-        window.story[window.currentScene].onEvidencePresented(chosenId);
+      } else {
+        const scn = (typeof currentScene !== "undefined" ? currentScene : (window.currentScene || ""));
+        const sceneObj = (window.story && window.story[scn]) ? window.story[scn] : null;
+
+        if (sceneObj && typeof sceneObj.onEvidencePresented === "function") {
+          sceneObj.onEvidencePresented(chosenId);
+        } else if (scn.includes("act1")) {
+          if (chosenId === "evidence_analytics_2024") {
+            if (typeof showScene === "function") showScene("court_act1_success");
+          } else if (chosenId === "evidence_burekas_receipt") {
+            if (typeof showScene === "function") showScene("court_act1_penalty_burekas");
+          } else {
+            if (typeof showScene === "function") showScene("court_act1_penalty_bed");
+          }
+        } else if (scn.includes("act2")) {
+          if (chosenId === "evidence_phone_sleep" || chosenId === "evidence_discord_webhook") {
+            if (typeof showScene === "function") showScene("court_act2_success");
+          } else {
+            if (typeof showScene === "function") showScene("court_act2_penalty_repeat");
+          }
+        } else if (scn.includes("act3")) {
+          if (chosenId === "evidence_burekas_receipt" || chosenId === "evidence_bed_contract") {
+            if (typeof showScene === "function") showScene("court_act3_success");
+          } else {
+            if (typeof showScene === "function") showScene("court_act3_penalty");
+          }
+        }
       }
     }
   };

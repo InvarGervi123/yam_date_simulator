@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v106-court-ui-fine-tuning';
+const CACHE_NAME = 'yam-date-sim-v107-fixed-game-over-and-record-presentation';
 const ASSETS = [
   './',
   './index.html',

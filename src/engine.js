@@ -209,6 +209,7 @@ function glitchText(str) {
  * @param {string|Function} target - The unique identifier of the story scene or a getter function returning it.
  */
 function showScene(target) {
+  window.showScene = showScene;
   const id = (typeof target === "function") ? target() : target;
   const scene = story[id];
 
