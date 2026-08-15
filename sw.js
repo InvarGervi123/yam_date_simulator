@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v105-fixed-courtroom-hud-and-liliya-prompts';
+const CACHE_NAME = 'yam-date-sim-v106-court-ui-fine-tuning';
 const ASSETS = [
   './',
   './index.html',
