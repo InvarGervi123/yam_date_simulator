@@ -1,7 +1,7 @@
 // --- Modular Sound & Music Manager ---
 
 const music = document.getElementById("music");
-const sfx = document.getElementById("sfx");
+const sfxFallback = document.getElementById("sfx");
 
 /**
  * Indicates whether background music playback is muted.
@@ -23,8 +23,8 @@ if (music) {
   music.volume = currentMusicVol;
   music.loop = true;
 }
-if (sfx) {
-  sfx.volume = currentSfxVol;
+if (sfxFallback) {
+  sfxFallback.volume = currentSfxVol;
 }
 
 window.setMusicVolume = function(percent) {
@@ -36,7 +36,7 @@ window.setMusicVolume = function(percent) {
 window.setSfxVolume = function(percent) {
   currentSfxVol = Math.max(0, Math.min(100, percent)) / 100;
   localStorage.setItem("gameSfxVol", String(percent));
-  if (sfx) sfx.volume = currentSfxVol;
+  if (sfxFallback) sfxFallback.volume = currentSfxVol;
 };
 
 /**
@@ -52,6 +52,7 @@ function playMusic(src) {
 
   music.setAttribute("data-track-src", src);
   music.muted = window.isMusicMuted;
+  music.volume = currentMusicVol;
 
   // Try encoded URI first
   const encodedSrc = encodeURI(src);
@@ -80,26 +81,46 @@ function playMusic(src) {
 }
 
 /**
- * Plays a sound effect or voice beep immediately, if SFX is not muted.
- * Supports Hebrew audio filenames and spaces via safe URI encoding.
+ * Multi-instance sound effects player.
+ * Creates a fresh Audio instance so sounds can overlap freely without cutting each other off.
  * @param {string} src - Relative file path to the sound effect.
  */
 function playSfx(src) {
-  if (!src || !sfx || window.isSfxMuted) return;
+  if (!src || window.isSfxMuted) return;
 
-  const encodedSrc = encodeURI(src);
-  sfx.src = encodedSrc;
-  sfx.currentTime = 0;
+  try {
+    const sound = new Audio();
+    sound.volume = currentSfxVol;
+    const encodedSrc = encodeURI(src);
+    sound.src = encodedSrc;
 
-  sfx.onerror = () => {
-    if (sfx.getAttribute("src") !== src) {
-      sfx.src = src;
-      sfx.currentTime = 0;
-      sfx.play().catch(() => {});
+    sound.onerror = () => {
+      if (sound.getAttribute("src") !== src) {
+        sound.src = src;
+        sound.play().catch(() => {});
+      }
+    };
+
+    const p = sound.play();
+    if (p !== undefined) {
+      p.catch(() => {
+        // Fallback to DOM sfx element
+        if (sfxFallback) {
+          sfxFallback.volume = currentSfxVol;
+          sfxFallback.src = encodedSrc;
+          sfxFallback.currentTime = 0;
+          sfxFallback.play().catch(() => {});
+        }
+      });
     }
-  };
-
-  sfx.play().catch(() => {});
+  } catch (e) {
+    if (sfxFallback) {
+      sfxFallback.volume = currentSfxVol;
+      sfxFallback.src = encodeURI(src);
+      sfxFallback.currentTime = 0;
+      sfxFallback.play().catch(() => {});
+    }
+  }
 }
 
 // Export functions to window

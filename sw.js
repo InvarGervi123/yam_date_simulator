@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v110-offline-dual-audio-fallback';
+const CACHE_NAME = 'yam-date-sim-v111-multi-channel-sfx-and-audio-unlocked';
 const ASSETS = [
   './',
   './index.html',

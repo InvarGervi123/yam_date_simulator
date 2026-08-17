@@ -841,9 +841,13 @@ const startAudioOnInteraction = () => {
   }
   window.removeEventListener("click", startAudioOnInteraction);
   window.removeEventListener("keydown", startAudioOnInteraction);
+  window.removeEventListener("touchstart", startAudioOnInteraction);
+  window.removeEventListener("pointerdown", startAudioOnInteraction);
 };
 window.addEventListener("click", startAudioOnInteraction);
 window.addEventListener("keydown", startAudioOnInteraction);
+window.addEventListener("touchstart", startAudioOnInteraction, { passive: true });
+window.addEventListener("pointerdown", startAudioOnInteraction, { passive: true });
 
 // Apply initial OLED settings from localStorage
 const gameElem = document.getElementById("game");
