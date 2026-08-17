@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v111-multi-channel-sfx-and-audio-unlocked';
+const CACHE_NAME = 'yam-date-sim-v112-mobile-audio-range-and-blob-support';
 const ASSETS = [
   './',
   './index.html',
@@ -83,11 +83,17 @@ const ASSETS = [
   './audio/פיניקס בייט_ הסנגור לענייני קלוריות.mp3'
 ];
 
-// Install Service Worker and cache all resources
+// Resilient install: caches each asset individually so one failure does not abort the entire bundle
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
+      return Promise.all(
+        ASSETS.map((url) => {
+          return cache.add(encodeURI(url)).catch(() => {
+            return cache.add(url).catch(() => {});
+          });
+        })
+      );
     }).then(() => self.skipWaiting())
   );
 });
@@ -107,41 +113,70 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch interceptor: Stale-While-Revalidate with decoded URI fallback for Hebrew filenames
+// Synthesizes an HTTP 206 Partial Content response from a cached ArrayBuffer
+// Required by mobile Safari (iOS) and mobile Chrome (Android) for Range: bytes=0- media requests
+async function handleRangeResponse(request, cachedResponse) {
+  const rangeHeader = request.headers.get('range');
+  if (!rangeHeader) {
+    return cachedResponse;
+  }
+
+  const arrayBuffer = await cachedResponse.arrayBuffer();
+  const total = arrayBuffer.byteLength;
+
+  const parts = rangeHeader.replace(/bytes=/, "").split("-");
+  const start = parseInt(parts[0], 10) || 0;
+  const end = parts[1] ? parseInt(parts[1], 10) : total - 1;
+  const chunk = arrayBuffer.slice(start, end + 1);
+
+  return new Response(chunk, {
+    status: 206,
+    statusText: 'Partial Content',
+    headers: {
+      'Content-Range': `bytes ${start}-${end}/${total}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunk.byteLength,
+      'Content-Type': cachedResponse.headers.get('content-type') || 'audio/mpeg'
+    }
+  });
+}
+
+// Fetch handler supporting mobile audio Range headers and Hebrew filenames
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) {
     return;
   }
 
   e.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(e.request).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
+    caches.open(CACHE_NAME).then(async (cache) => {
+      let cachedResponse = await cache.match(e.request);
 
-        // Try decoded URI match (for Hebrew filenames and spaces)
+      if (!cachedResponse) {
         try {
           const decodedUrl = decodeURI(e.request.url);
           if (decodedUrl !== e.request.url) {
-            return cache.match(decodedUrl).then((decMatch) => {
-              if (decMatch) return decMatch;
-              return fetchFromNetwork();
-            });
+            cachedResponse = await cache.match(decodedUrl);
           }
         } catch (err) {}
+      }
 
-        function fetchFromNetwork() {
-          return fetch(e.request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              cache.put(e.request, networkResponse.clone());
-            }
-            return networkResponse;
-          }).catch(() => {
-            return cache.match('./index.html');
-          });
+      if (cachedResponse) {
+        if (e.request.headers.get('range')) {
+          return handleRangeResponse(e.request, cachedResponse);
         }
+        return cachedResponse;
+      }
 
-        return fetchFromNetwork();
-      });
+      try {
+        const networkResponse = await fetch(e.request);
+        if (networkResponse && networkResponse.status === 200) {
+          cache.put(e.request, networkResponse.clone());
+        }
+        return networkResponse;
+      } catch (fetchErr) {
+        const fallback = await cache.match('./index.html');
+        return fallback || new Response('Offline', { status: 503 });
+      }
     })
   );
 });

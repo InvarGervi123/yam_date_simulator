@@ -39,6 +39,33 @@ window.setSfxVolume = function(percent) {
   if (sfxFallback) sfxFallback.volume = currentSfxVol;
 };
 
+// Cached Blob URL helper to guarantee mobile offline playback
+async function tryPlayFromCacheBlob(mediaElem, src, isLoop = false) {
+  if (!('caches' in window)) return false;
+  try {
+    const cacheNames = await caches.keys();
+    for (const name of cacheNames) {
+      const cache = await caches.open(name);
+      let response = await cache.match(encodeURI(src));
+      if (!response) response = await cache.match(src);
+      if (!response) {
+        try { response = await cache.match(decodeURI(src)); } catch (e) {}
+      }
+      if (response) {
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        mediaElem.src = blobUrl;
+        mediaElem.loop = isLoop;
+        if (!window.isMusicMuted) {
+          mediaElem.play().catch(() => {});
+        }
+        return true;
+      }
+    }
+  } catch (err) {}
+  return false;
+}
+
 /**
  * Plays a background music track, loops it, and respects the mute state.
  * Supports Hebrew audio filenames, offline PWA cache, and local file:// protocols via dual fallback.
@@ -54,17 +81,19 @@ function playMusic(src) {
   music.muted = window.isMusicMuted;
   music.volume = currentMusicVol;
 
-  // Try encoded URI first
   const encodedSrc = encodeURI(src);
   music.src = encodedSrc;
 
-  // If loading fails due to local Windows file:// protocol encoding mismatch, fallback to raw unencoded path
-  music.onerror = () => {
+  music.onerror = async () => {
     if (music.getAttribute("src") !== src) {
       music.src = src;
       if (!window.isMusicMuted) {
-        music.play().catch(() => {});
+        music.play().catch(() => {
+          tryPlayFromCacheBlob(music, src, true);
+        });
       }
+    } else {
+      tryPlayFromCacheBlob(music, src, true);
     }
   };
 
@@ -72,7 +101,7 @@ function playMusic(src) {
     const playPromise = music.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // Autoplay policy prevented immediate playback until user interaction
+        tryPlayFromCacheBlob(music, src, true);
       });
     }
   } else {
@@ -97,19 +126,24 @@ function playSfx(src) {
     sound.onerror = () => {
       if (sound.getAttribute("src") !== src) {
         sound.src = src;
-        sound.play().catch(() => {});
+        sound.play().catch(() => {
+          tryPlayFromCacheBlob(sound, src, false);
+        });
+      } else {
+        tryPlayFromCacheBlob(sound, src, false);
       }
     };
 
     const p = sound.play();
     if (p !== undefined) {
       p.catch(() => {
-        // Fallback to DOM sfx element
         if (sfxFallback) {
           sfxFallback.volume = currentSfxVol;
           sfxFallback.src = encodedSrc;
           sfxFallback.currentTime = 0;
-          sfxFallback.play().catch(() => {});
+          sfxFallback.play().catch(() => {
+            tryPlayFromCacheBlob(sfxFallback, src, false);
+          });
         }
       });
     }
