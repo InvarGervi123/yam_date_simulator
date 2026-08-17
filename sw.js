@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v109-expandable-special-settings';
+const CACHE_NAME = 'yam-date-sim-v110-offline-dual-audio-fallback';
 const ASSETS = [
   './',
   './index.html',
@@ -107,8 +107,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch interceptor: Stale-While-Revalidate strategy
-// Instantly serves from cache, fetches from network in background to update cache
+// Fetch interceptor: Stale-While-Revalidate with decoded URI fallback for Hebrew filenames
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) {
     return;
@@ -117,16 +116,31 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(e.request).then((cachedResponse) => {
-        const fetchedResponse = fetch(e.request).then((networkResponse) => {
-          if (networkResponse.status === 200) {
-            cache.put(e.request, networkResponse.clone());
-          }
-          return networkResponse;
-        }).catch(() => {
-          // Silent catch for offline fetch failures
-        });
+        if (cachedResponse) return cachedResponse;
 
-        return cachedResponse || fetchedResponse;
+        // Try decoded URI match (for Hebrew filenames and spaces)
+        try {
+          const decodedUrl = decodeURI(e.request.url);
+          if (decodedUrl !== e.request.url) {
+            return cache.match(decodedUrl).then((decMatch) => {
+              if (decMatch) return decMatch;
+              return fetchFromNetwork();
+            });
+          }
+        } catch (err) {}
+
+        function fetchFromNetwork() {
+          return fetch(e.request).then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              cache.put(e.request, networkResponse.clone());
+            }
+            return networkResponse;
+          }).catch(() => {
+            return cache.match('./index.html');
+          });
+        }
+
+        return fetchFromNetwork();
       });
     })
   );

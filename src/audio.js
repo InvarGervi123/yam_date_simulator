@@ -41,23 +41,39 @@ window.setSfxVolume = function(percent) {
 
 /**
  * Plays a background music track, loops it, and respects the mute state.
- * Supports Hebrew audio filenames and spaces via safe URI encoding.
+ * Supports Hebrew audio filenames, offline PWA cache, and local file:// protocols via dual fallback.
  * @param {string} src - Relative file path to the audio track.
  */
 function playMusic(src) {
   if (!src || !music) return;
 
-  const safeSrc = encodeURI(src);
-  const currentAttr = music.getAttribute("src");
+  const currentTrack = music.getAttribute("data-track-src");
+  if (currentTrack === src && !music.paused) return;
 
-  if (!currentAttr || decodeURIComponent(currentAttr) !== decodeURIComponent(src)) {
-    music.src = safeSrc;
-    music.setAttribute("src", src);
-  }
-
+  music.setAttribute("data-track-src", src);
   music.muted = window.isMusicMuted;
+
+  // Try encoded URI first
+  const encodedSrc = encodeURI(src);
+  music.src = encodedSrc;
+
+  // If loading fails due to local Windows file:// protocol encoding mismatch, fallback to raw unencoded path
+  music.onerror = () => {
+    if (music.getAttribute("src") !== src) {
+      music.src = src;
+      if (!window.isMusicMuted) {
+        music.play().catch(() => {});
+      }
+    }
+  };
+
   if (!window.isMusicMuted) {
-    music.play().catch(() => {});
+    const playPromise = music.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay policy prevented immediate playback until user interaction
+      });
+    }
   } else {
     music.pause();
   }
@@ -71,9 +87,18 @@ function playMusic(src) {
 function playSfx(src) {
   if (!src || !sfx || window.isSfxMuted) return;
 
-  const safeSrc = encodeURI(src);
-  sfx.src = safeSrc;
+  const encodedSrc = encodeURI(src);
+  sfx.src = encodedSrc;
   sfx.currentTime = 0;
+
+  sfx.onerror = () => {
+    if (sfx.getAttribute("src") !== src) {
+      sfx.src = src;
+      sfx.currentTime = 0;
+      sfx.play().catch(() => {});
+    }
+  };
+
   sfx.play().catch(() => {});
 }
 
