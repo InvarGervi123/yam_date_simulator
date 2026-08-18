@@ -1,161 +1,222 @@
-# 🎮 ים דייט סימולטור (Yam Date Simulator) - Enterprise Static Architecture
+# 🎮 ים דייט סימולטור (Yam Date Simulator) - Enterprise Architectural Masterpiece
 
 <p align="center">
   <img src="https://img.shields.io/badge/Made%20With-Vanilla%20JS-yellow?style=for-the-badge&logo=javascript" alt="Made With Vanilla JS" />
-  <img src="https://img.shields.io/badge/Platform-PC%20%7C%20Mobile-orange?style=for-the-badge" alt="Platform Compatibility" />
-  <img src="https://img.shields.io/badge/Offline--First-PWA-red?style=for-the-badge&logo=pwa" alt="PWA Offline First" />
+  <img src="https://img.shields.io/badge/Platform-PC%20%7C%20Mobile%20%7C%20Gamepad-orange?style=for-the-badge" alt="Platform Compatibility" />
+  <img src="https://img.shields.io/badge/Offline--First-PWA%20v112-red?style=for-the-badge&logo=pwa" alt="PWA Offline First" />
+  <img src="https://img.shields.io/badge/Haptics-Dual--Rumble-blueviolet?style=for-the-badge" alt="Gamepad Haptics" />
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License MIT" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome" />
 </p>
 
-[English System Architecture](#-system-architecture-english-summary) | [תיעוד ארכיטקטורה בעברית](#hebrew-architecture)
+[English Architecture Summary](#-system-architecture-english-summary) | [תיעוד ארכיטקטורה מלא בעברית](#hebrew-architecture) | [סאגת בית הדין ופרק 2](#-סאגת-בית-הדין-ace-attorney--דין-תורה) | [מדריך מפתחים](#-מטריצת-רכיבים-ומנועים)
+
+---
+
+## ⚡ חשיפה בלעדית: פרק 2 בבית המשפט מגיע בקרוב! (Chapter 2 Coming Soon)
+
+> [!IMPORTANT]
+> 🔥 **עדכון ענק באופק: פרק 2 של בית הדין הגדול — "התביעה הנגדית של ים: סודות השאול וברית היוטיוב מ-2019"!**
+>
+> לאחר שפרק 1 של בית המשפט (`court.js`) שבר את הרשת עם הופעת הבכורה של **הרב ינוור בייט שליט"א** והשדה **ליליה**, פרק 2 יחשוף את התביעה הנגדית המטלטלת של ים, הגעתו של **התובע היריב החדש**, וסוד החוזה האפל מ-2019 שבו ים הבטיח לצאת לדייט עם שדה מהשאול בתמורה ל-100,000 סאבים ומגש בורקס חם למיטה!
 
 ---
 
 ## 🌎 System Architecture (English Summary)
 
-**Yam Date Simulator** is an ultra-lightweight, zero-dependency visual novel and interactive simulation game engine developed and optimized by lead systems architect and engineer [InvarGervi123](https://github.com/InvarGervi123). Designed as a high-performance, single-page application (SPA), the system is architected for zero-latency, cross-platform execution on both low-spec mobile and high-end desktop environments.
+**Yam Date Simulator** is an ultra-lightweight, zero-dependency visual novel and modular game engine developed and optimized by lead systems architect and engineer [InvarGervi123](https://github.com/InvarGervi123). Built as a high-performance Single Page Application (SPA), the system is engineered for zero-latency, cross-platform execution on low-spec mobile devices, laptops without a mouse, and desktop gamepad rigs.
 
 ### ⚡ Architectural Highlights:
-* **Centralized Settings Panel (⚙️):** A unified settings overlay for custom preferences (SFX/voices, background music, typewriter speed, character movement, and OLED power saver).
-* **Decoupled Audio Manager:** Separates and independently toggles background soundtracks (Music) and synthesized retro speech blips/button feedback (SFX), persisting choices in `localStorage` for instant, non-blasting reloads.
-* **OLED Power Saver (🔋):** Disables background graphics and renders dialogues/sprites against a solid black `#000000` canvas, saving device battery power on OLED displays.
-* **Layout-Independent Keyboard Mappings:** Standardizes all minigame controls (Deltarune, Baldi, and Space VR) to be layout-agnostic, supporting standard Arrow keys, QWERTY physical key codes (`KeyW`/`KeyA`/`KeyS`/`KeyD`), and translated Hebrew characters (`׳`/`ש`/`ד`/`ג`/`ק`) without conflicts.
-* **Offline-First & PWA Compliance:** Powered by a customized Service Worker (`sw.js`) implementing a **Stale-While-Revalidate** network cache strategy. Bypasses internet network round-trips for instant start-ups.
-* **Wolfenstein-Style 3D Engine (CPU-Optimized):** Custom-built Wolfenstein 3D Raycaster using HTML5 2D Canvas context rendering. Avoids heavy WebGL overhead, reducing GPU temperatures and memory consumption on low-end mobile hardware. Includes a localized unstick fallback heuristic pathfinder.
-* **No-Framework, Zero-Dependency Core:** Intentionally built without heavy front-end frameworks (like React, Angular, or Vue) to eliminate runtime overhead, virtual DOM cycles, and bulky bundle footprints. Written entirely in Vanilla JS and CSS, ensuring minimal battery consumption, zero framework latency, and near-instantaneous load times.
-* **Cross-Protocol Compatibility:** Fully compliant with local sandboxing environments. Executes perfectly via standard web hosting (HTTPS) or directly from the file system (`file://` protocol) by bypassing service worker registration on localized runtimes.
-* **State Serialization & Cache Durability:** System endings (91 distinct states) are tracked via locally stored cookie strings and serialized JSON records, maintaining state persistence across runtime updates.
-* **Yam Space VR Pregnancy Dark Souls Combat Engine:** A brutal, real-time action minigame featuring a 2-phase boss fight, flat and continuous dodge stamina depletion, ducking (S/ArrowDown), attack openings (W/ArrowUp), dynamic lack-of-oxygen blur filters, camera shakes, customized double soundtracks, a 6-second monster transformation, orbiting phantom spirits, floating neon combat feedback tags, full-screen diagonal combo neon slash triggers, and a sequence-based Combo Recipe system.
-* **Full Keyboard Navigation (Laptop-friendly):** Enables a complete mouse-free playthrough. Advance story dialogues with `Space` / `Enter`, select choices with numeric keys `1`-`9`, use numbers `1`-`4` for Deltarune battle actions, and `Backspace` / `Escape` to close sub-menus.
-
-### 📸 Visual Previews
-
-<p align="center">
-  <img src="images/Boss_fight.png" width="600" alt="Deltarune Battle Arena Gameplay" />
-  <br>
-  <em>Deltarune-style Bullet Hell Battle Arena in action (PC & Mobile joystick overlay)</em>
-</p>
-
-### 🔧 Boilerplate & Engine Reusability (For Developers)
-
-Even though the visual novel dialogs and storyline are localized in Hebrew, **the core gameplay engines are completely decoupled and modular**. You can easily fork this repository and reuse the modules for your own projects:
-* **3D Wolfenstein Raycaster (`src/baldi.js` & `src/baldi_renderer.js`):** A standalone, canvas-based 3D engine. Perfect as a lightweight boiler for retro 3D maze games.
-* **Deltarune Battle Engine (`src/battle.js` & `src/battle_arena.js`):** A fully customizable real-time 2D bullet hell arena with grazing registers, hit collision, and menu selectors.
-* **PWA Offline Wrapper (`sw.js` & `manifest.json`):** Pre-configured template for caching assets offline with automatic Stale-While-Revalidate refresh logic.
-
-### 🤝 Contributing & Support
-
-Contributions, bug reports, and suggestions are welcome! 
-* **Want to contribute?** Feel free to fork the repository, make changes, and open a Pull Request.
-* **Support the project:** If you find this codebase or its engines helpful, please give it a ⭐ **Star** on GitHub to support free open-source game development!
-
-### 🏷️ Repository Tags & Topics
-
-`javascript` | `html5-canvas` | `raycaster` | `wolfenstein-3d` | `deltarune` | `bullet-hell` | `pwa` | `offline-first` | `gamedev` | `web-game` | `boilerplate` | `open-source`
+* **No-Framework, Zero-Overhead Core:** Engineered entirely in Vanilla JS and CSS to eliminate heavy framework bundles (React/Vue/Angular), memory bloat, and virtual DOM diffing cycles.
+* **Offline-First & Mobile PWA Streaming (`sw.js` v112):** Features a customized Service Worker implementing Stale-While-Revalidate caching alongside **HTTP 206 Partial Content Range streaming** and **Cache-Blob fallback extraction**, guaranteeing flawless audio and visual playback on mobile devices without an internet connection.
+* **Universal Gamepad & Dual-Rumble Haptics Engine (`src/gamepad.js`):** HTML5 Gamepad API polling loop with native D-Pad/Analog choice navigation, button debouncing, and multi-pattern physical vibration haptics (EKG pulses, thunderclaps, slaps, and battle hits).
+* **Dynamic Story Atmosphere & 5 Particle Engines (`src/atmosphere.js`):** Automatic narrative context scanner with 5 breathing visual mood filters (dark room, romantic warmth, cardiac danger, hospital fluorescent, mystic shadow) and 5 live particle systems (Burekas rain 🥐, Romantic hearts 💖, Heartbreak shatter 💔, Analytics drift 🔔, Thunder lightning flash ⚡).
+* **Ace Attorney Rabbinical Court Saga (`src/court_engine.js`):** Standalone courtroom engine with 3D beveled nameplates, dynamic `התנגדות!` fullscreen cut-ins, interactive Court Record Binder (`📑 COURT RECORD`), Player HP/Penalty Bar (❗❗❗❗❗), and multi-stage cross-examinations.
+* **Real-Time Wii Pulse EKG Engine (`src/wii_pulse_game.js`):** Live cardiac pulse meter syncing BPM (70-145+ BPM) to player story choices with realistic canvas graph draws, audio beeps, and gamepad vibrations.
+* **Wolfenstein 3D CPU Raycaster (`src/baldi.js` & `src/baldi_renderer.js`):** Pure 2D Canvas raycaster with depth shading and BFS unstick heuristics, achieving 60FPS without WebGL overhead.
+* **Dark Souls Space VR Combat Engine (`src/preg_game.js`):** Real-time boss battle loop featuring stamina-based blocking/dodging, 8 orbital phantom billboard sprites, dynamic oxygen-depletion blur filters, floating combat text, and sequence-based combo recipes.
+* **Modular Settings & Hidden Submenu:** Instant controls for background contrast (70%-160%), music volume, SFX volume, typewriter speed, and OLED true-black `#000000` power saver.
 
 ---
 
 <a id="hebrew-architecture"></a>
 
-## 🛠️ ארכיטקטורת מערכת והנדסת תוכנה (Hebrew System Architecture)
+## 🛠️ ארכיטקטורת מערכת והנדסת תוכנה (Hebrew Architecture)
 
-ברוכים הבאים לגרסת ה-Enterprise של **ים דייט סימולטור** שפותחה ומוטבת על ידי מהנדס המערכת הגאון [ינוור (InvarGervi123)](https://github.com/InvarGervi123). המשחק תוכנן ונבנה מאפס תחת עקרונות הנדסת תוכנה מחמירים, תוך התמקדות בביצועי קצה, צריכת משאבים מינימלית (Zero-Overhead) ויציבות רשת מוחלטת (Offline-First Design).
+ברוכים הבאים לגרסת ה-Enterprise של **ים דייט סימולטור** שתוכננה, פותחה והונדסה מאפס על ידי מהנדס המערכת [ינוור (InvarGervi123)](https://github.com/InvarGervi123). 
 
-### 🚀 עקרונות הנדסיים מנחים (Design Principles)
+המשחק מוכיח כיצד ניתן ליצור חוויית משחק עשירה, מורכבת וסוחפת ברמת AAA בעזרת טכנולוגיות Web טהורות (Vanilla JS & CSS) ללא ספריות חיצוניות כבדות, תוך שמירה על ביצועי שיא (60FPS חלק), צריכת זיכרון (RAM) מינימלית, ויציבות מוחלטת באופליין ובכל מערכת הפעלה.
 
-> [!IMPORTANT]
-> **🖥️ תאימות חוצת-פלטפורמות מלאה (Cross-Platform Optimization):**
-> המשחק מותאם למשאבי קצה מוגבלים ומריץ לולאות עיבוד מותאמות למסכי מגע בניידים (כולל שימוש ב-Haptic Feedback דרך ה-vibrate API של HTML5) ומחשבי PC (בעזרת ממשקי מקלדת ועכבר אסינכרוניים).
-
-1. **החלטה ארכיטקטונית - ללא Frameworks (כמו React/Vue/Angular):**
-   המשחק נבנה בכוונה תחילה **ללא שימוש ב-React, Vue או Angular** על מנת למנוע קבצי JavaScript כבדים, עומס על זיכרון המכשיר (RAM) ועיבוד מיותר של Virtual DOM. כל רכיבי המשחק נכתבו ב-Vanilla JS ו-CSS טהור, מה שמבטיח שקובצי המשחק יישארו קלים במיוחד, יטענו באופן מיידי ויחסכו בסוללה במכשירי קצה חלשים.
-2. **אסטרטגיית מטמון אופליין חכמה (Offline-First / PWA):**
-   בעזרת ה-Service Worker המקומי (`sw.js`), המשחק מבצע קאשינג מקומי אקטיבי של כל הנכסים הסטטיים בעת העלייה הראשונה. השימוש באסטרטגיית **Stale-While-Revalidate** מאפשר לטעון את המשחק באופן מיידי מזיכרון המטמון המקומי, תוך בדיקת עדכונים ברקע משרתי Edge (כמו Render CDN).
-3. **מנוע גרפי תלת-מימדי קל-משקל (3D Raycasting Engine):**
-   מיני-משחק התלת-מימד נבנה בעזרת טכניקת Raycasting קלאסית (בסגנון Wolfenstein 3D). המנוע מבצע את חישובי הטלת הקרניים וההצללה בזמן אמת על גבי ה-CPU ומצייר ישירות לקנבס 2D. הדבר חוסך את השימוש במאיצי WebGL כבדים, ובכך מונע התחממות מכשירים וצריכת סוללה מופרזת בניידים.
-4. **עקיפת מגבלות CORS מקומיות (File-Protocol Bypass):**
-   מערכת טעינת הסקריפטים נבנתה ללא מודולים של ES (ללא `import`/`export`), מה שמאפשר להריץ את המשחק ישירות מדאבל-קליק על קובץ ה-`index.html` המקומי (פרוטוקול `file://`) ללא צורך בהקמת שרת מקומי, תוך התגברות על מגבלות CORS מחמירות של דפדפנים מודרניים.
-5. **אופטימיזציית זיכרון (RAM Footprint Optimization):**
-   כל קבצי המולטימדיה נדחסו בצורה מקסימלית: תמונות בפורמט WebP יעיל וקבצי אודיו ב-MP3 עם Bitrate משתנה (VBR) המותאם לרמקולים של מכשירי קצה. נכסים אלו נשמרים ב-RAM רק בעת הצורך כדי למנוע דליפות זיכרון (Memory Leaks).
-6. **פאנל הגדרות מרכזי ומצב חיסכון OLED:**
-   הוספנו תפריט הגדרות (`⚙️`) המאפשר שליטה בלתי תלויה בהשתקת מוזיקה (Music) בנפרד מאפקטים קוליים (SFX), ביטול תנועות הדמויות, ומצב חיסכון OLED מיוחד המעלים את הרקעים לצבע שחור מוחלט (`#000000`) המכבה פיזית פיקסלים במסכי OLED לחסכון סוללה מוגבר בניידים.
-7. **תמיכה במקלדות עבריות (Layout Independence):**
-   כל מנועי המשחקים (Deltarune, Baldi, Space VR) הותאמו לקבלת קלט פיזי ודו-שפתי. המשחק מתרגם אוטומטית לחיצות עבריות כמו `ק`/`ש`/`ד`/`ג` וגרש `׳` לתנועות הניווט המתאימות באנגלית (`W`/`A`/`S`/`D`) ללא התנגשויות או תקיעות.
-
----
-
-### 📊 מטריצת רכיבים וביצועים (Performance Matrix)
-
-| רכיב / מודול | פתרון הנדסי | השפעה על ביצועים ומשאבים |
-|---|---|---|
-| **מנוע דיאלוגים (VN Engine)** | מנהל מצבים (State Machine) קל-משקל, אסינכרוני ומבוסס אירועים. | מונע Reflows וציורים מיותרים ב-DOM (0ms Render Blocking). |
-| **מנתח טקסט להבעות** | מפענח רגולרי (Regex Matcher) בזמן אמת המתרגם מילות מפתח למצבי הבעה. | שינוי הבעות הבוס ב-0 השהייה באמצעות CSS transitions מואצי GPU. |
-| **לוח מעקב סופים** | סריאליזציה של מערכים ושמירתם ב-Cookies וב-LocalStorage. | התמדה ושמירת נתונים מקומית ללא צורך במסד נתונים (Database-free persistence). |
-| **מנוע קרב Deltarune** | לולאת פיזיקה בזמן אמת המפרידה בין זיהוי התנגשות (Collision) לרישום גילוח (Graze). | ריצה חלקה ב-60FPS יציב על קנבס HTML5 Canvas 2D. |
-| **מבוך תלת-מימד Baldi** | Raycaster המבוסס על אופטימיזציית טריגונומטריה מקומית ואלגוריתם BFS לחילוץ אויב. | ניווט פיזיקלי של האויב ללא תקיעת מעבד, ללא דליפות מיקום בקירות. |
-| **קרב הריון קוסמי** | מנוע Stamina (כולל צריכת מגן), התחמקות, מתקפות נגד, הילות חלל, רוחות מפלצת, פידבק טקסט קופץ, סלאש לייזר וקומבואים. | חוויית Boss Fight קולנועית, מפוצלת מודולרית (preg_game ו-preg_game_renderer) לטובת ביצועים מקסימליים. |
-| **אופטימיזציית PWA** | רישום Service Worker מותנה פרוטוקול ותיקיית נכסים סטטית מוגדרת מראש. | תמיכה מלאה באופליין וטעינה מיידית מזיכרון המכשיר (Zero network requests). |
-
----
-
-### 🛠️ ארכיטקטורת תיקיות הפרויקט (System File Hierarchy)
-
-```bash
-├── index.html          # דף הכניסה הראשי, רישום Service Worker מותנה פרוטוקול
-├── sw.js               # Service Worker המנהל את מערך ה-Offline Caching
-├── manifest.json       # הגדרות PWA להתקנה כאפליקציית standalone מקומית
-├── css/                # שכבת העיצוב (Style Layer)
-│   ├── main.css        # עיצוב כללי, ממשק ה-Visual Novel וגלריית סופים
-│   ├── minigames.css   # רכיבים אינטראקטיביים משותפים ואפקטי רעידת מסך
-│   ├── battle.css      # עיצוב זירת הקרב, מד ה-TP ואנימציות הבעות הבוס
-│   └── baldi.css       # ממשק המבוג, מקלדת וירטואלית וכפתורי מובייל
-├── images/             # נכסים גרפיים מאורגנים (WebP/Optimized PNG)
-│   ├── characters/     # ספרייטים של דמויות ואנימציות (ים, אינוור, בוס)
-│   └── backgrounds/    # רקעים (כמו חדר השינה room.jpg)
-├── audio/              # נכסי שמע ממוטבים (Variable Bitrate MP3)
-└── src/                # קוד המקור הלוגי (Vanilla JS Modules)
-    ├── audio.js        # מנהל השמע הראשי, מניעת זליגות וניהול ערוצים
-    ├── minigames.js    # נתיבי ניתוב למיני-משחקים השונים
-    ├── battle.js       # תפריטי קרב הבוס, ניהול מצבי רוח, מדדי HP/TP ופעולות ACT
-    ├── battle_arena.js # לולאת Dodging, זיהוי פגיעות ולייזרים בזמן אמת
-    ├── baldi.js        # מנהל מבוך באלדי, אינטראקציית טאבלט, חסינות מגן וחישוב שגיאות
-    ├── baldi_renderer.js # מנוע ציור ה-Raycasting ותלת-המימד (Pure CPU Render)
-    ├── preg_game.js    # מנוע קרב ההריון בחלל - מנהל קרב 2-שלבים, מנוע stamina, ריפוי פסיבי ומערכת רצפי קומבו (Combo Recipes)
-    ├── engine.js       # מנוע ה-VN הראשי, ניהול שמירת סופים ומעברים אסינכרוניים
-    └── story/          # בסיס נתוני העלילה המפוצל למניעת עומס קונטקסט
-        ├── setup.js    # אתחול אובייקט הדיאלוגים
-        ├── main.js     # קו העלילה הראשי (109 סצנות)
-        ├── special.js  # נתיבי משנה מיוחדים (19 סצנות)
-        ├── court.js    # סצנות משפט בסגנון Ace Attorney (6 סצנות)
-        ├── battle.js   # דיאלוגים מלווי קרב בוס (5 סצנות)
-        ├── baldi.js    # דיאלוגים ומבוא למבוך המתמטיקה (4 סצנות)
-        └── endings.js  # הגדרות ומעקב 91 הסופים של המשחק (113 סצנות סוף)
+```
++---------------------------------------------------------------------------------------+
+|                                 YAM DATE SIMULATOR                                    |
+|                            Enterprise Web Architecture                                |
++---------------------------------------------------------------------------------------+
+|                                                                                       |
+|   +-------------------+   +--------------------+   +------------------------------+   |
+|   |  VISUAL NOVEL     |   |   BATTLE ENGINES   |   |   COURT & MINIGAMES          |   |
+|   |  State Machine    |   |  - Deltarune 2D    |   |  - Ace Attorney Court Engine |   |
+|   |  Story Splitting  |   |  - Baldi 3D Raycast|   |  - Real-Time Wii EKG Pulse   |   |
+|   |  Choice Resolvers |   |  - Space VR Combat |   |  - Slender Horror 3D Maze    |   |
+|   +---------+---------+   +---------+----------+   +--------------+---------------+   |
+|             |                       |                             |                   |
+|             +-----------------------+-----------------------------+                   |
+|                                     |                                                 |
+|                         +-----------v-----------+                                     |
+|                         |    GLOBAL CONTEXTS    |                                     |
+|                         |  battleCtx / baldiCtx |                                     |
+|                         |  pregCtx / courtEngine|                                     |
+|                         +-----------+-----------+                                     |
+|                                     |                                                 |
+|       +-----------------------------+-----------------------------+                   |
+|       |                             |                             |                   |
+|   +---v----------------+   +--------v---------+   +---------------v---------------+   |
+|   |  GAMEPAD & HAPTICS |   | DYNAMIC ATMOSPHERE|  | AUDIO & MULTI-CHANNEL SFX     |   |
+|   |  Dual-Rumble Loop  |   | 5 Moods & 5 FX   |   | Dual-Fallback + Cache Blob    |   |
+|   |  Layout Agnostic   |   | Particles System |   | Web Audio Synthesizer         |   |
+|   +--------------------+   +------------------+   +-------------------------------+   |
+|                                                                                       |
+|   +-------------------------------------------------------------------------------+   |
+|   |                  PWA SERVICE WORKER v112 (OFFLINE CACHING)                    |   |
+|   |         HTTP 206 Partial Content Range Streamer + Decoded URI Resolver        |   |
+|   +-------------------------------------------------------------------------------+   |
++---------------------------------------------------------------------------------------+
 ```
 
 ---
 
-### 🚀 פריסה והתקנה (Deployment & Local Execution)
+## 🏛️ סאגת בית הדין (Ace Attorney / דין תורה)
 
-#### פריסה ברשת (Cloud Web Hosting)
-המשחק מותאם במיוחד לפריסה מהירה בשרתי **CDN סטטיים** (כמו Render Static Sites, GitHub Pages, או Cloudflare Pages):
-1. חבר את מאגר ה-GitHub שלך ל-**Render**.
-2. הגדר את הפרויקט כ-**Static Site**.
-3. אין צורך בצעדי Build (אין `npm run build` כי אין framework כבד שצריך הידור) – השרת ינגיש את הקבצים ישירות ללקוח במהירות שיא.
+אחד הנתיבים המפוארים והמורכבים ביותר במשחק הוא נתיב המשפט (`src/story/court.js` ו-`src/court_engine.js`):
 
-#### הרצה מקומית (Offline Local Play)
-1. הורד את קוד המקור למחשב.
-2. לחץ דאבל-קליק על הקובץ `index.html`.
-3. המשחק ייפתח מיידית בדפדפן ויעקוף את מגבלות ה-CORS ללא שום שגיאות אבטחה בקונסול!
+### ⚖️ מאפייני מנוע בית המשפט:
+1. **הדמויות והספרייטים הייעודיים**:
+   * **הרב ינוור בייט שליט"א**: טוען רבני וסנגור אגדי (Phoenix Wright parody) בחליפת משי, שטריימל ופאות מתנפנפות (`ינוור החרדי.png`).
+   * **התובעת: השדה ליליה (לילית)**: שדה עתיקה מהשאול שדורשת את הדייט שהובטח לה (`liliya.png`).
+   * **הנאשם במיטה: ים שמואל**: עטוף בציציות ובשמיכה כבדה בדוכן העדים (`ים חרדי.png`).
+   * **כבוד אב בית הדין (שופט AI)**: שופט אלגוריתמי עם פטיש קלוריות מפלדה.
+2. **באנר "התנגדות!" מונפש במסך מלא (`images/backgrounds/התנגדות.png`)**:
+   * מבזיק באנימציית מחץ עם פלש ברק, רעד מסך ורטט Dual-Rumble בשלט בכל צעקת `💥 !OBJECTION`.
+3. **תיק מוצגים אינטראקטיבי (Court Record Binder)**:
+   * כפתור זהב זוהר **`📑 מוצגים / COURT RECORD`** בראש המסך המאפשר לעיין ב-6 ראיות קורעות (דוח אנליטיקס 2024, יומן שינה ו-Deltarune, שטר משלוח בורקס מאורנית, חוזה המיטה, ושטר יששכר וזבולון המזויף) ולהציג אותן בזמן אמת (**PRESENT!**).
+4. **מד חיים ופסילות (Player HP & Penalty Bar)**:
+   * מד חיים של **100 HP** (5 סימני קריאה ❗❗❗❗❗). הצגת ראיה שגויה גוררת קנס ונזיפה. הגעה ל-0 HP מובילה לפסק דין **GAME OVER** והשלכה לבור הדיסקורד!
+5. **עלילת 4 מערכות עמוקה עם חקירות נגדיות**:
+   * **מערכה 1**: שקר 18 שעות העריכה ב-Premiere (חקירה על כל סעיף בנפרד + הצגת דוח 0 דקות רינדור).
+   * **מערכה 2**: הגנת "שמירת הנפש משדים" ושטר יששכר וזבולון המזויף (חשיפת אימוג'י הבורקס בדיסקורד).
+   * **מערכה 3**: ריבונות המיטה כ'עיר מקלט' באורנית (הוכחת מעמד המיטה כרכב משלוחים על 4 גלגלים).
+   * **מערכה 4**: הטוויסט המרגש, שוחד הבורקס לשופט AI ו-4 סופים ייחודיים!
 
-#### ⌨️ מקשי ניווט ומקלדת (Laptop Keyboard Controls)
-המשחק תומך במלואו במשחק ללא עכבר (מיועד ללפטופים):
-* **העברת דיאלוגים:** מקש **רווח (Space)** או **אנטר (Enter)**.
-* **בחירת אפשרויות בסיפור:** מקשי מספרים **`1` עד `9`**.
-* **בחירת פעולה בקרב הבוס:** מקשים **`1`** (Fight), **`2`** (Act), **`3`** (Item), **`4`** (Spare).
-* **בחירת פריטים/מיומנויות בקרב:** מקשי מספרים **`1` עד `9`**.
-* **סגירת תפריטי קרב:** מקש **Escape** או **Backspace (מחיקה)**.
-* **ניווט נגישות כללי (מקלדת):** ניתן להשתמש במקשים **Tab** ו-**Shift+Tab** כדי לעבור בצורה מחזורית בין כל הכפתורים האינטראקטיביים במשחק (עם סימון פוקוס אדום וגולש מודגש לעין).
+---
+
+## 🎮 מנוע שלטים ורטט פיזי (Universal Gamepad & Dual-Rumble)
+
+המשחק כולל מנוע בקרים ייעודי (`src/gamepad.js`) המספק תמיכה מלאה בכל שלט פיזי (Xbox, PlayStation DualShock/DualSense, Nintendo Switch Pro Controller או שלט Bluetooth/USB):
+* **ניווט בתפריטים ובסיפור**: סטיק שמאלי ו-D-Pad לבחירת תשובות עם סימון זוהר.
+* **מקשי פעולה**: מקש **A / ✖️** לאישור והמשך, מקש **B / ⭕** לביטול, מקש **Start** לפתיחת תפריט ההגדרות.
+* **📳 רטט תחושתי כפול (Dual-Rumble)**:
+  * **מד דופק (Wii Pulse)**: השלט רוטט בקצב הלב של הדמות בזמן אמת!
+  * **התנגדויות, מכות וברקים**: רטט עוצמתי ברגעי שיא דרמטיים.
+* **נוטיפיקציה אוטומטית**: חיווי ירוק ואלגנטי בעת חיבור או ניתוק שלט.
+
+---
+
+## 🎛️ תפריט הגדרות מיוחדות ותצוגה מתקדמת
+
+פאנל ההגדרות (`⚙️`) כולל תת-תפריט נפתח (**`🎛️ הגדרות מיוחדות ותצוגה ▼`**) המאפשר התאמה אישית מלאה:
+1. **🎨 ניגודיות מסך (Contrast Stepper)**: כוונון ניגודיות הרקעים והמשחק מ-`70%` עד `160%` בעזרת חצי `◀️` ו-`▶️`.
+2. **🎵 עוצמת מוזיקה (Music Volume)**: שליטה מדויקת מ-`0%` עד `100%`.
+3. **🔊 עוצמת אפקטים (SFX Volume)**: שליטה בעוצמת המכות, הקליקים והקולות.
+4. **🔋 מצב חיסכון OLED**: כיבוי מוחלט של פיקסלים לצבע שחור `#000000` לחסכון סוללה.
+5. **✨ אווירה ותאורה דינמית**: שליטה באפקטים של פילטרים חיים וגשם של בורקסים.
+
+---
+
+## 📱 אופטימיזציית שמע ו-PWA באופליין (Audio & Offline Engine)
+
+בגרסה `v112`, מערך השמע נבנה מחדש כדי להבטיח ניגון חלק באופליין ובכל טלפון נייד:
+1. **מענה לבקשות הזרמה של טלפונים (HTTP 206 Partial Content)**:
+   טלפונים סלולריים דורשים תמיד כותרת `Range: bytes=0-`. ה-Service Worker פורס את ה-MP3 ומחזיר מענה 206 מותאם מה-Cache.
+2. **טעינה כפולה מבוססת Blob**:
+   אם נגן האודיו נתקל בחסימת מערכת קבצים מקומית, הפונקציה שולפת ישירות את קובץ ה-MP3 כ-`Blob` ומנגנת דרך `URL.createObjectURL`.
+3. **השמעה רב-ערוצית (Multi-Instance SFX)**:
+   אפקטים קוליים מנוגנים בערוצים עצמאיים המאפשרים השמעה חופפת של מספר קולות במקביל ללא חיתוך.
+
+---
+
+## 📊 מטריצת רכיבים ומנועים
+
+| מודול / קובץ | תפקיד הנדסי | טכנולוגיה ומאפיינים |
+|---|---|---|
+| **`src/engine.js`** | מנוע הסימולטור הראשי | מנהל מצבים אסינכרוני, מעקב 91 סופים, תמיכה מלאה במקלדות עבריות. |
+| **`src/court_engine.js`** | מנוע בית המשפט Ace Attorney | ניהול Court Record, מד חיים (HP), באנרים מונפשים וסופים משפטיים. |
+| **`src/gamepad.js`** | מנוע שלטים ורטט | HTML5 Gamepad API, לולאת Polling, רטט Dual-Rumble Haptics. |
+| **`src/atmosphere.js`** | מנוע אווירה וחלקיקים | 5 מצבי רוח דינמיים, 5 מערכות חלקיקים (בורקס, לבבות, ברקים, קומיקס). |
+| **`src/audio.js`** | מנהל השמע והערוצים | תמיכה בקבצים בעברית, שליטה בווליום, מחלץ Blobs לשמע אופליין. |
+| **`src/wii_pulse_game.js`** | מד דופק Wii EKG בזמן אמת | קנבס EKG חי, חישוב BPM משתנה, רטט שלט בקצב פעימות הלב. |
+| **`src/baldi_renderer.js`** | מבוך 3D Raycasting | מנוע 3D טהור על גבי CPU Canvas ללא WebGL (חיסכון סוללה מוחלט). |
+| **`src/battle_arena.js`** | זירת Bullet Hell של Deltarune | לולאת פיזיקה 60FPS עם חישובי Grazing ו-Collisions מדויקים. |
+| **`src/preg_game.js`** | קרב הבוס בחלל (Space VR) | מנוע Stamina, מערכת קומבו רציפה, 8 רוחות מסתובבות והילת שלב 2. |
+| **`sw.js`** | מנוע PWA ואופליין | Stale-While-Revalidate, פירוק Range 206, ושמירת כל הנכסים באופליין. |
+
+---
+
+## 🛠️ מבנה התיקיות המודולרי (File Structure)
+
+```bash
+├── index.html                  # דף הכניסה הראשי, מודאלים ושכבות המשחק
+├── sw.js                       # מנוע ה-Service Worker PWA ואופליין קאשינג (v112)
+├── manifest.json               # הגדרות התקנה כאפליקציית Standalone
+├── css/                        # שכבת העיצוב
+│   ├── main.css                # ממשק הסימולטור הראשי, טבלת סופים והגדרות
+│   ├── court.css               # עיצוב בית הדין, תגיות 3D, תיק מוצגים ובאנר התנגדות
+│   ├── atmosphere.css          # פילטרים חיים, אנימציות אווירה ומערכות חלקיקים
+│   ├── battle.css              # עיצוב זירת הקרב של Deltarune ומדדי HP/TP
+│   ├── baldi.css               # ממשק המבוך התלת-מימדי וכפתורי מגע
+│   └── minigames.css           # שכבות מיני-משחקים ואפקטי רעידת מסך
+├── images/                     # נכסים גרפיים ממוטבים (WebP/PNG)
+│   ├── characters/             # ספרייטים (ים חרדי, ינוור החרדי, ליליה, בוס)
+│   └── backgrounds/            # רקעים (בית משפט, חדר, התנגדות, לוגו מוסד)
+├── audio/                      # נכסי שמע ממוטבים (21 קובצי MP3 בעברית ובאנגלית)
+└── src/                        # קוד המקור הלוגי (Pure Vanilla JS)
+    ├── engine.js               # מנוע ה-VN הראשי, חיבור הגדרות ומעבר סצנות
+    ├── court_engine.js         # מנוע בית המשפט, תיק מוצגים ומד פסילות
+    ├── gamepad.js              # מנוע שלטים ורטט פיזי (Dual-Rumble)
+    ├── atmosphere.js           # מנוע אווירה דינמי, ניתוח טקסט וחלקיקים
+    ├── audio.js                # מנהל שמע רב-ערוצי ותמיכה באופליין
+    ├── wii_pulse_game.js       # מד דופק Wii EKG בזמן אמת
+    ├── battle.js               # ממשק ותפריטי קרב Deltarune
+    ├── battle_arena.js         # לולאת Dodging ופיזיקת קליעים
+    ├── baldi.js                # לוגיקת מבוך באלדי וחישוב שגיאות
+    ├── baldi_renderer.js       # מנוע Raycasting 3D (Pure CPU)
+    ├── preg_game.js            # מנוע קרב החלל VR, קומבואים ו-Stamina
+    ├── preg_game_renderer.js   # מנוע ציור 3D, חלקיקים והילות קרב
+    └── story/                  # מאגר הדיאלוגים המפוצל
+        ├── setup.js            # אתחול אובייקט הסיפור
+        ├── main.js             # קו העלילה הראשי
+        ├── court.js            # סאגת בית הדין פרק 1 (דין תורה)
+        ├── special.js          # נתיבים מיוחדים והרפתקאות
+        ├── polish_chocolate.js # נתיב ה-DLC: שוקולד פולני (פרקים 1-4)
+        ├── yam_shadow_story.js # סאגת הצל: ינוור ו-THE ECHO
+        └── endings.js          # הגדרות 91 הסופים הייחודיים
+```
+
+---
+
+## ⌨️ מקשי ניווט, שלטים ומקלדת
+
+המשחק תומך במלואו במשחק ללא עכבר ובשלטי משחק:
+* **במקלדת (Laptop Friendly)**:
+  * **העברת דיאלוגים:** `Space` או `Enter`.
+  * **בחירת אפשרויות:** מקשי מספרים `1` עד `9`.
+  * **פעולות בקרב:** מקשים `1` (Fight), `2` (Act), `3` (Item), `4` (Spare).
+  * **סגירת תפריטים:** `Escape` או `Backspace`.
+  * **ניווט נגישות:** מקשי `Tab` ו-`Shift+Tab`.
+* **בשלט (Gamepad Controls)**:
+  * **ניווט:** סטיק שמאלי / D-Pad.
+  * **אישור ובחירה:** מקש `A` / `✖️`.
+  * **ביטול / חזרה:** מקש `B` / `⭕`.
+  * **הגדרות:** מקש `Start`.
 
 ---
 
