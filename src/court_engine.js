@@ -80,6 +80,13 @@
       chapter: 2,
       name: "מראת השאול של ליליה",
       desc: "מראה קסומה החושפת את דמותה האמיתית של ליליה כשדת פופ-סטאר מהמעגל השביעי עם כנפיים, קרניים וזנב לב."
+    },
+    {
+      id: "evidence_wolt_demon_receipt",
+      icon: "🛵",
+      chapter: 2,
+      name: "קבלת Wolt השאול המזויפת",
+      desc: "הזמנת Wolt עם חותמת 'יום כיפור 14:00' ממאפיית אורנית! אך מאפיית אורנית שומרת שבת וחג וסגורה ביום כיפור!"
     }
   ];
 
@@ -569,7 +576,23 @@
           if (chosenId === "evidence_scorched_door") {
             if (typeof showScene === "function") showScene("court_ch2_present_scorched_door");
           } else {
-            this.takeDamage(20, "ראיה שאינה סותרת את עדות ליליה!");
+            this.takeDamage(20, "שגיאה! הראיה הזאת לא סותרת את שקר 'בנות המלכים והדפיקה בנימוס' של ליליה!");
+          }
+        } else if (scn.includes("ch2_act2")) {
+          // Chapter 2 - Act 2: The Discord Bot Auto-Reply signature
+          if (chosenId === "evidence_infernal_covenant_2019" || chosenId === "evidence_discord_webhook") {
+            if (typeof showScene === "function") showScene("court_ch2_inspecting_contract");
+          } else {
+            this.takeDamage(20, "שגיאה! עליך להציג ראיה המוכיחה שהחתימה על חוזה 2019 היא של בוט דיסקורד!");
+          }
+        } else if (scn.includes("ch2_act3")) {
+          // Chapter 2 - Act 3: Exposing the Wolt Demon & Bed Fermentation
+          if (chosenId === "evidence_wolt_demon_receipt") {
+            if (typeof showScene === "function") showScene("court_ch2_wolt_demon_contradiction");
+          } else if (chosenId === "evidence_bed_thermometer" || chosenId === "evidence_secret_oranit_recipe") {
+            if (typeof showScene === "function") showScene("court_ch2_bed_dough_explanation");
+          } else {
+            this.takeDamage(20, "שגיאה! עליך להפריך את עדות שד הוולט או להוכיח את מדע תפיחת המיטה!");
           }
         } else if (scn.includes("ch2")) {
           // General Chapter 2 presentation checks

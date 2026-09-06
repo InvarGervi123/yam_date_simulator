@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v116-fix-court-speedlines-and-dialog-overlap';
+const CACHE_NAME = 'yam-date-sim-v117-court-ch2-full-epic-expansion';
 const ASSETS = [
   './',
   './index.html',
