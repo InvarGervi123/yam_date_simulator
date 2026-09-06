@@ -233,6 +233,10 @@ function showScene(target) {
   const isCourtScene = id.startsWith("court_") || id.startsWith("end_court");
   if (window.courtEngine) {
     window.courtEngine.setCourtActive(isCourtScene);
+    window.courtEngine.setSpeedlines(!!scene.speedlines);
+    window.courtEngine.setDualInvars(!!scene.dualInvars, scene.speaker);
+    if (scene.holdIt) window.courtEngine.triggerHoldIt();
+    if (scene.objection) window.courtEngine.triggerObjection();
   }
 
   const gameContainer = document.getElementById("game");

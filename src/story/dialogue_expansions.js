@@ -123,7 +123,7 @@ Object.assign(window.story, {
       },
       {
         "text": "⚖️ להעמיד את ים למשפט על הזנחת הערוץ והדייט! (Ace Attorney!)",
-        "next": "court_intro",
+        "next": "court_menu",
         "onSelect": function() {
           if (typeof playMusic === "function") playMusic("audio/פיניקס בייט_ הסנגור לענייני קלוריות.mp3");
         }

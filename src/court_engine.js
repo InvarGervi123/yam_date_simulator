@@ -1,41 +1,85 @@
 // --- Universal Ace Attorney Courtroom Engine ---
 (function() {
   const EVIDENCE_DATABASE = [
+    // --- פרק 1: תביעת ליליה נגד ים ---
     {
       id: "evidence_analytics_2024",
       icon: "📜",
+      chapter: 1,
       name: "דוח אנליטיקס עריכה 2024",
       desc: "דוח רשמי מ-YouTube Studio: 0 דקות רינדור, 0 סרטונים הועלו, ו-4,000 שעות משחק ב-Deltarune במיטה."
     },
     {
       id: "evidence_phone_sleep",
       icon: "📱",
+      chapter: 1,
       name: "יומן שינה וצפייה בנייד",
       desc: "תיעוד מאפליקציית השעון: ים ישן 23.5 שעות ביממה, מתוכן חצי שעה מוקדשת לצפייה בשורטס של נמר הכסף."
     },
     {
       id: "evidence_burekas_receipt",
       icon: "🥐",
+      chapter: 1,
       name: "שטר משלוח בורקס מאורנית",
       desc: "חשבונית מס ממאפיית אורנית: 'משלוח בורקס גבינה חם ישירות למיטת הנאשם (רכב ממונע על גלגלים)'."
     },
     {
       id: "evidence_bed_contract",
       icon: "🛏️",
+      chapter: 1,
       name: "חוזה בלעדיות עם המיטה",
       desc: "חוזה בן 40 שנה בין ים לשמיכה. סעיף 4ג: 'איסור יציאה לדייט אלא אם כן מדובר בפיקוח נפש או שוחד פחמימות'."
     },
     {
       id: "evidence_demon_covenant",
       icon: "😈",
+      chapter: 1,
       name: "ברית האהבה הדמונית של ליליה",
       desc: "מגילת קלף עתיקה משנת 1624: הבטחה חתומה של אבותיו של ים לצאת לדייט עם השדה ליליה אם יזניח את הערוץ."
     },
     {
       id: "evidence_discord_webhook",
       icon: "📑",
+      chapter: 1,
       name: "שטר 'יששכר וזבולון' המזויף",
       desc: "צילום מסך מטושטש מדיסקורד: ינוור שלח אימוג'י בורקס וים טוען שזה 'חוזה העסקת שינה במימון מלא'."
+    },
+
+    // --- פרק 2: התביעה הנגדית וסודות השאול ---
+    {
+      id: "evidence_scorched_door",
+      icon: "🚪",
+      chapter: 2,
+      name: "שברי דלת החדר החרוכים",
+      desc: "שרידי דלת עץ מאורנית שהותכה בלהבות גופרית. חרוטות עליה מילות כישוף בשפת השאול: 'תביאו את הבורקס או שהשרת יושמד!'."
+    },
+    {
+      id: "evidence_infernal_covenant_2019",
+      icon: "📜",
+      chapter: 2,
+      name: "שטר עסקת השאול מ-2019",
+      desc: "מגילה שחורה מ-03:33 בלילה בדיסקורד. החתימה של ים התבררה כהודעת Auto-Reply של הבוט Mee6!"
+    },
+    {
+      id: "evidence_secret_oranit_recipe",
+      icon: "🥐",
+      chapter: 2,
+      name: "מתכון הבורקס הקדוש של אורנית",
+      desc: "הנוסחה האגדית: 9,000 שכבות בצק פילו, מרגרינה שמיימית, וגבינה מותכת ב-180 מעלות. ליליה תכננה לשלוט בעזרתו בפחמימות השאול."
+    },
+    {
+      id: "evidence_bed_thermometer",
+      icon: "🌡️",
+      chapter: 2,
+      name: "מדחום תא ההתפחה של המיטה",
+      desc: "מדחום המוכיח: שכיבה של 48 שעות רצוף במיטה מייצרת חום קבוע של 37 מעלות — תא התפחה טבעי מושלם לבצק במשך יומיים!"
+    },
+    {
+      id: "evidence_liliya_vanity_mirror",
+      icon: "🪞",
+      chapter: 2,
+      name: "מראת השאול של ליליה",
+      desc: "מראה קסומה החושפת את דמותה האמיתית של ליליה כשדת פופ-סטאר מהמעגל השביעי עם כנפיים, קרניים וזנב לב."
     }
   ];
 
@@ -73,6 +117,34 @@
     objectionOverlay.id = "courtObjectionOverlay";
     objectionOverlay.innerHTML = `<img class="objection-cutin-img" src="images/backgrounds/התנגדות.png" alt="התנגדות!">`;
     gameElem.appendChild(objectionOverlay);
+
+    // 2b. Fullscreen HOLD IT! Cut-in Overlay
+    const holdItOverlay = document.createElement("div");
+    holdItOverlay.id = "courtHoldItOverlay";
+    holdItOverlay.innerHTML = `<img class="holdit-cutin-img" src="images/backgrounds/hold_it.png" alt="!רגע אחד">`;
+    gameElem.appendChild(holdItOverlay);
+
+    // 2c. Ace Attorney Dynamic Anime Speedlines Canvas (Horizontal high-speed streaks right-to-left)
+    let speedlinesCanvas = document.getElementById("courtSpeedlinesCanvas");
+    if (!speedlinesCanvas) {
+      speedlinesCanvas = document.createElement("canvas");
+      speedlinesCanvas.id = "courtSpeedlinesCanvas";
+      gameElem.appendChild(speedlinesCanvas);
+    }
+
+    // 2d. Dual Invar Split Screen (Haredi vs Secular Invar)
+    const dualInvars = document.createElement("div");
+    dualInvars.id = "courtDualInvars";
+    dualInvars.innerHTML = `
+      <div class="dual-invar-side secular-side">
+        <img src="images/characters/invar.png" alt="ינוור החילוני">
+      </div>
+      <div class="dual-vs-badge">⚡ VS ⚡</div>
+      <div class="dual-invar-side haredi-side">
+        <img src="images/characters/ינוור החרדי.png" alt="הרב ינוור בייט">
+      </div>
+    `;
+    gameElem.appendChild(dualInvars);
 
     // 3. Court Record Modal (Evidence Binder)
     const recordModal = document.createElement("div");
@@ -206,6 +278,204 @@
       }, 700);
     },
 
+    triggerHoldIt: function(callback) {
+      initCourtDom();
+      const overlay = document.getElementById("courtHoldItOverlay");
+      if (!overlay) return;
+
+      overlay.classList.remove("active");
+      void overlay.offsetWidth;
+      overlay.classList.add("active");
+
+      if (typeof playSfx === "function") {
+        playSfx("audio/inject.mp3");
+      }
+
+      if (typeof triggerVibration === "function") {
+        triggerVibration([150, 50, 250]);
+      }
+
+      const gameElem = document.getElementById("game");
+      if (gameElem) {
+        gameElem.classList.add("effect-shake");
+        setTimeout(() => gameElem.classList.remove("effect-shake"), 400);
+      }
+
+      setTimeout(() => {
+        overlay.classList.remove("active");
+        if (typeof callback === "function") callback();
+      }, 700);
+    },
+
+    // ----------------------------------------------------
+    // Ace Attorney Anime Speed Lines Component
+    // Horizontal right-to-left high-speed streaks with cyan/blue gradient
+    // ----------------------------------------------------
+    _speedlinesAnimId: null,
+    _speedlinesStreaks: [],
+
+    _initSpeedlinesStreaks: function(width, height) {
+      this._speedlinesStreaks = [];
+      const streakCount = 38;
+      const colors = [
+        "rgba(255, 255, 255, 0.95)", // Sharp white streak
+        "rgba(255, 255, 255, 0.75)",
+        "rgba(202, 240, 248, 0.9)",  // Light sky cyan
+        "rgba(72, 202, 228, 0.8)",   // Vibrant electric blue
+        "rgba(0, 150, 255, 0.7)"     // Ace Attorney impact blue
+      ];
+
+      for (let i = 0; i < streakCount; i++) {
+        this._speedlinesStreaks.push({
+          x: Math.random() * (width + 600),
+          y: Math.random() * height,
+          length: 120 + Math.random() * 550, // Rapid horizontal streak length
+          thickness: 1.5 + Math.random() * 5.5,
+          speed: 2800 + Math.random() * 3200, // Very high speed (px/sec)
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    },
+
+    _startSpeedlinesLoop: function() {
+      if (this._speedlinesAnimId) return;
+
+      const canvas = document.getElementById("courtSpeedlinesCanvas");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      let lastTime = performance.now();
+
+      const resize = () => {
+        const rect = canvas.getBoundingClientRect();
+        if (canvas.width !== rect.width || canvas.height !== rect.height) {
+          canvas.width = rect.width || 800;
+          canvas.height = rect.height || 600;
+          if (this._speedlinesStreaks.length === 0) {
+            this._initSpeedlinesStreaks(canvas.width, canvas.height);
+          }
+        }
+      };
+      resize();
+
+      if (this._speedlinesStreaks.length === 0) {
+        this._initSpeedlinesStreaks(canvas.width || 800, canvas.height || 600);
+      }
+
+      const loop = (currentTime) => {
+        resize();
+        const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+        lastTime = currentTime;
+
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // 1. Vibrant Ace Attorney cyan/sky blue gradient background
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, "#00b4d8");
+        grad.addColorStop(0.35, "#0096c7");
+        grad.addColorStop(0.7, "#0077b6");
+        grad.addColorStop(1, "#023e8a");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // 2. Secondary soft speed streaks glow
+        ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+        for (let j = 0; j < 8; j++) {
+          const bandY = (j / 8) * h + Math.sin(currentTime * 0.005 + j) * 15;
+          ctx.fillRect(0, bandY, w, 12 + (j % 3) * 8);
+        }
+
+        // 3. Render and move high-velocity horizontal speedlines (Right-to-Left)
+        for (let i = 0; i < this._speedlinesStreaks.length; i++) {
+          const s = this._speedlinesStreaks[i];
+          s.x -= s.speed * dt;
+
+          // Recycle streak when it exits past the left screen edge
+          if (s.x + s.length < -50) {
+            s.x = w + Math.random() * 300;
+            s.y = Math.random() * h;
+            s.length = 120 + Math.random() * 550;
+            s.thickness = 1.5 + Math.random() * 5.5;
+            s.speed = 2800 + Math.random() * 3200;
+          }
+
+          // Draw tapered dynamic streak with soft rounded cap
+          ctx.beginPath();
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = s.thickness;
+          ctx.lineCap = "round";
+          ctx.moveTo(s.x + s.length, s.y);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+        }
+
+        this._speedlinesAnimId = requestAnimationFrame(loop);
+      };
+
+      this._speedlinesAnimId = requestAnimationFrame(loop);
+    },
+
+    _stopSpeedlinesLoop: function() {
+      if (this._speedlinesAnimId) {
+        cancelAnimationFrame(this._speedlinesAnimId);
+        this._speedlinesAnimId = null;
+      }
+    },
+
+    setSpeedlines: function(active) {
+      initCourtDom();
+      const canvas = document.getElementById("courtSpeedlinesCanvas");
+      if (!canvas) return;
+
+      if (active) {
+        canvas.classList.add("active");
+        this._startSpeedlinesLoop();
+      } else {
+        canvas.classList.remove("active");
+        this._stopSpeedlinesLoop();
+      }
+    },
+
+    triggerSpeedlines: function(durationMs = 2000, callback) {
+      this.setSpeedlines(true);
+      if (this._speedlinesTimer) clearTimeout(this._speedlinesTimer);
+      this._speedlinesTimer = setTimeout(() => {
+        this.setSpeedlines(false);
+        if (typeof callback === "function") callback();
+      }, durationMs);
+    },
+
+    setDualInvars: function(active, speakerName = "") {
+      initCourtDom();
+      const di = document.getElementById("courtDualInvars");
+      const charElem = document.getElementById("character");
+      if (di) {
+        if (active) {
+          di.classList.add("active");
+          if (charElem) charElem.style.display = "none";
+
+          const secularSide = di.querySelector(".secular-side");
+          const harediSide = di.querySelector(".haredi-side");
+          const spk = String(speakerName || "");
+
+          if (secularSide && harediSide) {
+            secularSide.classList.remove("speaking");
+            harediSide.classList.remove("speaking");
+
+            if (spk.includes("חילוני")) {
+              secularSide.classList.add("speaking");
+            } else if (spk.includes("רב") || spk.includes("חרדי")) {
+              harediSide.classList.add("speaking");
+            }
+          }
+        } else {
+          di.classList.remove("active");
+          if (charElem) charElem.style.display = "";
+        }
+      }
+    },
+
     triggerGavel: function(callback) {
       if (typeof playSfx === "function") {
         playSfx("audio/hit.mp3");
@@ -232,8 +502,19 @@
       const detail = document.getElementById("courtEvidenceDetail");
       if (!modal || !grid) return;
 
+      const scn = (typeof currentScene !== "undefined" ? currentScene : (window.currentScene || ""));
+      const isCh2 = scn.includes("ch2");
+
+      // Filter or prioritize evidence based on active chapter
+      const relevantList = EVIDENCE_DATABASE.filter(item => {
+        if (isCh2) return item.chapter === 2 || !item.chapter;
+        return item.chapter === 1 || !item.chapter;
+      });
+
+      const displayList = relevantList.length > 0 ? relevantList : EVIDENCE_DATABASE;
+
       grid.innerHTML = "";
-      EVIDENCE_DATABASE.forEach(item => {
+      displayList.forEach(item => {
         const card = document.createElement("div");
         card.className = `evidence-card ${selectedEvidenceId === item.id ? "selected" : ""}`;
         card.innerHTML = `
@@ -252,12 +533,13 @@
         grid.appendChild(card);
       });
 
-      // Select first by default if none
-      if (!selectedEvidenceId && EVIDENCE_DATABASE.length > 0) {
-        selectedEvidenceId = EVIDENCE_DATABASE[0].id;
-        if (detail) {
-          detail.innerHTML = `<strong>${EVIDENCE_DATABASE[0].icon} ${EVIDENCE_DATABASE[0].name}</strong><br>${EVIDENCE_DATABASE[0].desc}`;
-        }
+      // Select first by default if none or not in current list
+      if (!selectedEvidenceId || !displayList.some(i => i.id === selectedEvidenceId)) {
+        selectedEvidenceId = displayList[0].id;
+      }
+      const currentSelected = displayList.find(i => i.id === selectedEvidenceId) || displayList[0];
+      if (detail && currentSelected) {
+        detail.innerHTML = `<strong>${currentSelected.icon} ${currentSelected.name}</strong><br>${currentSelected.desc}`;
       }
 
       modal.style.display = "flex";
@@ -282,6 +564,22 @@
 
         if (sceneObj && typeof sceneObj.onEvidencePresented === "function") {
           sceneObj.onEvidencePresented(chosenId);
+        } else if (scn.includes("ch2_act1")) {
+          // Chapter 2 - Act 1: The scorched door contradiction
+          if (chosenId === "evidence_scorched_door") {
+            if (typeof showScene === "function") showScene("court_ch2_present_scorched_door");
+          } else {
+            this.takeDamage(20, "ראיה שאינה סותרת את עדות ליליה!");
+          }
+        } else if (scn.includes("ch2")) {
+          // General Chapter 2 presentation checks
+          if (chosenId === "evidence_infernal_covenant_2019" || chosenId === "evidence_discord_webhook") {
+            if (typeof showScene === "function") showScene("court_ch2_inspecting_contract");
+          } else if (chosenId === "evidence_bed_thermometer" || chosenId === "evidence_secret_oranit_recipe") {
+            if (typeof showScene === "function") showScene("court_ch2_bed_dough_explanation");
+          } else {
+            this.takeDamage(20, "הראיה אינה מתאימה לשלב זה בדיון!");
+          }
         } else if (scn.includes("act1")) {
           if (chosenId === "evidence_analytics_2024") {
             if (typeof showScene === "function") showScene("court_act1_success");

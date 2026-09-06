@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v112-mobile-audio-range-and-blob-support';
+const CACHE_NAME = 'yam-date-sim-v116-fix-court-speedlines-and-dialog-overlap';
 const ASSETS = [
   './',
   './index.html',
@@ -26,6 +26,8 @@ const ASSETS = [
   './src/story/setup.js',
   './src/story/main.js',
   './src/story/special.js',
+  './src/story/court_ch1.js',
+  './src/story/court_ch2.js',
   './src/story/court.js',
   './src/story/battle.js',
   './src/story/baldi.js',
@@ -39,6 +41,7 @@ const ASSETS = [
   './src/wii_pulse_game.js',
   './src/yam_shadow_battle.js',
   './src/yam_shadow_renderer.js',
+  './images/characters/liliya.png',
   './images/characters/yam_sleepy.png',
   './images/characters/yam.png',
   './images/characters/Boss_fight.png',
@@ -59,6 +62,8 @@ const ASSETS = [
   './images/backgrounds/room.jpg',
   './images/backgrounds/בית משפט.png',
   './images/backgrounds/התנגדות.png',
+  './images/backgrounds/hold_it.png',
+  './images/backgrounds/רגע_אחד.png',
   './images/backgrounds/לוגו מוסד.png',
   './audio/boss_fight.mp3',
   './audio/break.mp3',

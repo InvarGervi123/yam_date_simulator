@@ -140,6 +140,13 @@
   border: 3px solid #8b5a2b !important;
   box-shadow: inset 0 0 15px rgba(139, 90, 43, 0.3), 0 8px 30px rgba(0, 0, 0, 0.9) !important;
   border-radius: 12px !important;
+  z-index: 50 !important;
+}
+
+.courtroom-active #choices {
+  top: 48dvh !important;
+  max-height: 28dvh !important;
+  z-index: 60 !important;
 }
 
 .courtroom-active #speaker {
@@ -226,6 +233,154 @@
   35% { transform: scale(1.05) rotate(4deg); opacity: 1; }
   70% { transform: scale(1.0) rotate(0deg); opacity: 1; }
   100% { transform: scale(0.95) rotate(-2deg); opacity: 0; }
+}
+
+/* 6b. Fullscreen Animated HOLD IT! (!רגע אחד) Cut-in */
+#courtHoldItOverlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 25, 55, 0.55);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+#courtHoldItOverlay.active {
+  display: flex;
+}
+
+.holdit-cutin-img {
+  width: 90%;
+  max-width: 750px;
+  animation: holdItSlam 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  filter: drop-shadow(0 0 35px rgba(0, 200, 255, 0.95));
+}
+
+@keyframes holdItSlam {
+  0% { transform: scale(3.2) rotate(12deg); opacity: 0; }
+  35% { transform: scale(1.06) rotate(-3deg); opacity: 1; }
+  70% { transform: scale(1.0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(0.96) rotate(1deg); opacity: 0; }
+}
+
+/* 5b. Courtroom Character Positioning - Keep character above dialog box */
+.courtroom-active #characterContainer {
+  bottom: 33dvh !important;
+  max-height: 48dvh !important;
+  z-index: 20 !important;
+}
+
+.courtroom-active #character {
+  max-height: 48dvh !important;
+}
+
+/* 6c. Ace Attorney Anime Speedlines Canvas */
+#courtSpeedlinesCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#courtSpeedlinesCanvas.active {
+  display: block;
+  opacity: 1;
+}
+
+/* 6d. Dual Invar Split Screen (Haredi vs Secular Invar with Idle Breathing Animation) */
+#courtDualInvars {
+  position: absolute;
+  top: 6%;
+  left: 4%;
+  right: 4%;
+  bottom: 33dvh; /* Positioned safely above the dialog box */
+  display: none;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 25;
+}
+
+#courtDualInvars.active {
+  display: flex;
+}
+
+.dual-invar-side {
+  width: 46%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.dual-invar-side img {
+  max-height: 80%;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+}
+
+.dual-invar-side.secular-side img {
+  animation: secularIdleFloat 2.2s ease-in-out infinite alternate;
+}
+
+.dual-invar-side.haredi-side img {
+  animation: harediIdleFloat 2.7s ease-in-out infinite alternate;
+}
+
+@keyframes secularIdleFloat {
+  0% { transform: translateY(0px) rotate(0deg) scale(1.0); }
+  50% { transform: translateY(-14px) rotate(-1.2deg) scale(1.02); }
+  100% { transform: translateY(-5px) rotate(0.8deg) scale(0.99); }
+}
+
+@keyframes harediIdleFloat {
+  0% { transform: translateY(0px) rotate(0deg) scale(1.0); }
+  50% { transform: translateY(-16px) rotate(1.4deg) scale(1.02); }
+  100% { transform: translateY(-6px) rotate(-0.9deg) scale(0.99); }
+}
+
+.dual-invar-side.speaking img {
+  filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1)) brightness(1.18);
+  animation: speakingBounce 0.65s ease-in-out infinite alternate !important;
+}
+
+@keyframes speakingBounce {
+  0% { transform: translateY(-10px) scale(1.04) rotate(0deg); }
+  100% { transform: translateY(-24px) scale(1.08) rotate(-1.5deg); }
+}
+
+.dual-vs-badge {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  font-family: 'Rubik', sans-serif;
+  font-weight: 900;
+  font-size: 26px;
+  color: #ffd700;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #ffd700;
+  padding: 6px 14px;
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  animation: vsPulse 0.5s infinite alternate;
+  z-index: 30;
+}
+
+@keyframes vsPulse {
+  from { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 10px #ffd700; }
+  to { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 25px #ff4500; }
 }
 
 /* 7. Court Record Modal (Evidence Binder) */
