@@ -86,7 +86,14 @@
       icon: "🛵",
       chapter: 2,
       name: "קבלת Wolt השאול המזויפת",
-      desc: "הזמנת Wolt עם חותמת 'יום כיפור 14:00' ממאפיית אורנית! אך מאפיית אורנית שומרת שבת וחג וסגורה ביום כיפור!"
+      desc: "הזמנה מפוברקת של משלוח ממאפיית אורנית ביום כיפור ב-14:00. וולט מעולם לא פעל באורנית באותה שנה, והמאפייה הייתה סגורה ומסורגת!"
+    },
+    {
+      id: "evidence_chapter3_dossier",
+      icon: "🌌",
+      chapter: 2,
+      name: "פרוטוקול תיק 3: המאפייה הקוסמית",
+      desc: "מסמך סודי שהודלף ממעבדי השופט AI: 'שלב המוקדמות הושלם. בתיק 3 יזומנו ים, ליליה והינוורים למשפט מול האופה העליון של המולטיוורס!'"
     }
   ];
 
@@ -312,6 +319,70 @@
         overlay.classList.remove("active");
         if (typeof callback === "function") callback();
       }, 700);
+    },
+
+    triggerGavel: function(callback) {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      let count = 0;
+      function bang() {
+        if (count >= 3) {
+          if (typeof callback === "function") callback();
+          return;
+        }
+        count++;
+        if (typeof playSfx === "function") playSfx("audio/hit.mp3");
+        if (typeof triggerVibration === "function") triggerVibration(120);
+        if (gameElem) {
+          gameElem.classList.remove("effect-shake");
+          void gameElem.offsetWidth;
+          gameElem.classList.add("effect-shake");
+          setTimeout(() => gameElem.classList.remove("effect-shake"), 220);
+        }
+        setTimeout(bang, 240);
+      }
+      bang();
+    },
+
+    triggerDeskSlam: function(callback) {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      if (typeof playSfx === "function") playSfx("audio/crack.mp3");
+      if (typeof triggerVibration === "function") triggerVibration([80, 40, 140]);
+      if (gameElem) {
+        gameElem.classList.remove("court-desk-slam");
+        void gameElem.offsetWidth;
+        gameElem.classList.add("court-desk-slam");
+        setTimeout(() => {
+          gameElem.classList.remove("court-desk-slam");
+          if (typeof callback === "function") callback();
+        }, 450);
+      }
+    },
+
+    triggerDramaticZoom: function(durationMs = 600, callback) {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      if (gameElem) {
+        gameElem.classList.remove("court-dramatic-zoom");
+        void gameElem.offsetWidth;
+        gameElem.classList.add("court-dramatic-zoom");
+        setTimeout(() => {
+          gameElem.classList.remove("court-dramatic-zoom");
+          if (typeof callback === "function") callback();
+        }, durationMs);
+      }
+    },
+
+    triggerBlackout: function(active = true) {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      if (!gameElem) return;
+      if (active) {
+        gameElem.classList.add("court-blackout-alert");
+      } else {
+        gameElem.classList.remove("court-blackout-alert");
+      }
     },
 
     // ----------------------------------------------------

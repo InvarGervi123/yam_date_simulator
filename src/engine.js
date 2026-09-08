@@ -237,6 +237,10 @@ function showScene(target) {
     window.courtEngine.setDualInvars(!!scene.dualInvars, scene.speaker);
     if (scene.holdIt) window.courtEngine.triggerHoldIt();
     if (scene.objection) window.courtEngine.triggerObjection();
+    if (scene.gavel) window.courtEngine.triggerGavel();
+    if (scene.deskSlam) window.courtEngine.triggerDeskSlam();
+    if (scene.zoom) window.courtEngine.triggerDramaticZoom();
+    if (scene.blackout !== undefined) window.courtEngine.triggerBlackout(!!scene.blackout);
   }
 
   const gameContainer = document.getElementById("game");

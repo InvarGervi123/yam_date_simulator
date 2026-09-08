@@ -530,3 +530,45 @@
     font-size: 11px;
   }
 }
+
+/* 9. Dynamic Courtroom Special Effects (VFX) */
+.court-desk-slam {
+  animation: courtDeskSlamAnim 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) !important;
+}
+
+@keyframes courtDeskSlamAnim {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(18px) scale(0.99); }
+  40% { transform: translateY(-8px) scale(1.01); }
+  60% { transform: translateY(4px); }
+  80% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+.court-dramatic-zoom {
+  animation: courtDramaticZoomAnim 0.55s cubic-bezier(0.1, 0.9, 0.2, 1) !important;
+}
+
+@keyframes courtDramaticZoomAnim {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.court-blackout-alert {
+  position: relative;
+  box-shadow: inset 0 0 120px rgba(255, 0, 0, 0.75) !important;
+  animation: courtBlackoutPulse 1.1s infinite alternate ease-in-out !important;
+}
+
+@keyframes courtBlackoutPulse {
+  0% {
+    filter: brightness(0.5) contrast(130%);
+    box-shadow: inset 0 0 60px rgba(255, 0, 0, 0.5);
+  }
+  100% {
+    filter: brightness(0.18) contrast(170%);
+    box-shadow: inset 0 0 140px rgba(255, 20, 20, 0.95);
+  }
+}
+

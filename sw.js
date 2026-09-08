@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v117-court-ch2-full-epic-expansion';
+const CACHE_NAME = 'yam-date-sim-v118-court-ch2-super-interactive-vfx-ch3';
 const ASSETS = [
   './',
   './index.html',
