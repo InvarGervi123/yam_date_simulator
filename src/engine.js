@@ -69,6 +69,7 @@ function skipOrAdvanceDialogue() {
     // Standard advance
     const scene = story[currentScene];
     if (scene && scene.next) {
+      if (window.ttsEngine) window.ttsEngine.cancel();
       triggerVibration(15);
       showScene(scene.next);
     }
@@ -173,6 +174,7 @@ function addChoice(label, nextScene, onSelect) {
     btn.dataset.clicked = "true";
     setTimeout(() => { btn.dataset.clicked = "false"; }, 300);
 
+    if (window.ttsEngine) window.ttsEngine.cancel();
     triggerVibration(15);
     if (typeof onSelect === "function") {
       try { onSelect(); } catch (err) { console.error("Error in choice onSelect:", err); }
@@ -415,6 +417,11 @@ function showScene(target) {
   
   clearChoices();
 
+  // Trigger Local Text-To-Speech (TTS) Voice Dubbing
+  if (window.ttsEngine) {
+    window.ttsEngine.speakDialogue(scene.speaker, displayText);
+  }
+
   if (scene.music) playMusic(scene.music);
   if (scene.sfx) playSfx(scene.sfx);
 
@@ -448,6 +455,7 @@ function showScene(target) {
 
   // Check for Minigame Trigger
   if (scene.minigame) {
+    if (window.ttsEngine) window.ttsEngine.cancel();
     runMinigame(scene.minigame);
     return;
   }
@@ -654,9 +662,11 @@ if (settingsToggle && settingsModal && closeSettings) {
     const settingAnimation = document.getElementById("settingAnimation");
     const settingOled = document.getElementById("settingOled");
     const settingAtmosphere = document.getElementById("settingAtmosphere");
+    const settingTts = document.getElementById("settingTts");
     if (settingAnimation) settingAnimation.checked = animationsEnabled;
     if (settingOled) settingOled.checked = oledModeEnabled;
     if (settingAtmosphere && window.atmosphereEngine) settingAtmosphere.checked = window.atmosphereEngine.isAtmosphereEnabled();
+    if (settingTts && window.ttsEngine) settingTts.checked = window.ttsEngine.isEnabled();
     
     settingsModal.style.display = "flex";
     triggerVibration(15);
@@ -761,6 +771,17 @@ if (settingsToggle && settingsModal && closeSettings) {
     };
   }
 
+  const settingTts = document.getElementById("settingTts");
+  if (settingTts) {
+    settingTts.checked = window.ttsEngine ? window.ttsEngine.isEnabled() : (localStorage.getItem("gameTts") !== "false");
+    settingTts.onchange = () => {
+      if (window.ttsEngine) {
+        window.ttsEngine.setEnabled(settingTts.checked);
+      }
+      triggerVibration(10);
+    };
+  }
+
   // --- Advanced Display & Sound Steppers ---
   let gameContrast = parseInt(localStorage.getItem("gameContrast") || "100");
   let gameMusicVol = parseInt(localStorage.getItem("gameMusicVol") || "50");
@@ -835,6 +856,66 @@ if (settingsToggle && settingsModal && closeSettings) {
       if (typeof playSfx === "function") playSfx("audio/click.mp3");
     };
   }
+
+  // --- TTS Volume & Speed Steppers ---
+  let gameTtsVol = parseInt(localStorage.getItem("gameTtsVol") || "100");
+  let gameTtsRate = parseInt(localStorage.getItem("gameTtsRate") || "100");
+
+  const labelTtsVol = document.getElementById("labelTtsVol");
+  const labelTtsRate = document.getElementById("labelTtsRate");
+
+  function applyTtsVol(val) {
+    gameTtsVol = Math.max(0, Math.min(100, val));
+    if (labelTtsVol) labelTtsVol.textContent = `${gameTtsVol}%`;
+    if (window.ttsEngine) window.ttsEngine.setVolume(gameTtsVol);
+    triggerVibration(8);
+  }
+
+  function applyTtsRate(val) {
+    gameTtsRate = Math.max(50, Math.min(200, val));
+    if (labelTtsRate) labelTtsRate.textContent = `${gameTtsRate}%`;
+    if (window.ttsEngine) window.ttsEngine.setRate(gameTtsRate);
+    triggerVibration(8);
+  }
+
+  if (labelTtsVol) labelTtsVol.textContent = `${gameTtsVol}%`;
+  if (labelTtsRate) labelTtsRate.textContent = `${gameTtsRate}%`;
+
+  const btnTtsVolDown = document.getElementById("btnTtsVolDown");
+  const btnTtsVolUp = document.getElementById("btnTtsVolUp");
+  if (btnTtsVolDown) btnTtsVolDown.onclick = () => applyTtsVol(gameTtsVol - 10);
+  if (btnTtsVolUp) btnTtsVolUp.onclick = () => applyTtsVol(gameTtsVol + 10);
+
+  const btnTtsRateDown = document.getElementById("btnTtsRateDown");
+  const btnTtsRateUp = document.getElementById("btnTtsRateUp");
+  if (btnTtsRateDown) btnTtsRateDown.onclick = () => applyTtsRate(gameTtsRate - 10);
+  if (btnTtsRateUp) btnTtsRateUp.onclick = () => applyTtsRate(gameTtsRate + 10);
+
+  // Quick Replay Button on Dialog Box & Click-on-Text to speak (like Google Translate!)
+  const btnTtsReplay = document.getElementById("btnTtsReplay");
+  if (btnTtsReplay) {
+    btnTtsReplay.onclick = (e) => {
+      e.stopPropagation();
+      if (window.ttsEngine) {
+        window.ttsEngine.replayCurrent();
+        triggerVibration(15);
+      }
+    };
+  }
+
+  const textElem = document.getElementById("text");
+  if (textElem) {
+    textElem.title = "לחץ להקראה קולית בעברית (Google Translate)";
+    textElem.onclick = (e) => {
+      // If typing, let standard advance happen, else speak/replay like Google Translate
+      if (isTextTyping && typewriterEnabled) return;
+      e.stopPropagation();
+      if (window.ttsEngine) {
+        window.ttsEngine.replayCurrent();
+        triggerVibration(12);
+      }
+    };
+  }
 }
 
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
@@ -846,6 +927,14 @@ const startAudioOnInteraction = () => {
   const currentMusic = document.getElementById("music");
   if (currentMusic && !window.isMusicMuted && currentMusic.paused) {
     currentMusic.play().catch(() => {});
+  }
+  // Auto-speak current scene text on first user interaction if enabled
+  if (window.ttsEngine && window.ttsEngine.isEnabled() && !window.ttsEngine.hasSpokenFirstScene) {
+    window.ttsEngine.hasSpokenFirstScene = true;
+    const currentSceneObj = story[currentScene];
+    if (currentSceneObj) {
+      window.ttsEngine.speakDialogue(currentSceneObj.speaker, currentSceneObj.text);
+    }
   }
   window.removeEventListener("click", startAudioOnInteraction);
   window.removeEventListener("keydown", startAudioOnInteraction);

@@ -137,13 +137,53 @@ html, body {
     0 0 20px rgba(255, 255, 255, 0.03);
 }
 
+.dialog-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 #speaker {
   font-weight: 700;
   color: #ffd447;
-  margin-bottom: 10px;
   font-size: 24px;
   letter-spacing: 0.5px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.tts-replay-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #ffffff;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tts-replay-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: scale(1.1);
+}
+
+.tts-replay-btn.speaking {
+  background: rgba(46, 204, 113, 0.4);
+  border-color: #2ecc71;
+  color: #2ecc71;
+  animation: ttsReplayPulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes ttsReplayPulse {
+  0% { transform: scale(1); box-shadow: 0 0 5px rgba(46, 204, 113, 0.5); }
+  100% { transform: scale(1.15); box-shadow: 0 0 14px rgba(46, 204, 113, 0.9); }
 }
 
 #text {

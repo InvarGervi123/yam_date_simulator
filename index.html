@@ -50,7 +50,10 @@
     <div id="choices"></div>
 
     <section id="dialogBox">
-      <div id="speaker"></div>
+      <div class="dialog-header-row">
+        <div id="speaker"></div>
+        <button id="btnTtsReplay" class="tts-replay-btn" aria-label="השמע מחדש" title="השמע שוב בדיבוב (TTS)">🔊</button>
+      </div>
       <div id="text">טוען...</div>
       <button id="nextBtn">המשך</button>
     </section>
@@ -233,6 +236,13 @@
               <span class="slider"></span>
             </label>
           </div>
+          <div class="settings-item">
+            <span>🎙️ דיבוב קולי אוטומטי (TTS)</span>
+            <label class="switch">
+              <input type="checkbox" id="settingTts">
+              <span class="slider"></span>
+            </label>
+          </div>
 
           <!-- Expandable Special Settings Toggle Button -->
           <button id="btnToggleSpecialSettings" class="special-settings-toggle" type="button">
@@ -269,6 +279,26 @@
                 <button id="btnSfxVolDown" class="stepper-btn" aria-label="הנמך אפקטים">◀</button>
                 <span id="labelSfxVol" class="stepper-value">80%</span>
                 <button id="btnSfxVolUp" class="stepper-btn" aria-label="הגבר אפקטים">▶</button>
+              </div>
+            </div>
+
+            <!-- TTS Volume Stepper -->
+            <div class="settings-item">
+              <span>🗣️ עוצמת דיבוב (TTS)</span>
+              <div class="settings-stepper">
+                <button id="btnTtsVolDown" class="stepper-btn" aria-label="הנמך דיבוב">◀</button>
+                <span id="labelTtsVol" class="stepper-value">100%</span>
+                <button id="btnTtsVolUp" class="stepper-btn" aria-label="הגבר דיבוב">▶</button>
+              </div>
+            </div>
+
+            <!-- TTS Speed Stepper -->
+            <div class="settings-item">
+              <span>⏩ מהירות דיבוב (TTS)</span>
+              <div class="settings-stepper">
+                <button id="btnTtsRateDown" class="stepper-btn" aria-label="האט דיבוב">◀</button>
+                <span id="labelTtsRate" class="stepper-value">100%</span>
+                <button id="btnTtsRateUp" class="stepper-btn" aria-label="האץ דיבוב">▶</button>
               </div>
             </div>
           </div>
@@ -389,6 +419,7 @@
   <script src="src/gamepad.js"></script>
   <script src="src/atmosphere.js"></script>
   <script src="src/court_engine.js"></script>
+  <script src="src/tts_engine.js"></script>
   <script src="src/engine.js"></script>
   <script>
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {

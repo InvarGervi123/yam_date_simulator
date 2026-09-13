@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v118-court-ch2-super-interactive-vfx-ch3';
+const CACHE_NAME = 'yam-date-sim-v121-google-translate-hebrew-tts';
 const ASSETS = [
   './',
   './index.html',
@@ -22,6 +22,7 @@ const ASSETS = [
   './src/gamepad.js',
   './src/atmosphere.js',
   './src/court_engine.js',
+  './src/tts_engine.js',
   './src/engine.js',
   './src/story/setup.js',
   './src/story/main.js',
