@@ -223,7 +223,7 @@
     }
   }
 
-  // 7. Play Queue
+  // 7. Play Queue (Guaranteed single playback without looping or double-triggering)
   function playNextInQueue(profile) {
     if (audioQueue.length === 0) {
       setUiSpeaking(false);
@@ -232,17 +232,48 @@
     }
 
     const nextSegment = audioQueue.shift();
+    if (!nextSegment || !nextSegment.trim()) {
+      playNextInQueue(profile);
+      return;
+    }
+
     const url = getGoogleTtsUrl(nextSegment);
+    let stepResolved = false;
+
+    function proceedToNext() {
+      if (stepResolved) return;
+      stepResolved = true;
+      if (currentAudio) {
+        currentAudio.onended = null;
+        currentAudio.onerror = null;
+      }
+      playNextInQueue(profile);
+    }
+
+    function doFallback() {
+      if (stepResolved) return;
+      stepResolved = true;
+      if (currentAudio) {
+        currentAudio.onended = null;
+        currentAudio.onerror = null;
+        try { currentAudio.pause(); } catch (e) {}
+        currentAudio = null;
+      }
+      // Speak fallback once, and only proceed after it completes
+      fallbackWebSpeech(nextSegment, profile, function() {
+        playNextInQueue(profile);
+      });
+    }
 
     try {
-      const audio = new Audio(url);
+      const audio = new Audio();
       currentAudio = audio;
 
       // Apply character playback rate & pitch
       const finalRate = Math.max(0.6, Math.min(1.8, profile.rate * ttsRateMultiplier));
       audio.playbackRate = finalRate;
 
-      // preservesPitch = false allows pitch to naturally shift higher/lower like character voice acting!
+      // preservesPitch = false allows pitch to naturally shift higher/lower like character voice acting
       if (profile.pitchChange) {
         audio.preservesPitch = false;
         if (audio.mozPreservesPitch !== undefined) audio.mozPreservesPitch = false;
@@ -256,40 +287,65 @@
       };
 
       audio.onended = function() {
-        playNextInQueue(profile);
+        proceedToNext();
       };
 
       audio.onerror = function() {
-        // If Google TTS fails (e.g. completely offline), fallback to browser Web Speech
-        fallbackWebSpeech(nextSegment, profile);
-        playNextInQueue(profile);
+        doFallback();
       };
 
-      audio.play().catch(() => {
-        fallbackWebSpeech(nextSegment, profile);
-        playNextInQueue(profile);
-      });
+      audio.src = url;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function() {
+          if (stepResolved) return;
+          doFallback();
+        });
+      }
     } catch (e) {
-      fallbackWebSpeech(nextSegment, profile);
-      playNextInQueue(profile);
+      doFallback();
     }
   }
 
-  // 8. Offline fallback using browser speech synthesis
-  function fallbackWebSpeech(text, profile) {
-    if (!('speechSynthesis' in window)) return;
+  // 8. Offline fallback using browser speech synthesis (Single utterance with onend completion)
+  function fallbackWebSpeech(text, profile, onComplete) {
+    if (!('speechSynthesis' in window)) {
+      if (typeof onComplete === "function") onComplete();
+      return;
+    }
     try {
+      window.speechSynthesis.cancel(); // Clear any queued utterances to avoid stacking
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "he-IL";
-      u.rate = profile.rate * ttsRateMultiplier;
+      const finalRate = Math.max(0.6, Math.min(1.8, profile.rate * ttsRateMultiplier));
+      u.rate = finalRate;
+
+      let called = false;
+      function done() {
+        if (called) return;
+        called = true;
+        if (typeof onComplete === "function") onComplete();
+      }
+
+      u.onend = done;
+      u.onerror = done;
+
+      // Safety timeout in case browser speech engine fails to fire onend
+      setTimeout(done, Math.max(1500, text.length * 100));
+
+      setUiSpeaking(true);
       window.speechSynthesis.speak(u);
-    } catch (e) {}
+    } catch (e) {
+      if (typeof onComplete === "function") onComplete();
+    }
   }
 
   // 9. Stop / Cancel speech
   function cancel() {
     audioQueue = [];
     if (currentAudio) {
+      currentAudio.onended = null;
+      currentAudio.onerror = null;
       try {
         currentAudio.pause();
         currentAudio.currentTime = 0;

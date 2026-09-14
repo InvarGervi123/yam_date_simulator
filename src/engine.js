@@ -990,15 +990,9 @@ if (settingsToggle && settingsModal && closeSettings) {
 
   const textElem = document.getElementById("text");
   if (textElem) {
-    textElem.title = "לחץ להקראה קולית בעברית (Google Translate)";
+    textElem.title = "";
     textElem.onclick = (e) => {
-      // If typing, let standard advance happen, else speak/replay like Google Translate
-      if (isTextTyping && typewriterEnabled) return;
-      e.stopPropagation();
-      if (window.ttsEngine) {
-        window.ttsEngine.replayCurrent();
-        triggerVibration(12);
-      }
+      skipOrAdvanceDialogue();
     };
   }
 }

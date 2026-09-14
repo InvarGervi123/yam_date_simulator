@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v122-persona5-menu-diagnostics';
+const CACHE_NAME = 'yam-date-sim-v123-tts-loop-fix';
 const ASSETS = [
   './',
   './index.html',
