@@ -144,8 +144,9 @@
 }
 
 .courtroom-active #choices {
-  top: 48dvh !important;
-  max-height: 28dvh !important;
+  bottom: calc(34dvh + 32px) !important;
+  top: auto !important;
+  max-height: calc(55dvh - 40px) !important;
   z-index: 60 !important;
 }
 

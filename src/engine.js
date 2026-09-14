@@ -163,6 +163,7 @@ function fileExistsFallbackImage(img, src) {
 
 function clearChoices() {
   choices.innerHTML = "";
+  if (choices) choices.scrollTop = 0;
 }
 
 function addChoice(label, nextScene, onSelect) {
@@ -414,6 +415,7 @@ function showScene(target) {
   if (typewriterEnabled && displayText.length > 0) {
     isTextTyping = true;
     text.textContent = "";
+    if (text) text.scrollTop = 0;
     let charIndex = 0;
     
     function typeNextChar() {
@@ -434,6 +436,7 @@ function showScene(target) {
   } else {
     isTextTyping = false;
     text.textContent = currentFullText;
+    if (text) text.scrollTop = 0;
   }
   
   clearChoices();

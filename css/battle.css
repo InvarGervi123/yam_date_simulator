@@ -391,23 +391,26 @@
     height: 240px;
   }
   #choices {
-    max-width: 800px;
-    gap: 16px;
-    top: 40%;
+    max-width: 680px;
+    gap: 10px;
   }
   .choiceBtn {
-    padding: 16px 24px;
-    font-size: 22px;
+    padding: 12px 20px;
+    font-size: 19px;
   }
   #dialogBox {
     left: 6%;
     right: 6%;
     transform: none;
-    min-height: 220px;
-    bottom: 6%;
+    height: 230px;
+    min-height: 180px;
+    max-height: 34dvh;
+    bottom: 24px;
+    overflow: hidden;
+    box-sizing: border-box;
   }
   #text {
-    font-size: 26px;
+    font-size: 22px;
   }
   #speaker {
     font-size: 30px;
