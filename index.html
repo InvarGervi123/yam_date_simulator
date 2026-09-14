@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="css/baldi.css" />
   <link rel="stylesheet" href="css/atmosphere.css" />
   <link rel="stylesheet" href="css/court.css" />
+  <link rel="stylesheet" href="css/persona5_menu.css" />
 </head>
 <body>
   <main id="game">
@@ -48,6 +49,92 @@
     </div>
 
     <div id="choices"></div>
+
+    <!-- Persona 5 Styled Main Menu Container -->
+    <div id="p5MainMenuContainer" class="p5-menu-wrapper" style="display: none;">
+      <div class="p5-bg-shard p5-shard-1"></div>
+      <div class="p5-bg-shard p5-shard-2"></div>
+      <div class="p5-bg-halftone"></div>
+
+      <!-- Top Stylized Title Banner -->
+      <header class="p5-title-banner">
+        <div class="p5-top-badge">★ PHANTOM EDITION ★</div>
+        <h1 class="p5-logo-main">
+          <span class="p5-letter red">Y</span><span class="p5-letter black">A</span><span class="p5-letter white">M</span>
+          <span class="p5-sub-word">DATE</span>
+          <span class="p5-letter black">S</span><span class="p5-letter red">I</span><span class="p5-letter white">M</span><span class="p5-letter black">U</span><span class="p5-letter red">L</span><span class="p5-letter white">A</span><span class="p5-letter black">T</span><span class="p5-letter red">O</span><span class="p5-letter white">R</span>
+        </h1>
+        <div class="p5-subtitle-slant">גרסת האסון הרומנטי: מהדורת בית הדין והשאול</div>
+      </header>
+
+      <!-- P5 Main Stage Layout: Hero Card on one side, Slanted Action Buttons on the other -->
+      <div class="p5-stage-content">
+        <!-- Hero Character Cut-in -->
+        <div class="p5-hero-block">
+          <div class="p5-hero-shadow-layer red"></div>
+          <div class="p5-hero-shadow-layer black"></div>
+          <div class="p5-hero-card">
+            <img src="images/characters/yam_horny.png" alt="Yam Samuel" class="p5-hero-img" />
+            <div class="p5-hero-tag">
+              <span class="p5-tag-title">🎯 מטרה: ים שמואל</span>
+              <span class="p5-tag-sub">שוכב במיטה מזה 40 שנה • דרגת עצלנות: SSS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slanted Action Menu -->
+        <nav class="p5-menu-nav">
+          <button id="p5BtnPlay" class="p5-nav-btn p5-btn-take-heart" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">🛌</span>
+            <span class="p5-btn-text">התחל משחק / TAKE BED</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+
+          <button id="p5BtnCourt" class="p5-nav-btn" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">⚖️</span>
+            <span class="p5-btn-text">בית הדין של אורנית (COURT)</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+
+          <button id="p5BtnUpdates" class="p5-nav-btn" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">📜</span>
+            <span class="p5-btn-text">יומן עדכונים רשמי (CHANGELOG)</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+
+          <button id="p5BtnDiagnostics" class="p5-nav-btn" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">🛠️</span>
+            <span class="p5-btn-text">בדיקות מערכת חיות (DIAGNOSTICS)</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+
+          <button id="p5BtnSettings" class="p5-nav-btn" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">⚙️</span>
+            <span class="p5-btn-text">הגדרות המשחק (CONFIG)</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+
+          <button id="p5BtnGallery" class="p5-nav-btn" type="button">
+            <span class="p5-btn-corner"></span>
+            <span class="p5-btn-icon">🏆</span>
+            <span class="p5-btn-text">היכל הסופים (TROPHIES)</span>
+            <span class="p5-btn-arrow">▶</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Persona 5 Stylized Footer -->
+      <footer class="p5-menu-footer">
+        <span class="p5-footer-pill">PWA OFFLINE COMPATIBLE</span>
+        <span class="p5-footer-pill">GOOGLE TRANSLATE TTS READY</span>
+        <span class="p5-footer-ver">BUILD v2.2.0 • BY YAM & INVAR</span>
+      </footer>
+    </div>
 
     <section id="dialogBox">
       <div class="dialog-header-row">
@@ -317,6 +404,204 @@
             <li><strong>🏠 דירת 2 מ"ר בתל אביב:</strong> Rent = Area × 9000 ₪ (שכירות ריאלית לחלוטין)</li>
             <li><strong>🌀 משוואת קיום ינוור:</strong> פתח תקווה ∉ Universe ⇒ ינוור ∉ ℝ (קיום דמיוני בלבד)</li>
           </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real Official Changelog & Patch Notes Modal (Persona 5 Themed) -->
+    <div id="updatesModal" class="p5-modal-overlay" style="display: none;">
+      <div class="p5-modal-box p5-updates-box">
+        <header class="p5-modal-header">
+          <div class="p5-modal-badge">PATCH NOTES</div>
+          <h2>📜 יומן עדכונים רשמי — ים דייט סימולטור</h2>
+          <button id="closeUpdates" class="p5-modal-close" type="button">✕</button>
+        </header>
+
+        <div class="p5-updates-scroll">
+          <!-- Update Card v2.2 -->
+          <article class="p5-update-card featured">
+            <div class="p5-card-ribbon">NEW! גרסה נוכחית</div>
+            <div class="p5-card-head">
+              <span class="p5-ver-tag">v2.2.0</span>
+              <span class="p5-ver-date">ספטמבר 2026</span>
+              <h3>🎙️ מנוע דיבוב עברית חכם של Google Translate</h3>
+            </div>
+            <ul class="p5-card-list">
+              <li><strong>הקראה קולית בעברית שוטפת:</strong> שימוש ישיר בקול הרשמי והאיכותי של Google Translate בעברית!</li>
+              <li><strong>קול וטון מותאם לכל דמות:</strong> ים ישנוני ועצלן, ינוור Prime מהיר ואנרגטי, ליליה בטון פתייני, והשופט בטון רובוטי.</li>
+              <li><strong>השמעה בלחיצה ישירה:</strong> לחיצה על תיבת הטקסט או כפתור הרמקול (🔊) מקריאה את המשפט מיד.</li>
+              <li><strong>המרה אוטומטית של מספרים:</strong> כל המספרים, התאריכים והאחוזים מומרים לעברית מלאה (40 שנה ⬅️ "ארבעים שנה").</li>
+            </ul>
+          </article>
+
+          <!-- Update Card v2.1 -->
+          <article class="p5-update-card">
+            <div class="p5-card-head">
+              <span class="p5-ver-tag">v2.1.0</span>
+              <span class="p5-ver-date">ספטמבר 2026</span>
+              <h3>⚖️ הרחבה מסיבית לפרק 2 בבית הדין: מלחמת הינוורים וסוד השאול</h3>
+            </div>
+            <ul class="p5-card-list">
+              <li><strong>התביעה הנגדית של ים:</strong> חשיפת סוד תא התפחת המיטה הטבעי (37°C תחת הפוך).</li>
+              <li><strong>פרדוקס שני הינוורים:</strong> ינוור Prime (מודרטור עם מקלדת RGB) נגד הרב ינוור בייט שליט"א.</li>
+              <li><strong>שד הוולט מהגיהנום:</strong> חקירה נגדית סוערת על משלוח בורקס ביום כיפור ב-14:00.</li>
+              <li><strong>קליף-האנגר לקראת פרק 3:</strong> השתלטות האופה העליון של המולטיוורס, אזעקות חירום וברית מרובעת היסטורית!</li>
+              <li><strong>אפקטי Ace Attorney:</strong> חבטות שולחן (Desk Slam), שלוש מכות פטיש שופט (Gavel), ספידליינס וזום דרמטי.</li>
+            </ul>
+          </article>
+
+          <!-- Update Card v2.0 -->
+          <article class="p5-update-card">
+            <div class="p5-card-head">
+              <span class="p5-ver-tag">v2.0.0</span>
+              <span class="p5-ver-date">אוגוסט 2026</span>
+              <h3>🏛️ מנוע בית דין צדק אורנית (Courtroom Beth Din Mode)</h3>
+            </div>
+            <ul class="p5-card-list">
+              <li>הוספת מערכת תיק מוצגים אינטראקטיבית (Court Record) עם אפשרות להציג ראיות.</li>
+              <li>אנימציות ענק של OBJECTION! ו-HOLD IT! עם רעידות מסך וצלילי חבטה.</li>
+              <li>מד HP וקנסות אמיתיים על הצגת ראיות שגויות והתנהגות בלתי הולמת באולם.</li>
+            </ul>
+          </article>
+
+          <!-- Update Card v1.8 -->
+          <article class="p5-update-card">
+            <div class="p5-card-head">
+              <span class="p5-ver-tag">v1.8.0</span>
+              <span class="p5-ver-date">יולי 2026</span>
+              <h3>🌲 מיני-משחקי 3D: מבוך הסלנדר ומבחן באלדי</h3>
+            </div>
+            <ul class="p5-card-list">
+              <li>מנוע Raycasting 3D מלא ברינדור ASCII בזמן אמת.</li>
+              <li>איסוף דפי קוד בחושך מפני סלנדרמן עם סוללת פנס מתרוקנת.</li>
+              <li>מחשבון שאלות מתמטיות של באלדי עם ג'אמפסקרים וסופים סודיים.</li>
+            </ul>
+          </article>
+
+          <!-- Update Card v1.5 -->
+          <article class="p5-update-card">
+            <div class="p5-card-head">
+              <span class="p5-ver-tag">v1.5.0</span>
+              <span class="p5-ver-date">יוני 2026</span>
+              <h3>❤️ קרב בוס בסגנון Deltarune: ים שמואל נגד העולם</h3>
+            </div>
+            <ul class="p5-card-list">
+              <li>מערכת קרב תורות מלאה: FIGHT, ACT, ITEM, SPARE.</li>
+              <li>זירת Bullet Hell בזמן אמת עם התחמקות מפחמימות, פירורי קשקבל ומאווררים.</li>
+              <li>מד מתח קוסמי (TP - Tension Points) ומערכת דיאלוגים דינמית.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real Interactive System Diagnostics & Test Suite Modal (Persona 5 Themed) -->
+    <div id="diagnosticsModal" class="p5-modal-overlay" style="display: none;">
+      <div class="p5-modal-box p5-diag-box">
+        <header class="p5-modal-header">
+          <div class="p5-modal-badge red">HARDWARE & SYSTEM SUITE</div>
+          <h2>🛠️ בדיקות מערכת אינטראקטיביות (Live Diagnostics)</h2>
+          <button id="closeDiagnostics" class="p5-modal-close" type="button">✕</button>
+        </header>
+
+        <div class="p5-diag-content">
+          <!-- Audio & Sound Test Section -->
+          <section class="p5-diag-section">
+            <div class="p5-sec-title">🎵 בדיקות סאונד ומולטימדיה (Audio Tests)</div>
+            <div class="p5-test-grid">
+              <button id="diagBtnTestBgm" class="p5-test-btn" type="button">
+                <span class="btn-icon">🎶</span>
+                <span class="btn-label">בדיקת מוזיקת רקע (BGM)</span>
+                <span id="diagBgmStatus" class="btn-badge">הפעל</span>
+              </button>
+
+              <button id="diagBtnTestSfxHit" class="p5-test-btn" type="button">
+                <span class="btn-icon">💥</span>
+                <span class="btn-label">סאונד אפקט: מכה (Hit SFX)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+
+              <button id="diagBtnTestSfxCrack" class="p5-test-btn" type="button">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-label">סאונד אפקט: חבטה (Desk Slam)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+
+              <button id="diagBtnTestTts" class="p5-test-btn" type="button">
+                <span class="btn-icon">🎙️</span>
+                <span class="btn-label">בדיקת דיבוב גוגל (Google TTS)</span>
+                <span id="diagTtsStatus" class="btn-badge">השמע</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Visual Effects & Haptics Section -->
+          <section class="p5-diag-section">
+            <div class="p5-sec-title">⚡ בדיקות אפקטים ורעידות (VFX & Haptics)</div>
+            <div class="p5-test-grid">
+              <button id="diagBtnTestShake" class="p5-test-btn" type="button">
+                <span class="btn-icon">📳</span>
+                <span class="btn-label">רעידת מסך (Camera Shake)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+
+              <button id="diagBtnTestRedflash" class="p5-test-btn" type="button">
+                <span class="btn-icon">🚨</span>
+                <span class="btn-label">הבזק אדום (Red Flash Alert)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+
+              <button id="diagBtnTestSpeedlines" class="p5-test-btn" type="button">
+                <span class="btn-icon">🏎️</span>
+                <span class="btn-label">ספידליינס אנימה (Anime Speedlines)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+
+              <button id="diagBtnTestRumble" class="p5-test-btn" type="button">
+                <span class="btn-icon">🎮</span>
+                <span class="btn-label">בדיקת רטט (Controller / Phone)</span>
+                <span class="btn-badge">בדוק</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Live Keyboard & Input Detector -->
+          <section class="p5-diag-section">
+            <div class="p5-sec-title">⌨️ גלאי מקשים חי (Live Key Detector)</div>
+            <div class="p5-key-detector-box">
+              <div class="p5-key-display">
+                <span class="p5-key-prompt">לחץ על כל מקש במקלדת לבדיקת קליטה:</span>
+                <div id="diagKeyOutput" class="p5-key-result">Space (רווח)</div>
+              </div>
+              <div class="p5-key-meta">
+                <span>Code: <strong id="diagKeyCode">Space</strong></span>
+                <span>Layout: <strong id="diagKeyLayout">עברית / English תקין</strong></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- System Hardware Specs -->
+          <section class="p5-diag-section">
+            <div class="p5-sec-title">📊 מפרט סביבת הרצה (System & Browser Specs)</div>
+            <div class="p5-specs-table">
+              <div class="spec-row">
+                <span class="spec-name">רזולוציית מסך וחלון:</span>
+                <span id="diagSpecRes" class="spec-val">1920x1080</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-name">דפדפן ומערכת הפעלה:</span>
+                <span id="diagSpecAgent" class="spec-val">Chrome / Windows</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-name">מצב PWA Offline Cache:</span>
+                <span id="diagSpecPwa" class="spec-val">Service Worker Active</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-name">נפח שמירות ב-LocalStorage:</span>
+                <span id="diagSpecStorage" class="spec-val">תקין (שמירות פעילות)</span>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>

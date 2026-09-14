@@ -1,0 +1,737 @@
+/* ==========================================================
+   PERSONA 5 THEMED MAIN MENU, UPDATES & DIAGNOSTICS UI
+   Bold crimson red, jet black, stark white, dynamic slanted angles,
+   comic-style halftone textures, and snappy high-energy animations!
+   ========================================================== */
+
+/* 1. Main Menu Fullscreen Wrapper */
+#p5MainMenuContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  background: radial-gradient(circle at 65% 45%, #1a060a 0%, #08080c 70%, #000000 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 50px 25px;
+  overflow: hidden;
+  user-select: none;
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+}
+
+/* Halftone Comic Pattern Overlay */
+.p5-bg-halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Slanted Geometric Crimson Shards */
+.p5-bg-shard {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.p5-shard-1 {
+  width: 140%;
+  height: 280px;
+  top: -120px;
+  left: -20%;
+  background: linear-gradient(135deg, #d90429 0%, #ef233c 60%, #ff4d6d 100%);
+  transform: rotate(-5deg) skewX(-12deg);
+  box-shadow: 0 10px 40px rgba(217, 4, 41, 0.4);
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+}
+
+.p5-shard-2 {
+  width: 70%;
+  height: 600px;
+  bottom: -220px;
+  right: -10%;
+  background: linear-gradient(315deg, rgba(217, 4, 41, 0.25) 0%, rgba(15, 15, 20, 0.9) 100%);
+  transform: rotate(8deg) skewX(10deg);
+  border-left: 6px solid #d90429;
+}
+
+/* 2. Top Title & Logo Banner */
+.p5-title-banner {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+  animation: p5TitleSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.p5-top-badge {
+  background: #ffd447;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 4px 16px;
+  letter-spacing: 2px;
+  transform: rotate(-2.5deg);
+  box-shadow: 4px 4px 0 #000000;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.p5-logo-main {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  transform: rotate(-2deg);
+  text-shadow: 5px 5px 0 #000000;
+}
+
+.p5-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Impact', 'Rubik', sans-serif;
+  font-size: 44px;
+  font-weight: 900;
+  padding: 2px 8px;
+  min-width: 36px;
+  text-align: center;
+  box-shadow: 3px 3px 0 #000000;
+  transition: transform 0.2s ease;
+}
+
+.p5-letter:hover {
+  transform: translateY(-4px) scale(1.1) rotate(4deg);
+}
+
+.p5-letter.red {
+  background: #d90429;
+  color: #ffffff;
+}
+
+.p5-letter.black {
+  background: #111115;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.p5-letter.white {
+  background: #ffffff;
+  color: #000000;
+}
+
+.p5-sub-word {
+  background: #ffd447;
+  color: #000000;
+  font-size: 26px;
+  font-weight: 900;
+  padding: 4px 14px;
+  margin: 0 8px;
+  box-shadow: 4px 4px 0 #000000;
+  transform: rotate(3deg);
+}
+
+.p5-subtitle-slant {
+  background: rgba(0, 0, 0, 0.85);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 6px 20px;
+  margin-top: 8px;
+  border-right: 5px solid #d90429;
+  box-shadow: 4px 4px 0 rgba(217, 4, 41, 0.5);
+  transform: rotate(-1deg);
+}
+
+/* 3. Main Stage Content (Hero + Action Menu) */
+.p5-stage-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 20px 0;
+  gap: 40px;
+}
+
+/* Hero Character Block (Slanted Comic Frame) */
+.p5-hero-block {
+  position: relative;
+  width: 380px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: p5HeroSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.p5-hero-shadow-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  transform: rotate(-5deg) scale(1.02);
+}
+
+.p5-hero-shadow-layer.black {
+  background: #0a0a0f;
+  border: 4px solid #000000;
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.8);
+}
+
+.p5-hero-shadow-layer.red {
+  background: #d90429;
+  transform: rotate(3deg) scale(1.04);
+  box-shadow: 0 0 35px rgba(217, 4, 41, 0.6);
+}
+
+.p5-hero-card {
+  position: relative;
+  z-index: 5;
+  width: 92%;
+  height: 94%;
+  background: #121218;
+  border: 4px solid #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
+  animation: p5HeroFloat 3.2s ease-in-out infinite alternate;
+}
+
+.p5-hero-img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: contrast(115%) saturate(110%);
+  transition: transform 0.4s ease;
+}
+
+.p5-hero-card:hover .p5-hero-img {
+  transform: scale(1.06) rotate(-1deg);
+}
+
+.p5-hero-tag {
+  background: #d90429;
+  color: #ffffff;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 3px solid #ffffff;
+}
+
+.p5-tag-title {
+  font-weight: 900;
+  font-size: 16px;
+  color: #ffd447;
+  letter-spacing: 0.5px;
+}
+
+.p5-tag-sub {
+  font-size: 11px;
+  opacity: 0.95;
+}
+
+/* 4. Slanted Action Menu Navigation */
+.p5-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 440px;
+  max-width: 45vw;
+  animation: p5MenuSlideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.p5-nav-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111116;
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  padding: 14px 22px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  cursor: pointer;
+  transform: rotate(-3deg) skewX(-8deg);
+  box-shadow: 6px 6px 0 #d90429;
+  transition: transform 0.18s cubic-bezier(0.2, 1, 0.3, 1.2), background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.p5-nav-btn .p5-btn-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: #d90429;
+  z-index: 1;
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.p5-nav-btn:hover {
+  transform: rotate(-4deg) skewX(-10deg) scale(1.05) translateX(-8px);
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 10px 10px 0 #000000, 0 0 25px rgba(217, 4, 41, 0.6);
+  border-color: #ffd447;
+}
+
+.p5-nav-btn:hover .p5-btn-corner {
+  width: 14px;
+}
+
+.p5-nav-btn:active {
+  transform: scale(0.98) translateY(3px);
+  box-shadow: 3px 3px 0 #000000;
+}
+
+.p5-nav-btn.p5-btn-take-heart {
+  background: #d90429;
+  color: #ffffff;
+  border-color: #ffd447;
+  font-size: 21px;
+  box-shadow: 8px 8px 0 #ffffff;
+  animation: p5PulseBtn 2s infinite alternate ease-in-out;
+}
+
+.p5-nav-btn.p5-btn-take-heart:hover {
+  background: #ffffff;
+  color: #d90429;
+  box-shadow: 12px 12px 0 #d90429;
+}
+
+.p5-btn-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 24px;
+  margin-left: 12px;
+}
+
+.p5-btn-text {
+  position: relative;
+  z-index: 2;
+  flex-grow: 1;
+  text-align: right;
+  letter-spacing: 0.5px;
+}
+
+.p5-btn-arrow {
+  position: relative;
+  z-index: 2;
+  font-size: 16px;
+  color: #ffd447;
+  transition: transform 0.2s ease;
+}
+
+.p5-nav-btn:hover .p5-btn-arrow {
+  transform: translateX(-6px) scale(1.3);
+  color: #d90429;
+}
+
+.p5-nav-btn.p5-btn-take-heart:hover .p5-btn-arrow {
+  color: #000000;
+}
+
+/* 5. Bottom Persona 5 Footer */
+.p5-menu-footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  padding-top: 14px;
+}
+
+.p5-footer-pill {
+  background: rgba(217, 4, 41, 0.2);
+  color: #ffd447;
+  border: 1px solid #d90429;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.p5-footer-ver {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: monospace;
+}
+
+/* 6. Persona 5 Modals (Updates & Diagnostics) */
+.p5-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+  animation: p5FadeIn 0.25s ease-out;
+}
+
+.p5-modal-box {
+  position: relative;
+  background: #0f0f15;
+  border: 4px solid #ffffff;
+  border-radius: 12px;
+  width: 900px;
+  max-width: 95vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 15px 15px 0 #d90429, 0 0 50px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  animation: p5ModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.p5-modal-header {
+  background: #d90429;
+  color: #ffffff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 4px solid #ffffff;
+}
+
+.p5-modal-badge {
+  background: #ffd447;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 3px 10px;
+  transform: rotate(-3deg);
+  box-shadow: 3px 3px 0 #000000;
+}
+
+.p5-modal-badge.red {
+  background: #ffffff;
+  color: #d90429;
+}
+
+.p5-modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  text-shadow: 2px 2px 0 #000000;
+  flex-grow: 1;
+  margin-right: 15px;
+}
+
+.p5-modal-close {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.p5-modal-close:hover {
+  background: #ffffff;
+  color: #d90429;
+  transform: scale(1.15) rotate(90deg);
+}
+
+/* 7. Updates Modal Styles */
+.p5-updates-scroll {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.p5-update-card {
+  position: relative;
+  background: #181824;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.p5-update-card.featured {
+  border-color: #ffd447;
+  background: #1e192a;
+  box-shadow: 0 0 20px rgba(255, 212, 71, 0.15);
+}
+
+.p5-update-card:hover {
+  transform: translateY(-3px);
+  border-color: #d90429;
+}
+
+.p5-card-ribbon {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: #ffd447;
+  color: #000000;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 2px 10px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #000000;
+}
+
+.p5-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.p5-ver-tag {
+  background: #d90429;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.p5-ver-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.p5-card-head h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffffff;
+  width: 100%;
+}
+
+.p5-card-list {
+  margin: 0;
+  padding-right: 20px;
+  color: #dcdde1;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.p5-card-list li {
+  margin-bottom: 6px;
+}
+
+.p5-card-list li strong {
+  color: #ffd447;
+}
+
+/* 8. Diagnostics Modal Styles */
+.p5-diag-content {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.p5-diag-section {
+  background: #14141e;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.p5-sec-title {
+  font-weight: 900;
+  font-size: 16px;
+  color: #ffd447;
+  margin-bottom: 14px;
+  border-bottom: 2px solid #d90429;
+  padding-bottom: 6px;
+}
+
+.p5-test-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.p5-test-btn {
+  background: #1f1f2e;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.p5-test-btn:hover {
+  background: #d90429;
+  border-color: #ffd447;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 4, 41, 0.4);
+}
+
+.p5-test-btn .btn-badge {
+  background: #000000;
+  color: #ffd447;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #ffd447;
+}
+
+.p5-key-detector-box {
+  background: #0a0a0f;
+  border: 2px dashed #d90429;
+  border-radius: 6px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.p5-key-result {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffd447;
+  background: #181824;
+  padding: 6px 24px;
+  border-radius: 6px;
+  border: 2px solid #ffffff;
+  box-shadow: 4px 4px 0 #d90429;
+}
+
+.p5-key-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.p5-key-meta strong {
+  color: #ffffff;
+}
+
+.p5-specs-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.spec-row {
+  background: #1c1c28;
+  padding: 10px 14px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.spec-name {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.spec-val {
+  color: #2ecc71;
+  font-weight: 700;
+  direction: ltr;
+}
+
+/* 9. Keyframe Animations */
+@keyframes p5TitleSlideIn {
+  0% { transform: translateY(-40px) rotate(-6deg); opacity: 0; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+
+@keyframes p5HeroSlideIn {
+  0% { transform: translateX(60px) scale(0.9); opacity: 0; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes p5HeroFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-10px) rotate(-1.5deg); }
+}
+
+@keyframes p5MenuSlideIn {
+  0% { transform: translateX(-60px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes p5PulseBtn {
+  0% { box-shadow: 6px 6px 0 #ffffff, 0 0 0 rgba(217, 4, 41, 0.4); }
+  100% { box-shadow: 9px 9px 0 #ffd447, 0 0 25px rgba(217, 4, 41, 0.7); }
+}
+
+@keyframes p5FadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes p5ModalPop {
+  0% { transform: scale(0.9) rotate(-1.5deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* 10. Responsive Design for Mobile & Smaller Screens */
+@media (max-width: 900px) {
+  #p5MainMenuContainer {
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .p5-stage-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .p5-hero-block {
+    width: 260px;
+    height: 290px;
+  }
+  .p5-menu-nav {
+    width: 100%;
+    max-width: 100%;
+  }
+  .p5-logo-main .p5-letter {
+    font-size: 32px;
+    min-width: 28px;
+    padding: 2px 6px;
+  }
+  .p5-specs-table {
+    grid-template-columns: 1fr;
+  }
+}

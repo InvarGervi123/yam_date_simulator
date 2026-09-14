@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v121-google-translate-hebrew-tts';
+const CACHE_NAME = 'yam-date-sim-v122-persona5-menu-diagnostics';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const ASSETS = [
   './css/baldi.css',
   './css/atmosphere.css',
   './css/court.css',
+  './css/persona5_menu.css',
   './src/audio.js',
   './src/minigames.js',
   './src/battle.js',

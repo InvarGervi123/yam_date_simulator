@@ -255,9 +255,30 @@ function showScene(target) {
     else if (spk.includes("ליליה")) gameContainer.classList.add("speaker-liliya");
   }
 
-  // Stop minigames/overlays when returning to main menu
+  // Handle Persona 5 Main Menu Display
+  const p5Menu = document.getElementById("p5MainMenuContainer");
+  const dialogBox = document.getElementById("dialogBox");
+
   if (id === "start" || id === "main_menu") {
     if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+    if (window.ttsEngine) window.ttsEngine.cancel();
+    if (p5Menu) p5Menu.style.display = "flex";
+    if (dialogBox) dialogBox.style.display = "none";
+    if (choices) choices.style.display = "none";
+    if (nextBtn) nextBtn.style.display = "none";
+    if (character) character.style.display = "none";
+    const bgPre = document.getElementById("asciiBackground");
+    const charPre = document.getElementById("asciiCharacter");
+    if (bgPre) bgPre.style.display = "none";
+    if (charPre) charPre.style.display = "none";
+    bg.style.display = "block";
+    fileExistsFallbackImage(bg, scene.bg || "images/backgrounds/room.jpg");
+    if (scene.music) playMusic(scene.music);
+    return;
+  } else {
+    if (p5Menu) p5Menu.style.display = "none";
+    if (dialogBox) dialogBox.style.display = "block";
+    if (choices) choices.style.display = "flex";
   }
 
   // Determine if this is part of the horror route
@@ -486,7 +507,6 @@ function showScene(target) {
   }
 
   // Allow clicking the dialog box itself to skip/advance
-  const dialogBox = document.getElementById("dialogBox");
   if (dialogBox) {
     dialogBox.onclick = skipOrAdvanceDialogue;
   }
@@ -620,11 +640,73 @@ if (closeGallery) {
   };
 }
 
-// Keyboard shortcuts for visual novel progression (Laptops / No-Mouse support)
+// Keyboard shortcuts for visual novel progression & Persona 5 menu (Laptops / No-Mouse support)
 window.addEventListener("keydown", (e) => {
-  // Ignore key shortcuts if gallery or minigame overlays are open
+  const updatesModal = document.getElementById("updatesModal");
+  const diagnosticsModal = document.getElementById("diagnosticsModal");
+  const settingsModal = document.getElementById("settingsModal");
+  const p5Menu = document.getElementById("p5MainMenuContainer");
+
+  // Escape closes any open modal
+  if (e.key === "Escape") {
+    if (updatesModal && updatesModal.style.display === "flex") {
+      updatesModal.style.display = "none";
+      triggerVibration(10);
+      return;
+    }
+    if (diagnosticsModal && diagnosticsModal.style.display === "flex") {
+      diagnosticsModal.style.display = "none";
+      triggerVibration(10);
+      return;
+    }
+    if (settingsModal && settingsModal.style.display === "flex") {
+      settingsModal.style.display = "none";
+      triggerVibration(10);
+      return;
+    }
+    if (galleryModal && galleryModal.style.display === "flex") {
+      galleryModal.style.display = "none";
+      triggerVibration(10);
+      return;
+    }
+  }
+
+  // If inside diagnostics modal, let diagnostics key detector handle keys
+  if (diagnosticsModal && diagnosticsModal.style.display === "flex") return;
+  if (updatesModal && updatesModal.style.display === "flex") return;
+  if (settingsModal && settingsModal.style.display === "flex") return;
   if (galleryModal && galleryModal.style.display === "flex") return;
   if (minigameOverlay && minigameOverlay.style.display === "flex") return;
+
+  // Persona 5 Main Menu shortcuts
+  if (p5Menu && p5Menu.style.display === "flex") {
+    if (e.key === "1" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnPlay");
+      if (btn) btn.click();
+    } else if (e.key === "2") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnCourt");
+      if (btn) btn.click();
+    } else if (e.key === "3") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnUpdates");
+      if (btn) btn.click();
+    } else if (e.key === "4") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnDiagnostics");
+      if (btn) btn.click();
+    } else if (e.key === "5") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnSettings");
+      if (btn) btn.click();
+    } else if (e.key === "6") {
+      e.preventDefault();
+      const btn = document.getElementById("p5BtnGallery");
+      if (btn) btn.click();
+    }
+    return;
+  }
 
   // Space or Enter advances dialogue (either completes typewriter typing, or goes to next scene)
   if (e.key === " " || e.key === "Enter") {
@@ -918,6 +1000,321 @@ if (settingsToggle && settingsModal && closeSettings) {
   }
 }
 
+// --- Persona 5 Main Menu & Interactive Diagnostics Suite ---
+
+let diagnosticsSuiteInitialized = false;
+
+function setupDiagnosticsSuite() {
+  // 1. Populate System & Hardware Specs
+  const diagSpecRes = document.getElementById("diagSpecRes");
+  const diagSpecAgent = document.getElementById("diagSpecAgent");
+  const diagSpecPwa = document.getElementById("diagSpecPwa");
+  const diagSpecStorage = document.getElementById("diagSpecStorage");
+
+  if (diagSpecRes) {
+    diagSpecRes.textContent = `${window.innerWidth}×${window.innerHeight} (מסך: ${screen.width}×${screen.height}, DPR: ${window.devicePixelRatio || 1})`;
+  }
+  if (diagSpecAgent) {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const platform = isMobile ? "נייד (Mobile / Touch)" : "מחשב / לפטופ (Desktop / Laptop)";
+    const browser = /Chrome/.test(navigator.userAgent) ? "Google Chrome / Chromium" :
+                    /Firefox/.test(navigator.userAgent) ? "Mozilla Firefox" :
+                    /Safari/.test(navigator.userAgent) ? "Apple Safari" : "Web Browser";
+    diagSpecAgent.textContent = `${platform} • ${browser}`;
+  }
+  if (diagSpecPwa) {
+    const isHttp = window.location.protocol.startsWith("http");
+    if (!isHttp) {
+      diagSpecPwa.textContent = "מקומי (file:// - PWA פעיל בהרצה משרת)";
+    } else if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      diagSpecPwa.textContent = "פעיל ומאוחסן במטמון (Service Worker Active & Cached)";
+    } else {
+      diagSpecPwa.textContent = "תומך PWA (ממתין לסנכרון קבצים)";
+    }
+  }
+  if (diagSpecStorage) {
+    try {
+      const keysCount = Object.keys(localStorage).length;
+      diagSpecStorage.textContent = `${keysCount} פריטים שמורים (הגדרות וסופים שמורים)`;
+    } catch(e) {
+      diagSpecStorage.textContent = "LocalStorage חסום";
+    }
+  }
+
+  // Prevent duplicate binding of test buttons
+  if (diagnosticsSuiteInitialized) return;
+  diagnosticsSuiteInitialized = true;
+
+  // 2. Audio & Multimedia Tests
+  const diagBtnTestBgm = document.getElementById("diagBtnTestBgm");
+  const diagBgmStatus = document.getElementById("diagBgmStatus");
+  if (diagBtnTestBgm) {
+    diagBtnTestBgm.onclick = () => {
+      const music = document.getElementById("music");
+      if (music) {
+        if (music.paused) {
+          playMusic("audio/ים דייט סימולטור - תפריט ראשי.mp3");
+          if (diagBgmStatus) {
+            diagBgmStatus.textContent = "פועל ⏸️";
+            diagBgmStatus.style.background = "#2ecc71";
+          }
+        } else {
+          music.pause();
+          if (diagBgmStatus) {
+            diagBgmStatus.textContent = "הפעל ▶️";
+            diagBgmStatus.style.background = "";
+          }
+        }
+      }
+      triggerVibration(15);
+    };
+  }
+
+  const diagBtnTestSfxHit = document.getElementById("diagBtnTestSfxHit");
+  if (diagBtnTestSfxHit) {
+    diagBtnTestSfxHit.onclick = () => {
+      triggerVibration([60, 40, 90]);
+      if (typeof playSfx === "function") playSfx("audio/inject.mp3");
+    };
+  }
+
+  const diagBtnTestSfxCrack = document.getElementById("diagBtnTestSfxCrack");
+  if (diagBtnTestSfxCrack) {
+    diagBtnTestSfxCrack.onclick = () => {
+      triggerVibration([120, 50, 150]);
+      if (typeof playSfx === "function") playSfx("audio/break.mp3");
+      const gameContainer = document.getElementById("game");
+      if (gameContainer) {
+        gameContainer.classList.add("effect-shake");
+        setTimeout(() => gameContainer.classList.remove("effect-shake"), 400);
+      }
+    };
+  }
+
+  const diagBtnTestTts = document.getElementById("diagBtnTestTts");
+  const diagTtsStatus = document.getElementById("diagTtsStatus");
+  if (diagBtnTestTts) {
+    diagBtnTestTts.onclick = () => {
+      triggerVibration(15);
+      if (diagTtsStatus) diagTtsStatus.textContent = "משמיע... 🎙️";
+      if (window.ttsEngine) {
+        window.ttsEngine.speakDialogue("מערכת בדיקה", "בדיקת מערכת דיבוב עברית חכמה של גוגל טרנסלייט עברה בהצלחה מלאה!");
+      }
+      setTimeout(() => {
+        if (diagTtsStatus) diagTtsStatus.textContent = "השמע";
+      }, 3500);
+    };
+  }
+
+  // 3. VFX & Haptics Tests
+  const diagBtnTestShake = document.getElementById("diagBtnTestShake");
+  if (diagBtnTestShake) {
+    diagBtnTestShake.onclick = () => {
+      triggerVibration([100, 50, 100]);
+      const gameContainer = document.getElementById("game");
+      if (gameContainer) {
+        gameContainer.classList.add("effect-shake");
+        setTimeout(() => gameContainer.classList.remove("effect-shake"), 600);
+      }
+    };
+  }
+
+  const diagBtnTestRedflash = document.getElementById("diagBtnTestRedflash");
+  if (diagBtnTestRedflash) {
+    diagBtnTestRedflash.onclick = () => {
+      triggerVibration(250);
+      const gameContainer = document.getElementById("game");
+      if (gameContainer) {
+        gameContainer.classList.add("effect-redflash");
+        setTimeout(() => gameContainer.classList.remove("effect-redflash"), 500);
+      }
+    };
+  }
+
+  const diagBtnTestSpeedlines = document.getElementById("diagBtnTestSpeedlines");
+  if (diagBtnTestSpeedlines) {
+    diagBtnTestSpeedlines.onclick = () => {
+      triggerVibration(40);
+      if (window.courtEngine) {
+        window.courtEngine.setSpeedlines(true);
+        setTimeout(() => window.courtEngine.setSpeedlines(false), 1200);
+      }
+    };
+  }
+
+  const diagBtnTestRumble = document.getElementById("diagBtnTestRumble");
+  if (diagBtnTestRumble) {
+    diagBtnTestRumble.onclick = () => {
+      triggerVibration([150, 100, 200, 100, 300]);
+      if (typeof navigator !== "undefined" && navigator.getGamepads) {
+        const gamepads = navigator.getGamepads();
+        for (let i = 0; i < gamepads.length; i++) {
+          const gp = gamepads[i];
+          if (gp && gp.vibrationActuator && gp.vibrationActuator.playEffect) {
+            try {
+              gp.vibrationActuator.playEffect("dual-rumble", {
+                startDelay: 0,
+                duration: 600,
+                weakMagnitude: 0.8,
+                strongMagnitude: 1.0
+              });
+            } catch(e) {}
+          }
+        }
+      }
+      const badge = diagBtnTestRumble.querySelector(".btn-badge");
+      if (badge) {
+        const oldText = badge.textContent;
+        badge.textContent = "רוטט! 📳";
+        setTimeout(() => { badge.textContent = oldText; }, 1000);
+      }
+    };
+  }
+
+  // 4. Live Keyboard Detector
+  const diagKeyOutput = document.getElementById("diagKeyOutput");
+  const diagKeyCode = document.getElementById("diagKeyCode");
+  const diagKeyLayout = document.getElementById("diagKeyLayout");
+
+  window.addEventListener("keydown", (e) => {
+    const diagModal = document.getElementById("diagnosticsModal");
+    if (!diagModal || diagModal.style.display === "none") return;
+
+    if (diagKeyOutput) {
+      let displayName = e.key;
+      if (displayName === " ") displayName = "Space (רווח)";
+      else if (displayName === "Enter") displayName = "Enter (אנטר)";
+      else if (displayName === "Escape") displayName = "Escape (ביטול)";
+      else if (displayName === "ArrowUp") displayName = "חץ למעלה (Arrow Up)";
+      else if (displayName === "ArrowDown") displayName = "חץ למטה (Arrow Down)";
+      else if (displayName === "ArrowLeft") displayName = "חץ שמאלה (Arrow Left)";
+      else if (displayName === "ArrowRight") displayName = "חץ ימינה (Arrow Right)";
+      diagKeyOutput.textContent = displayName;
+    }
+    if (diagKeyCode) {
+      diagKeyCode.textContent = e.code;
+    }
+    if (diagKeyLayout) {
+      const isHebrew = /[\u0590-\u05FF]/.test(e.key);
+      const isEnglish = /^[a-zA-Z]$/.test(e.key);
+      if (isHebrew) {
+        diagKeyLayout.textContent = "עברית (Hebrew Layout)";
+      } else if (isEnglish) {
+        diagKeyLayout.textContent = "אנגלית (English Layout)";
+      } else {
+        diagKeyLayout.textContent = "מקשי מערכת / ניווט";
+      }
+    }
+  });
+}
+
+function initPersona5Menu() {
+  const p5BtnPlay = document.getElementById("p5BtnPlay");
+  const p5BtnCourt = document.getElementById("p5BtnCourt");
+  const p5BtnUpdates = document.getElementById("p5BtnUpdates");
+  const p5BtnDiagnostics = document.getElementById("p5BtnDiagnostics");
+  const p5BtnSettings = document.getElementById("p5BtnSettings");
+  const p5BtnGallery = document.getElementById("p5BtnGallery");
+
+  const updatesModal = document.getElementById("updatesModal");
+  const closeUpdates = document.getElementById("closeUpdates");
+
+  const diagnosticsModal = document.getElementById("diagnosticsModal");
+  const closeDiagnostics = document.getElementById("closeDiagnostics");
+
+  if (p5BtnPlay) {
+    p5BtnPlay.onclick = () => {
+      triggerVibration(20);
+      if (typeof playSfx === "function") playSfx("audio/inject.mp3");
+      showScene("room_intro");
+    };
+  }
+
+  if (p5BtnCourt) {
+    p5BtnCourt.onclick = () => {
+      triggerVibration(20);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      showScene("court_menu");
+    };
+  }
+
+  if (p5BtnUpdates && updatesModal) {
+    p5BtnUpdates.onclick = () => {
+      triggerVibration(15);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      updatesModal.style.display = "flex";
+    };
+  }
+
+  if (closeUpdates && updatesModal) {
+    closeUpdates.onclick = () => {
+      triggerVibration(10);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      updatesModal.style.display = "none";
+    };
+  }
+
+  if (updatesModal) {
+    updatesModal.onclick = (e) => {
+      if (e.target === updatesModal) {
+        updatesModal.style.display = "none";
+      }
+    };
+  }
+
+  if (p5BtnDiagnostics && diagnosticsModal) {
+    p5BtnDiagnostics.onclick = () => {
+      triggerVibration(15);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      diagnosticsModal.style.display = "flex";
+      setupDiagnosticsSuite();
+    };
+  }
+
+  if (closeDiagnostics && diagnosticsModal) {
+    closeDiagnostics.onclick = () => {
+      triggerVibration(10);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      diagnosticsModal.style.display = "none";
+    };
+  }
+
+  if (diagnosticsModal) {
+    diagnosticsModal.onclick = (e) => {
+      if (e.target === diagnosticsModal) {
+        diagnosticsModal.style.display = "none";
+      }
+    };
+  }
+
+  if (p5BtnSettings) {
+    p5BtnSettings.onclick = () => {
+      triggerVibration(15);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      const settingsToggle = document.getElementById("settingsToggle");
+      if (settingsToggle) settingsToggle.click();
+    };
+  }
+
+  if (p5BtnGallery) {
+    p5BtnGallery.onclick = () => {
+      triggerVibration(15);
+      if (typeof playSfx === "function") playSfx("audio/click.mp3");
+      const galleryToggle = document.getElementById("galleryToggle");
+      if (galleryToggle) galleryToggle.click();
+    };
+  }
+
+  // Audio hover feedback on menu buttons
+  document.querySelectorAll(".p5-nav-btn, .p5-test-btn").forEach((btn) => {
+    btn.addEventListener("mouseenter", () => {
+      if (window.hasUserInteracted && !window.isSfxMuted) {
+        playVoiceBeep("menu");
+      }
+    });
+  });
+}
+
 // Resume audio and trigger scene music playback on very first user interaction (bypasses browser autoplay policy block)
 const startAudioOnInteraction = () => {
   window.hasUserInteracted = true;
@@ -928,12 +1325,14 @@ const startAudioOnInteraction = () => {
   if (currentMusic && !window.isMusicMuted && currentMusic.paused) {
     currentMusic.play().catch(() => {});
   }
-  // Auto-speak current scene text on first user interaction if enabled
+  // Auto-speak current scene text on first user interaction if enabled (only in VN scenes, not on main menu)
   if (window.ttsEngine && window.ttsEngine.isEnabled() && !window.ttsEngine.hasSpokenFirstScene) {
     window.ttsEngine.hasSpokenFirstScene = true;
-    const currentSceneObj = story[currentScene];
-    if (currentSceneObj) {
-      window.ttsEngine.speakDialogue(currentSceneObj.speaker, currentSceneObj.text);
+    if (currentScene !== "start" && currentScene !== "main_menu") {
+      const currentSceneObj = story[currentScene];
+      if (currentSceneObj) {
+        window.ttsEngine.speakDialogue(currentSceneObj.speaker, currentSceneObj.text);
+      }
     }
   }
   window.removeEventListener("click", startAudioOnInteraction);
@@ -951,6 +1350,9 @@ const gameElem = document.getElementById("game");
 if (gameElem && localStorage.getItem("gameOled") === "true") {
   gameElem.classList.add("oled-mode");
 }
+
+// Initialize Persona 5 Menu Bindings
+initPersona5Menu();
 
 // Start Simulator
 showScene("start");
