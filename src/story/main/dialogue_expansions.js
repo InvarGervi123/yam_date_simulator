@@ -1,5 +1,5 @@
 // --- Yam Date Simulator: Expanded Dialogues Patch ---
-// Load this file AFTER src/story/endings.js.
+// Load this file AFTER src/story/endings/endings.js.
 // It expands existing scenes/endings without changing their IDs,
 // and connects the previously empty secret Baldi ending.
 

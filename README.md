@@ -29,12 +29,12 @@
 ### ⚡ Architectural Highlights:
 * **No-Framework, Zero-Overhead Core:** Engineered entirely in Vanilla JS and CSS to eliminate heavy framework bundles (React/Vue/Angular), memory bloat, and virtual DOM diffing cycles.
 * **Offline-First & Mobile PWA Streaming (`sw.js` v112):** Features a customized Service Worker implementing Stale-While-Revalidate caching alongside **HTTP 206 Partial Content Range streaming** and **Cache-Blob fallback extraction**, guaranteeing flawless audio and visual playback on mobile devices without an internet connection.
-* **Universal Gamepad & Dual-Rumble Haptics Engine (`src/gamepad.js`):** HTML5 Gamepad API polling loop with native D-Pad/Analog choice navigation, button debouncing, and multi-pattern physical vibration haptics (EKG pulses, thunderclaps, slaps, and battle hits).
-* **Dynamic Story Atmosphere & 5 Particle Engines (`src/atmosphere.js`):** Automatic narrative context scanner with 5 breathing visual mood filters (dark room, romantic warmth, cardiac danger, hospital fluorescent, mystic shadow) and 5 live particle systems (Burekas rain 🥐, Romantic hearts 💖, Heartbreak shatter 💔, Analytics drift 🔔, Thunder lightning flash ⚡).
-* **Ace Attorney Rabbinical Court Saga (`src/court_engine.js`):** Standalone courtroom engine with 3D beveled nameplates, dynamic `התנגדות!` fullscreen cut-ins, interactive Court Record Binder (`📑 COURT RECORD`), Player HP/Penalty Bar (❗❗❗❗❗), and multi-stage cross-examinations.
-* **Real-Time Wii Pulse EKG Engine (`src/wii_pulse_game.js`):** Live cardiac pulse meter syncing BPM (70-145+ BPM) to player story choices with realistic canvas graph draws, audio beeps, and gamepad vibrations.
-* **Wolfenstein 3D CPU Raycaster (`src/baldi.js` & `src/baldi_renderer.js`):** Pure 2D Canvas raycaster with depth shading and BFS unstick heuristics, achieving 60FPS without WebGL overhead.
-* **Dark Souls Space VR Combat Engine (`src/preg_game.js`):** Real-time boss battle loop featuring stamina-based blocking/dodging, 8 orbital phantom billboard sprites, dynamic oxygen-depletion blur filters, floating combat text, and sequence-based combo recipes.
+* **Universal Gamepad & Dual-Rumble Haptics Engine (`src/input/gamepad.js`):** HTML5 Gamepad API polling loop with native D-Pad/Analog choice navigation, button debouncing, and multi-pattern physical vibration haptics (EKG pulses, thunderclaps, slaps, and battle hits).
+* **Dynamic Story Atmosphere & 5 Particle Engines (`src/effects/atmosphere.js`):** Automatic narrative context scanner with 5 breathing visual mood filters (dark room, romantic warmth, cardiac danger, hospital fluorescent, mystic shadow) and 5 live particle systems (Burekas rain 🥐, Romantic hearts 💖, Heartbreak shatter 💔, Analytics drift 🔔, Thunder lightning flash ⚡).
+* **Ace Attorney Rabbinical Court Saga (`src/games/court_engine.js`):** Standalone courtroom engine with 3D beveled nameplates, dynamic `התנגדות!` fullscreen cut-ins, interactive Court Record Binder (`📑 COURT RECORD`), Player HP/Penalty Bar (❗❗❗❗❗), and multi-stage cross-examinations.
+* **Real-Time Wii Pulse EKG Engine (`src/games/wii_pulse_game.js`):** Live cardiac pulse meter syncing BPM (70-145+ BPM) to player story choices with realistic canvas graph draws, audio beeps, and gamepad vibrations.
+* **Wolfenstein 3D CPU Raycaster (`src/games/baldi.js` & `src/games/baldi_renderer.js`):** Pure 2D Canvas raycaster with depth shading and BFS unstick heuristics, achieving 60FPS without WebGL overhead.
+* **Dark Souls Space VR Combat Engine (`src/games/preg_game.js`):** Real-time boss battle loop featuring stamina-based blocking/dodging, 8 orbital phantom billboard sprites, dynamic oxygen-depletion blur filters, floating combat text, and sequence-based combo recipes.
 * **Modular Settings & Hidden Submenu:** Instant controls for background contrast (70%-160%), music volume, SFX volume, typewriter speed, and OLED true-black `#000000` power saver.
 
 ---
@@ -87,7 +87,7 @@
 
 ## 🏛️ סאגת בית הדין (Ace Attorney / דין תורה)
 
-אחד הנתיבים המפוארים והמורכבים ביותר במשחק הוא נתיב המשפט (`src/story/court.js` ו-`src/court_engine.js`):
+אחד הנתיבים המפוארים והמורכבים ביותר במשחק הוא נתיב המשפט (`src/story/court/court.js` ו-`src/games/court_engine.js`):
 
 ### ⚖️ מאפייני מנוע בית המשפט:
 1. **הדמויות והספרייטים הייעודיים**:
@@ -111,7 +111,7 @@
 
 ## 🎮 מנוע שלטים ורטט פיזי (Universal Gamepad & Dual-Rumble)
 
-המשחק כולל מנוע בקרים ייעודי (`src/gamepad.js`) המספק תמיכה מלאה בכל שלט פיזי (Xbox, PlayStation DualShock/DualSense, Nintendo Switch Pro Controller או שלט Bluetooth/USB):
+המשחק כולל מנוע בקרים ייעודי (`src/input/gamepad.js`) המספק תמיכה מלאה בכל שלט פיזי (Xbox, PlayStation DualShock/DualSense, Nintendo Switch Pro Controller או שלט Bluetooth/USB):
 * **ניווט בתפריטים ובסיפור**: סטיק שמאלי ו-D-Pad לבחירת תשובות עם סימון זוהר.
 * **מקשי פעולה**: מקש **A / ✖️** לאישור והמשך, מקש **B / ⭕** לביטול, מקש **Start** לפתיחת תפריט ההגדרות.
 * **📳 רטט תחושתי כפול (Dual-Rumble)**:
@@ -148,15 +148,16 @@
 
 | מודול / קובץ | תפקיד הנדסי | טכנולוגיה ומאפיינים |
 |---|---|---|
-| **`src/engine.js`** | מנוע הסימולטור הראשי | מנהל מצבים אסינכרוני, מעקב 91 סופים, תמיכה מלאה במקלדות עבריות. |
-| **`src/court_engine.js`** | מנוע בית המשפט Ace Attorney | ניהול Court Record, מד חיים (HP), באנרים מונפשים וסופים משפטיים. |
-| **`src/gamepad.js`** | מנוע שלטים ורטט | HTML5 Gamepad API, לולאת Polling, רטט Dual-Rumble Haptics. |
-| **`src/atmosphere.js`** | מנוע אווירה וחלקיקים | 5 מצבי רוח דינמיים, 5 מערכות חלקיקים (בורקס, לבבות, ברקים, קומיקס). |
-| **`src/audio.js`** | מנהל השמע והערוצים | תמיכה בקבצים בעברית, שליטה בווליום, מחלץ Blobs לשמע אופליין. |
-| **`src/wii_pulse_game.js`** | מד דופק Wii EKG בזמן אמת | קנבס EKG חי, חישוב BPM משתנה, רטט שלט בקצב פעימות הלב. |
-| **`src/baldi_renderer.js`** | מבוך 3D Raycasting | מנוע 3D טהור על גבי CPU Canvas ללא WebGL (חיסכון סוללה מוחלט). |
-| **`src/battle_arena.js`** | זירת Bullet Hell של Deltarune | לולאת פיזיקה 60FPS עם חישובי Grazing ו-Collisions מדויקים. |
-| **`src/preg_game.js`** | קרב הבוס בחלל (Space VR) | מנוע Stamina, מערכת קומבו רציפה, 8 רוחות מסתובבות והילת שלב 2. |
+| **`src/core/engine.js`** | מנוע הסימולטור הראשי | מנהל מצבים אסינכרוני, מעקב 91 סופים, תמיכה מלאה במקלדות עבריות. |
+| **`src/games/court_engine.js`** | מנוע בית המשפט Ace Attorney | ניהול Court Record, מד חיים (HP), באנרים מונפשים וסופים משפטיים. |
+| **`src/input/gamepad.js`** | מנוע שלטים ורטט | HTML5 Gamepad API, לולאת Polling, רטט Dual-Rumble Haptics. |
+| **`src/effects/atmosphere.js`** | מנוע אווירה וחלקיקים | 5 מצבי רוח דינמיים, 5 מערכות חלקיקים (בורקס, לבבות, ברקים, קומיקס). |
+| **`src/audio/audio.js`** | מנהל השמע והערוצים | תמיכה בקבצים בעברית, שליטה בווליום, מחלץ Blobs לשמע אופליין. |
+| **`src/audio/tts_engine.js`** | מנוע דיבוב והקראה חיה | אינטגרציית Google TTS והקראה חיה של הדיאלוגים בעברית. |
+| **`src/games/wii_pulse_game.js`** | מד דופק Wii EKG בזמן אמת | קנבס EKG חי, חישוב BPM משתנה, רטט שלט בקצב פעימות הלב. |
+| **`src/games/baldi_renderer.js`** | מבוך 3D Raycasting | מנוע 3D טהור על גבי CPU Canvas ללא WebGL (חיסכון סוללה מוחלט). |
+| **`src/games/battle_arena.js`** | זירת Bullet Hell של Deltarune | לולאת פיזיקה 60FPS עם חישובי Grazing ו-Collisions מדויקים. |
+| **`src/games/preg_game.js`** | קרב הבוס בחלל (Space VR) | מנוע Stamina, מערכת קומבו רציפה, 8 רוחות מסתובבות והילת שלב 2. |
 | **`sw.js`** | מנוע PWA ואופליין | Stale-While-Revalidate, פירוק Range 206, ושמירת כל הנכסים באופליין. |
 
 ---
@@ -165,7 +166,7 @@
 
 ```bash
 ├── index.html                  # דף הכניסה הראשי, מודאלים ושכבות המשחק
-├── sw.js                       # מנוע ה-Service Worker PWA ואופליין קאשינג (v112)
+├── sw.js                       # מנוע ה-Service Worker PWA ואופליין קאשינג
 ├── manifest.json               # הגדרות התקנה כאפליקציית Standalone
 ├── css/                        # שכבת העיצוב
 │   ├── main.css                # ממשק הסימולטור הראשי, טבלת סופים והגדרות
@@ -173,33 +174,58 @@
 │   ├── atmosphere.css          # פילטרים חיים, אנימציות אווירה ומערכות חלקיקים
 │   ├── battle.css              # עיצוב זירת הקרב של Deltarune ומדדי HP/TP
 │   ├── baldi.css               # ממשק המבוך התלת-מימדי וכפתורי מגע
+│   ├── persona5_menu.css       # תפריט ראשי מרהיב בסגנון Persona 5
 │   └── minigames.css           # שכבות מיני-משחקים ואפקטי רעידת מסך
 ├── images/                     # נכסים גרפיים ממוטבים (WebP/PNG)
 │   ├── characters/             # ספרייטים (ים חרדי, ינוור החרדי, ליליה, בוס)
 │   └── backgrounds/            # רקעים (בית משפט, חדר, התנגדות, לוגו מוסד)
-├── audio/                      # נכסי שמע ממוטבים (21 קובצי MP3 בעברית ובאנגלית)
-└── src/                        # קוד המקור הלוגי (Pure Vanilla JS)
-    ├── engine.js               # מנוע ה-VN הראשי, חיבור הגדרות ומעבר סצנות
-    ├── court_engine.js         # מנוע בית המשפט, תיק מוצגים ומד פסילות
-    ├── gamepad.js              # מנוע שלטים ורטט פיזי (Dual-Rumble)
-    ├── atmosphere.js           # מנוע אווירה דינמי, ניתוח טקסט וחלקיקים
-    ├── audio.js                # מנהל שמע רב-ערוצי ותמיכה באופליין
-    ├── wii_pulse_game.js       # מד דופק Wii EKG בזמן אמת
-    ├── battle.js               # ממשק ותפריטי קרב Deltarune
-    ├── battle_arena.js         # לולאת Dodging ופיזיקת קליעים
-    ├── baldi.js                # לוגיקת מבוך באלדי וחישוב שגיאות
-    ├── baldi_renderer.js       # מנוע Raycasting 3D (Pure CPU)
-    ├── preg_game.js            # מנוע קרב החלל VR, קומבואים ו-Stamina
-    ├── preg_game_renderer.js   # מנוע ציור 3D, חלקיקים והילות קרב
-    └── story/                  # מאגר הדיאלוגים המפוצל
-        ├── setup.js            # אתחול אובייקט הסיפור
-        ├── main.js             # קו העלילה הראשי
-        ├── court_ch1.js        # סאגת בית הדין פרק 1 (דין תורה: תביעת ליליה נגד ים)
-        ├── court_ch2.js        # סאגת בית הדין פרק 2 (התביעה הנגדית וסודות השאול)
-        ├── special.js          # נתיבים מיוחדים והרפתקאות
-        ├── polish_chocolate.js # נתיב ה-DLC: שוקולד פולני (פרקים 1-4)
-        ├── yam_shadow_story.js # סאגת הצל: ינוור ו-THE ECHO
-        └── endings.js          # הגדרות 91 הסופים הייחודיים
+├── audio/                      # נכסי שמע ממוטבים (קבצי MP3 בעברית ובאנגלית)
+└── src/                        # קוד המקור הלוגי המודולרי (Pure Vanilla JS)
+    ├── core/                   # ליבת מנוע המשחק
+    │   └── engine.js           # מנוע ה-VN הראשי, חיבור הגדרות ומעבר סצנות
+    ├── audio/                  # מערכות שמע ודיבוב
+    │   ├── audio.js            # מנהל שמע רב-ערוצי ותמיכה באופליין
+    │   └── tts_engine.js       # מנוע הקראה ודיבוב קולי (TTS)
+    ├── input/                  # מערכות קלט ובקרי שליטה
+    │   └── gamepad.js          # מנוע שלטים ורטט פיזי (Dual-Rumble)
+    ├── effects/                # אפקטים ויזואליים ואווירה
+    │   ├── atmosphere.js       # מנוע אווירה דינמי, ניתוח טקסט וחלקיקים
+    │   └── ascii_converter.js  # מנוע אפקטי טקסט ו-ASCII
+    ├── games/                  # מנועי מיני-משחקים וקרבות בוס
+    │   ├── minigames.js        # מנהל מיני-משחקים ראשי ומעברים
+    │   ├── court_engine.js     # מנוע בית המשפט, תיק מוצגים ומד פסילות
+    │   ├── wii_pulse_game.js   # מד דופק Wii EKG בזמן אמת
+    │   ├── battle.js           # ממשק ותפריטי קרב Deltarune
+    │   ├── battle_arena.js     # לולאת Dodging ופיזיקת קליעים
+    │   ├── baldi.js            # לוגיקת מבוך באלדי וחישוב שגיאות
+    │   ├── baldi_renderer.js   # מנוע Raycasting 3D (Pure CPU)
+    │   ├── slender.js          # לוגיקת תנועה ומבוך סלנדר
+    │   ├── slender_renderer.js # מנוע רינדור סלנדר
+    │   ├── preg_game.js        # מנוע קרב החלל VR, קומבואים ו-Stamina
+    │   ├── preg_game_renderer.js # מנוע ציור 3D, חלקיקים והילות קרב
+    │   ├── yam_shadow_battle.js  # לוגיקת קרב בוס צללים בסגנון פרסונה
+    │   └── yam_shadow_renderer.js # רינדור ויזואלי של קרב הצללים
+    └── story/                  # מאגר הדיאלוגים והעלילה המחולק לקטגוריות
+        ├── setup.js            # אתחול אובייקט הסיפור (window.story)
+        ├── main/               # עלילת החדר המרכזית והרחבות
+        │   ├── main.js         # קו העלילה הראשי
+        │   └── dialogue_expansions.js # הרחבות דיאלוגים
+        ├── court/              # סאגת בית הדין של אורנית (Ace Attorney)
+        │   ├── court.js        # נתיב בית הדין (גרסה כוללת)
+        │   ├── court_ch1.js    # תיק 1: דין תורה - תביעת ליליה נגד ים
+        │   └── court_ch2.js    # תיק 2: התביעה הנגדית וסודות השאול
+        ├── endings/            # סופים
+        │   └── endings.js      # הגדרות 91 הסופים הייחודיים
+        ├── polish_chocolate/   # סאגת השוקולד הפולני
+        │   ├── polish_chocolate.js     # פרק 1
+        │   ├── polish_chocolate_ch2.js # פרק 2
+        │   ├── polish_chocolate_ch3.js # פרק 3
+        │   └── polish_chocolate_ch4.js # פרק 4
+        └── special/            # מסלולים וקרבות מיוחדים
+            ├── special.js          # נתיבים מיוחדים והרפתקאות
+            ├── battle.js           # סצנות סיפור לקרב Deltarune
+            ├── baldi.js            # סצנות סיפור למבוך Baldi
+            └── yam_shadow_story.js # סאגת הצל: ינוור ו-THE ECHO
 ```
 
 ---

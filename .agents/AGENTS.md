@@ -8,14 +8,14 @@ For any AI developer assistant working in this workspace, please adhere strictly
 - All scripts are loaded sequentially as standard script tags in `index.html`. They share state globally or bind handlers to `window`.
 
 ## 2. Monolithic vs Modular Files
-- Keep the story dialogues split under `src/story/*.js` to manage AI context token counts.
+- Keep the story dialogues split under `src/story/**/*.js` to manage AI context token counts.
 - Keep the Deltarune battle logic split:
-  - `src/battle.js`: UI buttons, menus (ACT/ITEM/SPARE), HP/TP stats, writeConsole.
-  - `src/battle_arena.js`: Real-time bullet hell loops, spawning physics, collision & grazing detection.
+  - `src/games/battle.js`: UI buttons, menus (ACT/ITEM/SPARE), HP/TP stats, writeConsole.
+  - `src/games/battle_arena.js`: Real-time bullet hell loops, spawning physics, collision & grazing detection.
   - Connected via the global `battleCtx` object wrapper.
 - Keep the Baldi basics logic split:
-  - `src/baldi.js`: Pad questions, mobile/key controls, mistake calculations, jumpscare triggers, secret endings check.
-  - `src/baldi_renderer.js`: Raycasting 3D canvas draws, depth shading, billboard sprites sorting.
+  - `src/games/baldi.js`: Pad questions, mobile/key controls, mistake calculations, jumpscare triggers, secret endings check.
+  - `src/games/baldi_renderer.js`: Raycasting 3D canvas draws, depth shading, billboard sprites sorting.
   - Connected via the global `baldiCtx` reader object wrapper.
 
 ## 3. Preservation of existing Hebrew dialogues & structure
@@ -23,11 +23,11 @@ For any AI developer assistant working in this workspace, please adhere strictly
 
 ## 4. Development Workflow & Planning Guidelines (עבודה בטוחה ומתוכננת)
 To write highly readable, glitch-free code, follow this plan-first checklist:
-- **Research Scope First**: Before modifying any script, inspect its companion file (e.g., look at `src/battle_arena.js` when modifying `src/battle.js`) to see how state is shared.
+- **Research Scope First**: Before modifying any script, inspect its companion file (e.g., look at `src/games/battle_arena.js` when modifying `src/games/battle.js`) to see how state is shared.
 - **Respect Context Bridges**: 
   - Do not introduce isolated global variables.
   - Read/write shared state strictly through the context wrappers: `battleCtx` for Deltarune, and `baldiCtx` for Baldi.
-  - If a new state variable is needed in the physics/rendering loop, define it in the main UI script (`battle.js` / `baldi.js`) and expose it with a getter/setter property in the context broker so it updates reactively.
+  - If a new state variable is needed in the physics/rendering loop, define it in the main UI script (`src/games/battle.js` / `src/games/baldi.js`) and expose it with a getter/setter property in the context broker so it updates reactively.
 - **Order of Script Loadings**: Always ensure dependent scripts are loaded sequentially in `index.html` (e.g. helper scripts like `battle_arena.js` or `baldi_renderer.js` alongside their main controller scripts).
 - **Code Cleanliness**: Keep comments structured, write self-documenting function names, and preserve existing comments.
 
@@ -41,14 +41,14 @@ To write highly readable, glitch-free code, follow this plan-first checklist:
 - Use optimized formats (e.g. WebP/compressed PNG for images, and standard MP3 with moderate bitrates for audio) to ensure the game maintains a very low memory (RAM) footprint and minimal download size.
 
 ## 7. Keyboard Navigation & Accessibility Support (תמיכת מקלדת רציפה)
-- Always maintain and preserve keyboard fallback inputs for visual novel scenes (`src/engine.js`) and turn-based battle scenes (`src/battle.js`).
+- Always maintain and preserve keyboard fallback inputs for visual novel scenes (`src/core/engine.js`) and turn-based battle scenes (`src/games/battle.js`).
 - If you modify next-dialogue flows or add menu buttons, ensure they remain fully operable via key binds (Space/Enter for dialogues, 1-9 for choices and actions, Escape/Backspace for submenu closure) to keep the game completely playable on laptops without a mouse.
 - Keep HTML elements natively focusable and preserve the `:focus-visible` styling (defined in `css/main.css`) to allow seamless, visually guided Tab and Shift+Tab navigation.
 
 ## 8. Pregnancy VR Combat Engine & Combo System Rules
 - The engine is split modularly:
-  - `src/preg_game.js`: Manages keyboard/mobile input handlers, flat stamina calculations, combo recipe checks, logic status updates, and sound playback.
-  - `src/preg_game_renderer.js`: Manages real-time loop updates (`gameLoop` and `requestAnimationFrame`), Lissajous boss coordinates, 3D particles, 3D phantom billboard orbits, and blur filters.
+  - `src/games/preg_game.js`: Manages keyboard/mobile input handlers, flat stamina calculations, combo recipe checks, logic status updates, and sound playback.
+  - `src/games/preg_game_renderer.js`: Manages real-time loop updates (`gameLoop` and `requestAnimationFrame`), Lissajous boss coordinates, 3D particles, 3D phantom billboard orbits, and blur filters.
   - Connected via the global `pregCtx` state wrapper object.
 - **Aura Mechanics**: `#pregBossAura` displays a mild cosmic glow in Phase 1 and adds the `.phase2-aura` class (massive fiery red-orange animation) at 4.5s of the Phase 2 transformation.
 - **Cosmic Background Aura**: Phase 2 toggles `.phase2-background-aura` on `#pregSpaceContainer` to animate breathing dark violet/crimson radial gradients and box-shadow glows.
