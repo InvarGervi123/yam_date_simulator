@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v124-folder-reorg';
+const CACHE_NAME = 'yam-date-sim-v125-ending-registry';
 const ASSETS = [
   './',
   './index.html',
@@ -34,6 +34,7 @@ const ASSETS = [
   './src/story/special/battle.js',
   './src/story/special/baldi.js',
   './src/story/endings/endings.js',
+  './src/story/endings/ending_registry.js',
   './src/story/main/dialogue_expansions.js',
   './src/story/special/yam_shadow_story.js',
   './src/story/polish_chocolate/polish_chocolate.js',

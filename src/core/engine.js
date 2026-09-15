@@ -396,7 +396,12 @@ function showScene(target) {
     }
   }
 
-  speaker.textContent = scene.speaker || "";
+  if (window.endingRegistry && window.endingRegistry[id]) {
+    const reg = window.endingRegistry[id];
+    speaker.textContent = `${reg.code} - ${reg.title}`;
+  } else {
+    speaker.textContent = scene.speaker || "";
+  }
   
   let displayText = scene.text || "";
   if (window.asciiModeEnabled) {
@@ -484,12 +489,14 @@ function showScene(target) {
     return;
   }
 
-  if (scene.end) {
-    if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+  if (scene.end || (window.endingRegistry && window.endingRegistry[id])) {
     unlockEnding(id);
-    nextBtn.style.display = "none";
-    addChoice("לשחק שוב מההתחלה", "start");
-    return;
+    if (scene.end) {
+      if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
+      nextBtn.style.display = "none";
+      addChoice("לשחק שוב מההתחלה", "start");
+      return;
+    }
   }
 
   if (scene.choices && scene.choices.length > 0) {
@@ -571,45 +578,174 @@ const closeGallery = document.getElementById("closeGallery");
 const galleryBody = document.getElementById("galleryBody");
 const galleryCount = document.getElementById("galleryCount");
 const galleryTotal = document.getElementById("galleryTotal");
+const galleryMainCount = document.getElementById("galleryMainCount");
+const galleryMainTotal = document.getElementById("galleryMainTotal");
+const galleryTabsContainer = document.getElementById("galleryTabsContainer");
+
+let currentGalleryCategory = "ALL";
+
+const GALLERY_CATEGORIES = [
+  { id: "ALL", label: "הכל", icon: "🌐" },
+  { id: "MAIN", label: "ראשיים", icon: "🏆", headerTitle: "🏆 סיומים ראשיים (M01 - M14)" },
+  { id: "SECRET", label: "סודיים", icon: "🔮", headerTitle: "🔮 סיומים סודיים (S01 - S05)" },
+  { id: "COURT", label: "בית הדין", icon: "🏛️", headerTitle: "🏛️ סאגת בית הדין באורנית (C01 - C05)" },
+  { id: "DLC", label: "DLC וסאגות", icon: "🍫", headerTitle: "🍫 שוקולד פולני וקרב צללים (DLC01 - DLC11)" },
+  { id: "BAD", label: "סיומים רעים", icon: "💀", headerTitle: "💀 סיומים רעים נרטיביים (B01 - B12)" },
+  { id: "GAME_OVER", label: "פסילות", icon: "⚠️", headerTitle: "⚠️ מצבי פסילה מכניים (GO01 - GO03)" },
+  { id: "JOKE", label: "בדיחות ופאנצ'ים", icon: "🎭", headerTitle: "🎭 תוצאות קומיות ופאנצ'ים (J01 - J82)" }
+];
+
+const CATEGORY_ORDER = ["MAIN", "SECRET", "COURT", "DLC", "BAD", "GAME_OVER", "JOKE"];
 
 function openEndingsGallery() {
-  galleryBody.innerHTML = "";
-  
-  // Dynamic Ending Scanning
-  const endings = [];
-  for (let key in story) {
-    if (story[key] && story[key].end) {
-      // Execute onEnter if present to evaluate dynamic titles/text
-      if (typeof story[key].onEnter === "function" && !story[key].text) {
-        try { story[key].onEnter(story[key]); } catch (e) {}
+  const unlocked = getUnlockedEndings();
+  const registry = window.endingRegistry;
+
+  // Fallback if registry not loaded
+  if (!registry) {
+    galleryBody.innerHTML = "";
+    const endings = [];
+    for (let key in story) {
+      if (story[key] && story[key].end) {
+        const rawText = story[key].text || story[key].speaker || key;
+        const cleanName = rawText.split('\n')[0].replace(/^[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]*/gu, '').trim() || key;
+        endings.push({ id: key, speaker: story[key].speaker || "סוף", cleanName: cleanName });
       }
-      const rawText = story[key].text || story[key].speaker || key;
-      const cleanName = rawText.split('\n')[0].replace(/^[\s\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]*/gu, '').trim() || key;
-      endings.push({
-        id: key,
-        speaker: story[key].speaker || "סוף",
-        cleanName: cleanName
-      });
     }
+    if (galleryCount) galleryCount.textContent = unlocked.length;
+    if (galleryTotal) galleryTotal.textContent = endings.length;
+    endings.forEach((end, idx) => {
+      const isUnlocked = unlocked.includes(end.id);
+      const tr = document.createElement("tr");
+      tr.className = isUnlocked ? "unlocked-row" : "locked-row";
+      tr.innerHTML = `
+        <td style="text-align: center;">${idx + 1}</td>
+        <td>${isUnlocked ? `${end.speaker}: ${end.cleanName}` : "🔒 ???"}</td>
+        <td style="text-align: center;"><span class="${isUnlocked ? 'unlocked-badge' : 'locked-badge'}">${isUnlocked ? 'פתוח' : 'נעול'}</span></td>
+      `;
+      galleryBody.appendChild(tr);
+    });
+    galleryModal.style.display = "flex";
+    return;
   }
 
-  const unlocked = getUnlockedEndings();
-  galleryCount.textContent = unlocked.length;
-  galleryTotal.textContent = endings.length;
+  // Registry-based categorized gallery (excluding LEGACY)
+  const reachableKeys = Object.keys(registry).filter(k => registry[k].category !== "LEGACY");
+  const stats = {
+    MAIN: { unlocked: 0, total: 0 },
+    SECRET: { unlocked: 0, total: 0 },
+    COURT: { unlocked: 0, total: 0 },
+    DLC: { unlocked: 0, total: 0 },
+    BAD: { unlocked: 0, total: 0 },
+    GAME_OVER: { unlocked: 0, total: 0 },
+    JOKE: { unlocked: 0, total: 0 }
+  };
 
-  endings.forEach((end, idx) => {
-    const isUnlocked = unlocked.includes(end.id);
-    const tr = document.createElement("tr");
-    tr.className = isUnlocked ? "unlocked-row" : "locked-row";
+  let totalReachableUnlocked = 0;
 
-    tr.innerHTML = `
-      <td>${idx + 1}</td>
-      <td>${isUnlocked ? `${end.speaker}: ${end.cleanName}` : "🔒 ???"}</td>
-      <td><span class="${isUnlocked ? 'unlocked-badge' : 'locked-badge'}">${isUnlocked ? 'פתוח' : 'נעול'}</span></td>
-    `;
-    galleryBody.appendChild(tr);
+  reachableKeys.forEach(k => {
+    const cat = registry[k].category;
+    if (stats[cat]) {
+      stats[cat].total++;
+      if (unlocked.includes(k)) {
+        stats[cat].unlocked++;
+        totalReachableUnlocked++;
+      }
+    }
   });
 
+  // Update header counters
+  if (galleryMainCount) galleryMainCount.textContent = stats.MAIN.unlocked;
+  if (galleryMainTotal) galleryMainTotal.textContent = stats.MAIN.total;
+  if (galleryCount) galleryCount.textContent = totalReachableUnlocked;
+  if (galleryTotal) galleryTotal.textContent = reachableKeys.length;
+
+  // Render Category Navigation Tabs
+  if (galleryTabsContainer) {
+    galleryTabsContainer.innerHTML = "";
+    GALLERY_CATEGORIES.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = `gallery-cat-btn ${currentGalleryCategory === cat.id ? 'active' : ''}`;
+      
+      let badgeCount = "";
+      if (cat.id === "ALL") {
+        badgeCount = `(${totalReachableUnlocked}/${reachableKeys.length})`;
+      } else if (cat.id === "JOKE") {
+        badgeCount = `(${stats.JOKE.unlocked} נחשפו)`;
+      } else if (cat.id === "GAME_OVER") {
+        badgeCount = `(${stats.GAME_OVER.unlocked} נחשפו)`;
+      } else if (stats[cat.id]) {
+        badgeCount = `(${stats[cat.id].unlocked}/${stats[cat.id].total})`;
+      }
+
+      btn.textContent = `${cat.icon} ${cat.label} ${badgeCount}`;
+      btn.onclick = () => {
+        currentGalleryCategory = cat.id;
+        document.querySelectorAll(".gallery-cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderGalleryTable();
+      };
+      galleryTabsContainer.appendChild(btn);
+    });
+  }
+
+  function renderGalleryTable() {
+    galleryBody.innerHTML = "";
+
+    const categoriesToRender = currentGalleryCategory === "ALL" 
+      ? CATEGORY_ORDER 
+      : [currentGalleryCategory];
+
+    categoriesToRender.forEach(catId => {
+      const catConfig = GALLERY_CATEGORIES.find(c => c.id === catId);
+      const catKeys = reachableKeys.filter(k => registry[k].category === catId);
+      if (catKeys.length === 0) return;
+
+      // Render category section header row if viewing "ALL"
+      if (currentGalleryCategory === "ALL") {
+        const headerRow = document.createElement("tr");
+        headerRow.className = "gallery-category-header-row";
+        const catStat = stats[catId];
+        let subStatText = `${catStat.unlocked}/${catStat.total} התגלו`;
+        if (catId === "JOKE" || catId === "GAME_OVER") {
+          subStatText = `${catStat.unlocked} נחשפו מתוך ${catStat.total}`;
+        }
+        headerRow.innerHTML = `
+          <td colspan="3">${catConfig.headerTitle} • ${subStatText}</td>
+        `;
+        galleryBody.appendChild(headerRow);
+      }
+
+      // Render each ending row in category
+      catKeys.forEach(key => {
+        const item = registry[key];
+        const isUnlocked = unlocked.includes(key);
+        const tr = document.createElement("tr");
+        tr.className = isUnlocked ? "unlocked-row" : "locked-row";
+
+        let displayTitle = "";
+        if (isUnlocked) {
+          displayTitle = item.title;
+        } else if (item.category === "JOKE") {
+          displayTitle = "🔒 תוצאה קומית (טרם נחשפה)";
+        } else if (item.hidden) {
+          displayTitle = "🔒 סוף סודי (???)";
+        } else {
+          displayTitle = "🔒 ???";
+        }
+
+        const badgeClass = `gallery-code-badge code-${item.category.toLowerCase()}`;
+        tr.innerHTML = `
+          <td style="text-align: center;"><span class="${badgeClass}">${item.code}</span></td>
+          <td>${displayTitle}</td>
+          <td style="text-align: center;"><span class="${isUnlocked ? 'unlocked-badge' : 'locked-badge'}">${isUnlocked ? 'פתוח' : 'נעול'}</span></td>
+        `;
+        galleryBody.appendChild(tr);
+      });
+    });
+  }
+
+  renderGalleryTable();
   galleryModal.style.display = "flex";
 }
 
