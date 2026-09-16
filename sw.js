@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v125-ending-registry';
+const CACHE_NAME = 'yam-date-sim-v126-gallery-layout-fix';
 const ASSETS = [
   './',
   './index.html',

@@ -692,6 +692,32 @@ function openEndingsGallery() {
   function renderGalleryTable() {
     galleryBody.innerHTML = "";
 
+    // Update gallery header title & subtitle dynamically according to the active tab
+    const galleryTitleEl = document.getElementById("galleryTitle");
+    const gallerySubTitleEl = document.getElementById("gallerySubTitle");
+
+    if (currentGalleryCategory === "ALL") {
+      if (galleryTitleEl) {
+        galleryTitleEl.innerHTML = `🌐 כל הסופים והתוצאות: <span id="galleryCount">${totalReachableUnlocked}</span>/<span id="galleryTotal">${reachableKeys.length}</span>`;
+      }
+      if (gallerySubTitleEl) {
+        gallerySubTitleEl.innerHTML = `סיומים ראשיים שנחשפו: <strong>${stats.MAIN.unlocked}/${stats.MAIN.total}</strong> • סודיים: <strong>${stats.SECRET.unlocked}/${stats.SECRET.total}</strong>`;
+      }
+    } else {
+      const activeCat = GALLERY_CATEGORIES.find(c => c.id === currentGalleryCategory);
+      const catStat = stats[currentGalleryCategory];
+      if (galleryTitleEl && activeCat) {
+        galleryTitleEl.innerHTML = `${activeCat.icon} ${activeCat.label}: <span>${catStat.unlocked}</span>/<span>${catStat.total}</span>`;
+      }
+      if (gallerySubTitleEl) {
+        if (currentGalleryCategory === "JOKE" || currentGalleryCategory === "GAME_OVER") {
+          gallerySubTitleEl.innerHTML = `נחשפו <strong>${catStat.unlocked}</strong> מתוך <strong>${catStat.total}</strong> תוצאות אפשריות`;
+        } else {
+          gallerySubTitleEl.innerHTML = `התגלו <strong>${catStat.unlocked}</strong> מתוך <strong>${catStat.total}</strong> סיומים בקטגוריה`;
+        }
+      }
+    }
+
     const categoriesToRender = currentGalleryCategory === "ALL" 
       ? CATEGORY_ORDER 
       : [currentGalleryCategory];
