@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v126-gallery-layout-fix';
+const CACHE_NAME = 'yam-date-sim-v127-mobile-scroll-fix';
 const ASSETS = [
   './',
   './index.html',

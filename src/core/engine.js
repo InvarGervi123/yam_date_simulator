@@ -278,7 +278,7 @@ function showScene(target) {
     return;
   } else {
     if (p5Menu) p5Menu.style.display = "none";
-    if (dialogBox) dialogBox.style.display = "block";
+    if (dialogBox) dialogBox.style.display = "flex";
     if (choices) choices.style.display = "flex";
   }
 
@@ -516,9 +516,46 @@ function showScene(target) {
     nextBtn.style.display = "none";
   }
 
-  // Allow clicking the dialog box itself to skip/advance
-  if (dialogBox) {
-    dialogBox.onclick = skipOrAdvanceDialogue;
+  // Allow clicking the dialog box to skip/advance, but distinguish dragging/scrolling on mobile touch
+  if (dialogBox && !dialogBox.dataset.boundEvents) {
+    dialogBox.dataset.boundEvents = "true";
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isTouchDrag = false;
+
+    dialogBox.addEventListener("touchstart", (e) => {
+      if (e.touches && e.touches.length > 0) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isTouchDrag = false;
+      }
+    }, { passive: true });
+
+    dialogBox.addEventListener("touchmove", (e) => {
+      if (e.touches && e.touches.length > 0) {
+        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+        if (deltaX > 8 || deltaY > 8) {
+          isTouchDrag = true;
+        }
+      }
+    }, { passive: true });
+
+    dialogBox.addEventListener("touchend", (e) => {
+      if (!isTouchDrag) {
+        // Prevent ghost click from firing a second time on tap
+        if (e.cancelable) e.preventDefault();
+        skipOrAdvanceDialogue();
+      }
+    });
+
+    dialogBox.addEventListener("click", (e) => {
+      // Ignore click if it came from touch event (pointerType === 'touch')
+      if (e.pointerType === "touch") return;
+      // Do not skip if user clicked inside a button (e.g. nextBtn or tts replay)
+      if (e.target.closest("button")) return;
+      skipOrAdvanceDialogue();
+    });
   }
 }
 

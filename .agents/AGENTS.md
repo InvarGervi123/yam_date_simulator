@@ -1,76 +1,225 @@
-# Coding Guidelines & Architecture Constraints
+# Yam Date Simulator — AI Coding Guidelines
 
-For any AI developer assistant working in this workspace, please adhere strictly to these rules:
+These rules apply to all AI-assisted development in this repository.
 
-## 1. No ES Modules (CORS file:// limits)
-- The project runs directly via the `file://` protocol (double-clicking `index.html` locally).
-- **DO NOT** use `import` / `export` ES Module syntax. 
-- All scripts are loaded sequentially as standard script tags in `index.html`. They share state globally or bind handlers to `window`.
+## 1. Core Architecture Rules
 
-## 2. Monolithic vs Modular Files
-- Keep the story dialogues split under `src/story/**/*.js` to manage AI context token counts.
-- Keep the Deltarune battle logic split:
-  - `src/games/battle.js`: UI buttons, menus (ACT/ITEM/SPARE), HP/TP stats, writeConsole.
-  - `src/games/battle_arena.js`: Real-time bullet hell loops, spawning physics, collision & grazing detection.
-  - Connected via the global `battleCtx` object wrapper.
-- Keep the Baldi basics logic split:
-  - `src/games/baldi.js`: Pad questions, mobile/key controls, mistake calculations, jumpscare triggers, secret endings check.
-  - `src/games/baldi_renderer.js`: Raycasting 3D canvas draws, depth shading, billboard sprites sorting.
-  - Connected via the global `baldiCtx` reader object wrapper.
+This project is intentionally built as a lightweight, local-first Vanilla JavaScript game.
 
-## 3. Preservation of existing Hebrew dialogues & structure
-- Do not lose or change any Hebrew meme phrases, paths, or keys when refactoring.
+Important constraints:
 
-## 4. Development Workflow & Planning Guidelines (עבודה בטוחה ומתוכננת)
-To write highly readable, glitch-free code, follow this plan-first checklist:
-- **Research Scope First**: Before modifying any script, inspect its companion file (e.g., look at `src/games/battle_arena.js` when modifying `src/games/battle.js`) to see how state is shared.
-- **Respect Context Bridges**: 
-  - Do not introduce isolated global variables.
-  - Read/write shared state strictly through the context wrappers: `battleCtx` for Deltarune, and `baldiCtx` for Baldi.
-  - If a new state variable is needed in the physics/rendering loop, define it in the main UI script (`src/games/battle.js` / `src/games/baldi.js`) and expose it with a getter/setter property in the context broker so it updates reactively.
-- **Order of Script Loadings**: Always ensure dependent scripts are loaded sequentially in `index.html` (e.g. helper scripts like `battle_arena.js` or `baldi_renderer.js` alongside their main controller scripts).
-- **Code Cleanliness**: Keep comments structured, write self-documenting function names, and preserve existing comments.
+- Keep the project fully compatible with `file://`.
+- Do NOT introduce ES Modules (`import` / `export`).
+- Do NOT introduce React, Vue, Angular, bundlers, npm runtime dependencies, or build steps.
+- Do NOT convert `.js` files to TypeScript.
+- Scripts are loaded through classic `<script>` tags in `index.html`.
+- Existing systems may communicate through `window`, shared global objects, or context wrappers.
+- Preserve the current architecture unless the user explicitly asks for a structural refactor.
 
-## 5. PWA & Service Worker Offline Caching (תמיכה באופליין ו-PWA)
-- If you add new static assets to the project (e.g. new audio files under `audio/`, new images under `images/`, or new script files under `src/`), **YOU MUST** append their relative file paths to the `ASSETS` array inside `sw.js`. This guarantees they will be cached for offline play.
-- Do not remove or alter the `window.location.protocol.startsWith('http')` condition guarding the service worker registration in `index.html`. This ensures the app can still be opened via the `file://` protocol locally without throwing security exceptions.
+The goal is:
+- simple local execution
+- offline compatibility
+- very low overhead
+- minimal setup
+- small project size
 
-## 6. Asset Compression and Optimization (דחיסת ואופטימיזציית מדיה)
-- Every static media asset (images under `images/` or audio under `audio/`) added to this repository **MUST** be compressed and optimized before commit.
-- Avoid raw heavy formats like BMP, high-res TIFF, or uncompressed WAV.
-- Use optimized formats (e.g. WebP/compressed PNG for images, and standard MP3 with moderate bitrates for audio) to ensure the game maintains a very low memory (RAM) footprint and minimal download size.
+## 2. FAST PATCH MODE — DEFAULT
 
-## 7. Keyboard Navigation & Accessibility Support (תמיכת מקלדת רציפה)
-- Always maintain and preserve keyboard fallback inputs for visual novel scenes (`src/core/engine.js`) and turn-based battle scenes (`src/games/battle.js`).
-- If you modify next-dialogue flows or add menu buttons, ensure they remain fully operable via key binds (Space/Enter for dialogues, 1-9 for choices and actions, Escape/Backspace for submenu closure) to keep the game completely playable on laptops without a mouse.
-- Keep HTML elements natively focusable and preserve the `:focus-visible` styling (defined in `css/main.css`) to allow seamless, visually guided Tab and Shift+Tab navigation.
+Use FAST PATCH MODE for:
 
-## 8. Pregnancy VR Combat Engine & Combo System Rules
-- The engine is split modularly:
-  - `src/games/preg_game.js`: Manages keyboard/mobile input handlers, flat stamina calculations, combo recipe checks, logic status updates, and sound playback.
-  - `src/games/preg_game_renderer.js`: Manages real-time loop updates (`gameLoop` and `requestAnimationFrame`), Lissajous boss coordinates, 3D particles, 3D phantom billboard orbits, and blur filters.
-  - Connected via the global `pregCtx` state wrapper object.
-- **Aura Mechanics**: `#pregBossAura` displays a mild cosmic glow in Phase 1 and adds the `.phase2-aura` class (massive fiery red-orange animation) at 4.5s of the Phase 2 transformation.
-- **Cosmic Background Aura**: Phase 2 toggles `.phase2-background-aura` on `#pregSpaceContainer` to animate breathing dark violet/crimson radial gradients and box-shadow glows.
-- **Phantom Orbitals**: 8 phantom Yams are spawned dynamically inside `#pregBossContainer` at 2s of the transition. They orbit at a radius of `125px` and scale up to `3.5x` flying towards the screen during the `lunging` state.
-- **Combo Recipe Validation**:
-  - The combo is sequence-based: keys match `W` (for attack inputs) and `S` (for crouch/dodge inputs).
-  - Track progress with `recipeProgress`. Highlight completed steps in green (`#2ecc71`) and pending in grey (`#bdc3c7`).
-  - Mismatched inputs or taking damage instantly resets `recipeProgress` to `0`.
-  - Completing a sequence triggers the Special Burek Strike (30 damage and a 4-second freeze on Yam's HP regeneration).
-- **Dodge Stamina Costs**:
-  - Entering dodge stance costs 10 stamina flat.
-  - Holding dodge drains 0.4 stamina per frame. Running out of stamina forces the stance back to `"ready"` and locks the player in a 1.5s gasping fatigue state.
-- **Floating Combat Text & Neon Slash**:
-  - Floating feedback tags (e.g. `"⚔️ CRITICAL!"`, `"🛡️ DODGED!"`, `"🥵 EXHAUSTED!"`) must spawn above Yam inside `pregBossContainer` using `spawnFloatingText`.
-  - Neon diagonal slash overlay (`#pregSlashEffect`) triggers `.slash-animate` on combo completion.
-- **Transformation Timeline**: Must last exactly 6 seconds: 0s-2s sprite flicker, 2s-4s stagger spawn of 8 phantoms, 4.5s aura transition & music swap, 6s transition complete.
-- **Prevent Room Leak**: Shakes and ducking transformations must never be applied to `#pregOverlay`. They must be applied strictly to internal wrapper nodes (`#pregSpaceContainer` and `#pregBossContainer`).
+- small bug fixes
+- UI fixes
+- CSS fixes
+- scrolling/layout issues
+- isolated event-handler bugs
+- minor gameplay corrections
+- small accessibility fixes
 
-## 9. Modular Settings, JSDoc typings & Layout Independent Keyboards
-- Expose all custom preferences (audio channels, typewriter toggles, animations, OLED battery saver) through the settings gear toggle (`⚙️`) and keep preferences synchronized in `localStorage`.
-- Maintain the JSDoc typings for the four core minigame contexts (`slenderCtx`, `baldiCtx`, `pregCtx`, `battleCtx`) to guarantee autocomplete, type safety, and editor inline documentation.
-- Keep static assets sorted: characters belong under `images/characters/` and room/scene backgrounds under `images/backgrounds/`.
-- Ensure all interactive minigames support layout-independent bindings using physical `e.code` (`KeyW`/`KeyA`/`KeyS`/`KeyD`/`KeyE`), Hebrew equivalents (`ק`/`ש`/`ד`/`ג`/`׳`), and Arrow keys so that switching language layouts never freezes player actions.
+Rules:
 
+- Start only with the directly relevant file(s).
+- Do NOT scan the entire repository.
+- Do NOT automatically inspect companion files.
+- Do NOT repeatedly reopen large files.
+- Search only for the exact function, DOM ID, CSS class, variable, or symbol needed.
+- Inspect another file only when the current code clearly depends on it.
+- Prefer modifying 1–3 files maximum.
+- Once the root cause is identified, patch it immediately.
+- Do not refactor unrelated working code.
+- Verify only the affected feature.
 
+A small CSS or UI bug must NOT trigger a full architecture investigation.
+
+## 3. SAFE STRUCTURAL MODE
+
+Use broader investigation only when the user explicitly requests:
+
+- refactoring
+- moving files
+- splitting files
+- changing shared state
+- modifying script load order
+- adding a new subsystem
+- large engine changes
+- changes affecting multiple systems
+
+In this mode:
+
+- inspect dependencies first
+- inspect `index.html` load order when relevant
+- inspect `sw.js` when paths/files/assets change
+- perform wider regression checks
+
+## 4. Preserve Story and Game Content
+
+Unless explicitly requested, do NOT change:
+
+- Hebrew dialogue
+- jokes or meme text
+- scene keys
+- ending keys
+- routes
+- choice destinations
+- story order
+- existing gameplay behavior
+
+Do not rewrite content during technical fixes.
+
+## 5. JSDoc Typing
+
+Use JSDoc for TypeScript-like editor support when useful.
+
+Allowed:
+
+```js
+/**
+ * @typedef {Object} ExampleCtx
+ * @property {number} hp
+ */
+
+/** @type {HTMLElement|null} */
+const element = document.getElementById("example");
+
+Do NOT introduce real TypeScript syntax such as:
+
+interface Example {}
+type Example = {}
+declare global {}
+const hp: number = 100;
+
+Keep the project plain JavaScript.
+
+Existing JSDoc context wrappers should be treated as trusted documentation.
+
+6. Global and Shared State
+
+Prefer existing shared APIs and context wrappers.
+
+Do not create unnecessary new global variables.
+
+If a system already exposes state through an existing context object or window API, reuse it.
+
+Do not redesign global state during a small patch.
+
+7. Keyboard Support
+
+If you modify an existing keyboard-controlled feature, preserve keyboard support.
+
+For gameplay controls:
+
+prefer physical keyboard codes using event.code
+support layout-independent input where practical
+Hebrew keyboard layout must not break gameplay controls
+
+If a feature already supports:
+
+WASD
+Arrow Keys
+Enter / Space
+Escape / Backspace
+
+do not accidentally remove that behavior.
+
+Do NOT audit unrelated keyboard systems during a normal bug fix.
+
+8. PWA / Offline / Service Worker
+
+The project must remain compatible with:
+
+file://
+localhost / HTTP
+offline PWA usage
+
+Only inspect or modify sw.js when:
+
+a file is added
+a file is removed
+a file is moved
+a static asset path changes
+
+If a new static file is added, update the ASSETS list when required.
+
+Do not touch the Service Worker for unrelated UI or gameplay fixes.
+
+Preserve the existing HTTP-only Service Worker registration behavior.
+
+9. Assets
+
+When adding new assets:
+
+keep images organized in the existing image folders
+keep audio in the existing audio folders
+prefer compressed formats
+avoid unnecessarily large media files
+
+Do not reprocess existing assets unless requested.
+
+10. Minimal Change Principle
+
+For every task:
+
+Identify the smallest relevant area.
+Make the smallest safe change.
+Avoid unrelated cleanup.
+Avoid opportunistic refactors.
+Preserve current behavior outside the requested fix.
+Verify the exact feature that was changed.
+
+If more than 3 files appear necessary for a small fix, stop and reassess before expanding scope.
+
+11. Performance / Investigation Limit
+
+For normal small tasks:
+
+no repository-wide exploration
+no broad architecture review
+no unnecessary dependency discovery
+no repeated reading of the same file sections
+no speculative refactoring
+
+Trust the existing architecture unless the bug proves it is relevant.
+
+12. Reporting
+
+After a small fix, report briefly:
+
+root cause
+files changed
+what was fixed
+verification result
+
+Do not produce a long architectural report unless requested.
+
+Core Principle
+
+Scale the investigation to the task.
+
+Small bug:
+→ small investigation
+→ small patch
+→ focused verification
+
+Structural change:
+→ dependency analysis
+→ careful implementation
+→ broader verification

@@ -195,6 +195,8 @@ html, body {
   min-height: 0; /* CRITICAL: Enables overflow-y: auto in Flexbox */
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth kinetic scrolling on iOS Safari */
+  touch-action: pan-y; /* Explicitly allow vertical touch scrolling */
   white-space: pre-line;
   line-height: 1.6;
   font-size: 19px;
@@ -239,6 +241,8 @@ html, body {
   z-index: 25;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   pointer-events: auto;
   padding: 8px 12px;
   box-sizing: border-box;
@@ -640,6 +644,8 @@ button {
   flex-shrink: 1;
   min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.25);
