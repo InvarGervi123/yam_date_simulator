@@ -14,15 +14,33 @@ Object.assign(window.story, {
     "choices": [
       {
         "text": "ים, בוא לדייט קטן וזהו",
-        "next": "simple_offer"
+        "next": "simple_offer",
+        "onSelect": function() {
+          if (window.gameState) {
+            window.gameState.addStat('romance', 1);
+            window.gameState.addStat('trust', 1);
+          }
+        }
       },
       {
         "text": "אני אביא בורקס",
-        "next": "burekas_path"
+        "next": "burekas_path",
+        "onSelect": function() {
+          if (window.gameState) {
+            window.gameState.setFlag('hasBurekas', true);
+            window.gameState.addStat('chaos', 1);
+          }
+        }
       },
       {
         "text": "לשאול אותו בעדינות: 'ים, למה אתה בדיכאון ולא רוצה לקום?'",
-        "next": "yam_depression_ask"
+        "next": "yam_depression_ask",
+        "onSelect": function() {
+          if (window.gameState) {
+            window.gameState.addStat('romance', 1);
+            window.gameState.addStat('trust', 2);
+          }
+        }
       },
       {
         "text": "לשבת לידו בשקט כמו בן אדם נורמלי",

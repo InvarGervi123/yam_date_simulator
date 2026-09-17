@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yam-date-sim-v127-mobile-scroll-fix';
+const CACHE_NAME = 'yam-date-sim-v128-run-state';
 const ASSETS = [
   './',
   './index.html',
@@ -24,6 +24,7 @@ const ASSETS = [
   './src/effects/atmosphere.js',
   './src/games/court_engine.js',
   './src/audio/tts_engine.js',
+  './src/core/state.js',
   './src/core/engine.js',
   './src/story/setup.js',
   './src/story/main/main.js',

@@ -45,6 +45,7 @@ Object.assign(window.story, {
         text: "🌸 לנסות גישה רגועה ורומנטית...",
         next: "room_intro_normal",
         onSelect: function() {
+          if (window.gameState) window.gameState.addStat('romance', 2);
           if (typeof playMusic === "function") playMusic("audio/בואי תמי (גרסא לדייטים).mp3");
         }
       },
@@ -52,6 +53,10 @@ Object.assign(window.story, {
         text: "🔥 לנסות גישה פיזית ודרמטית...",
         next: "room_intro_force",
         onSelect: function() {
+          if (window.gameState) {
+            window.gameState.addStat('force', 2);
+            window.gameState.addStat('chaos', 1);
+          }
           if (typeof playMusic === "function") playMusic("audio/גישה פיזית ודרמטית.mp3");
         }
       },
@@ -294,6 +299,16 @@ Object.assign(window.story, {
     speaker: "ים",
     characterAnimation: "float",
     text: "'דייט? עכשיו?\nאני עסוק ב־INVARIRON, בים שמואל הפקות, ובפרויקט הכי חשוב שלי: לא לזוז.'",
+    onEnter: function(scene) {
+      const state = window.gameState;
+      if (state && state.stats.force >= 2) {
+        scene.text = "'דייט? עכשיו?\nאחרי שנכנסת לחדר כמו שוטר פריצה ומאיימת לגרור אותי?! אני מתבצר פה ב־INVARIRON ובים שמואל הפקות, ובחיים אני לא יוצא איתך ככה!'";
+      } else if (state && state.stats.romance >= 2) {
+        scene.text = "'דייט? עכשיו?\nתראי... נכנסת לפה כזה בעדינות ורוך שזה כמעט מבלבל אותי, אבל אני עדיין עסוק ב־INVARIRON, בים שמואל הפקות, ובפרויקט הכי חשוב שלי: לא לזוז.'";
+      } else {
+        scene.text = "'דייט? עכשיו?\nאני עסוק ב־INVARIRON, בים שמואל הפקות, ובפרויקט הכי חשוב שלי: לא לזוז.'";
+      }
+    },
     choices: [
       { text: "הערוצים יכולים לחכות. אהבה לא", next: "love_vs_channels" },
       { text: "אני אעשה סאב לשני הערוצים", next: "sub_offer" },
@@ -306,6 +321,16 @@ Object.assign(window.story, {
     character: "images/characters/yam_horny.png",
     speaker: "ים",
     text: "ים מסתכל עלייך כאילו הרגע הצעת למחוק לו את ההיסטוריה ביוטיוב.\n\n'אהבה לא יכולה לחכות?\nיפה. גם האלגוריתם לא. האלגוריתם רעב. האלגוריתם לא ישן. האלגוריתם לא שואל מה שלומך.'",
+    onEnter: function(scene) {
+      const state = window.gameState;
+      if (state && state.stats.force >= 2) {
+        scene.text = "ים מחזיק את השמיכה כמגן הדף ומביט בך בחשדנות מוחלטת.\n\n'אהבה לא יכולה לחכות?!\nאיזה אהבה, את הרגע ניסית להפעיל עליי כוח פיזי! האלגוריתם אולי רעב ולא ישן, אבל לפחות הוא לא מנסה לשבור לי את העצמות במיטה!'";
+      } else if (state && state.stats.romance >= 2) {
+        scene.text = "ים מביט בך במבט מהוסס, מוריד קצת את השמיכה מהפנים.\n\n'אהבה לא יכולה לחכות?\nאת אומרת את זה כל כך יפה שזה עושה לי דפיקות לב... אבל האלגוריתם לא מתחשב ברומנטיקה! האלגוריתם רעב, האלגוריתם לא ישן, ולא אכפת לו כמה את מתוקה!'";
+      } else {
+        scene.text = "ים מסתכל עלייך כאילו הרגע הצעת למחוק לו את ההיסטוריה ביוטיוב.\n\n'אהבה לא יכולה לחכות?\nיפה. גם האלגוריתם לא. האלגוריתם רעב. האלגוריתם לא ישן. האלגוריתם לא שואל מה שלומך.'";
+      }
+    },
     choices: [
       { text: "אני אהיה האלגוריתם שלך", next: "algorithm_love" },
       { text: "אז נצלם את הדייט לערוץ", next: "content_date" },
@@ -328,6 +353,16 @@ Object.assign(window.story, {
     character: "images/characters/yam_horny.png",
     speaker: "ים",
     text: "'דייט כתוכן?'\n\nים קם חצי סנטימטר מהמיטה.\nזה לא נשמע הרבה, אבל מבחינת פיזיקה זה כמו נחיתה על הירח עם כפכפים.",
+    onEnter: function(scene) {
+      const state = window.gameState;
+      if (state && state.stats.force >= 2) {
+        scene.text = "'דייט כתוכן?!'\n\nים קופץ אחורה ונצמד לקיר עם הטלפון שלוף:\n'מה, את רוצה לצלם סרטון סנאף שבו את מפעילה עליי אלימות ומכריחה אותי לצאת מהמיטה?! ינוור יעשה על זה ריאקשן של שעתיים!'";
+      } else if (state && state.stats.romance >= 2) {
+        scene.text = "'דייט כתוכן?'\n\nים מתיישב לאט על קצה המיטה ומביט בך בחיוך מבויש.\n'אם את באה בגישה כל כך טובה ורכה, אולי באמת שווה לעשות מזה סרטון זוגי חמוד... זה נס רפואי שקמתי ככה בלי לריב.'";
+      } else {
+        scene.text = "'דייט כתוכן?'\n\nים קם חצי סנטימטר מהמיטה.\nזה לא נשמע הרבה, אבל מבחינת פיזיקה זה כמו נחיתה על הירח עם כפכפים.";
+      }
+    },
     choices: [
       { text: "נצלם וידאו בשם: ניסיתי לצאת לדייט וכמעט מתתי חברתית", next: "end_content_empire" },
       { text: "נעשה לייב של הדייט", next: "live_date" },
@@ -349,6 +384,16 @@ Object.assign(window.story, {
     character: "images/characters/yam_horny.png",
     speaker: "ים",
     text: "'דייט פרטי? בלי תוכן? בלי כותרת? בלי תמונה ממוזערת?'\n\nהוא נראה אבוד. כמו יוצר תוכן בלי אינטרנט ובלי תירוץ.",
+    onEnter: function(scene) {
+      const state = window.gameState;
+      if (state && state.stats.force >= 2) {
+        scene.text = "'דייט פרטי?! בלי מצלמות?!'\n\nים תופס את הראש בבהלה:\n'את השתגעת?! אין מצב שאני נשאר איתך לבד בלי עדים ובלי תיעוד וידאו אחרי איך שהתנפלת עליי קודם! המצלמה זו תעודת הביטוח היחידה שלי ממך!'";
+      } else if (state && state.stats.romance >= 2) {
+        scene.text = "'דייט פרטי? רק שנינו... בלי מצלמות, בלי טאמבנייל ובלי צופים בדיסקורד?'\n\nים מוריד את הטלפון לגמרי. העיניים שלו נוצצות:\n'וואלה... אחרי כל הרוגע והחום שהבאת איתך לחדר, אולי מגיע לנו רגע אמיתי אחד בלי כל הבולשיט של הרשת.'";
+      } else {
+        scene.text = "'דייט פרטי? בלי תוכן? בלי כותרת? בלי תמונה ממוזערת?'\n\nהוא נראה אבוד. כמו יוצר תוכן בלי אינטרנט ובלי תירוץ.";
+      }
+    },
     choices: [
       { text: "כן. רק אנחנו", next: "true_date_offer" },
       { text: "טוב, נשים לפחות טאמבנייל", next: "end_thumbnail" }
@@ -453,6 +498,13 @@ Object.assign(window.story, {
     speaker: "המספר",
     character: "images/characters/yam.png",
     text: "ים קם.\nהיקום נבהל.\nכוח הכבידה הגיש ערעור.\nעכשיו צריך לבחור לאן הולכים.",
+    onEnter: function(scene) {
+      if (window.gameState && window.gameState.hasFlag('hasBurekas')) {
+        scene.text = "ים קם.\nהיקום נבהל, אבל ריח הבורקס החם שהבאת הצליח לשכנע אותו לעמוד על הרגליים.\nעכשיו צריך לבחור לאן הולכים.";
+      } else {
+        scene.text = "ים קם.\nהיקום נבהל.\nכוח הכבידה הגיש ערעור.\nעכשיו צריך לבחור לאן הולכים.";
+      }
+    },
     choices: [
       { text: "פתח תקווה", next: "petah_tikva_path" },
       { text: "קולנוע", next: "cinema_path" },

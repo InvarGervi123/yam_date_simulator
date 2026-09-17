@@ -1420,6 +1420,7 @@ function initPersona5Menu() {
 
   if (p5BtnPlay) {
     p5BtnPlay.onclick = () => {
+      if (window.gameState) window.gameState.reset();
       triggerVibration(20);
       if (typeof playSfx === "function") playSfx("audio/inject.mp3");
       showScene("room_intro");
