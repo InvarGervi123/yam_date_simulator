@@ -141,7 +141,7 @@ const DEFAULT_CHARACTER = "images/characters/yam.png";
 
 // Haptic Vibration helper
 function triggerVibration(pattern) {
-  if (typeof navigator !== "undefined" && navigator.vibrate) {
+  if (window.hasUserInteracted && typeof navigator !== "undefined" && navigator.vibrate) {
     try {
       navigator.vibrate(pattern);
     } catch (e) {}
