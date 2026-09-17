@@ -1,5 +1,51 @@
 // --- Modular Visual Novel Engine ---
 
+/**
+ * @typedef {Object} StoryChoice
+ * @property {string} text - The button label displayed to the player
+ * @property {string} [next] - Target scene ID to transition to when selected
+ * @property {function(): void} [onSelect] - Optional callback triggered upon selection
+ */
+
+/**
+ * @typedef {Object} StoryScene
+ * @property {string} [speaker] - Displayed character speaker name
+ * @property {string} text - Spoken dialogue text
+ * @property {string} [bg] - Background image asset path
+ * @property {string} [character] - Character sprite image path
+ * @property {string} [music] - Background music audio path
+ * @property {string} [sfx] - Sound effect audio path played on enter
+ * @property {'shake'|'flash'|'redflash'} [effect] - Screen visual effect
+ * @property {'bounce'|'shake'|'slide_in'|'float'} [characterAnimation] - Character sprite animation
+ * @property {string} [next] - Next scene identifier
+ * @property {string} [nextText] - Next button label override
+ * @property {Array<StoryChoice>} [choices] - List of choices for the player
+ * @property {string} [minigame] - Minigame trigger identifier
+ * @property {boolean} [end] - Marks scene as an ending
+ * @property {function(StoryScene): void} [onEnter] - Lifecycle hook when entering the scene
+ * @property {boolean} [speedlines] - Ace Attorney speedlines toggle
+ * @property {boolean} [dualInvars] - Ace Attorney dual Invars toggle
+ * @property {boolean} [holdIt] - Ace Attorney Hold It banner trigger
+ * @property {boolean} [objection] - Ace Attorney Objection trigger
+ * @property {boolean} [gavel] - Ace Attorney Gavel animation trigger
+ * @property {boolean} [deskSlam] - Ace Attorney Desk Slam trigger
+ * @property {boolean} [zoom] - Ace Attorney Dramatic Zoom trigger
+ * @property {boolean} [blackout] - Ace Attorney Blackout screen toggle
+ */
+
+/**
+ * @typedef {Object} MinigameConfig
+ * @property {'click_mash'|'dodge_reaction'|'rhythm_catch'|'deltarune_battle'|'math_quiz'|'baldi_basics'|'pregnancy_space'|'slender_3d'|'yam_shadow_battle'} type
+ * @property {number} [duration] - Duration in milliseconds
+ * @property {number} [target] - Target score or clicks
+ * @property {string} nextSuccess - Next scene ID on success
+ * @property {string} nextFail - Next scene ID on failure
+ * @property {number} [bossHp] - Optional boss HP
+ * @property {number} [playerHp] - Optional player HP
+ * @property {number} [bossAttackPower] - Attack damage modifier
+ * @property {number} [notebooks] - Target notebooks for Baldi
+ */
+
 let currentScene = "start";
 
 // Typewriter & Audio settings state
@@ -109,6 +155,10 @@ function triggerVibration(pattern) {
 // Performance Optimization: Cache for preloaded images
 const preloadedImages = new Set();
 
+/**
+ * Preloads image assets for the current scene's sequential and choice destinations.
+ * @param {StoryScene} scene
+ */
 function preloadNextAssets(scene) {
   if (!scene) return;
   const urlsToPreload = [];

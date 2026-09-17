@@ -16,6 +16,7 @@
  * @property {boolean} success - Mapped state if the player collects all code pages and escapes.
  * @property {boolean} active - Flag indicating if the minigame physics loop is running.
  */
+/** @type {SlenderCtx} */
 window.slenderCtx = {
   px: 2.5,
   py: 2.5,

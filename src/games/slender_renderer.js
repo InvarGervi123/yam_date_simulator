@@ -52,6 +52,7 @@ window.slenderRenderer = (function() {
   function drawFrame() {
     if (!preElement) return;
 
+    /** @type {SlenderCtx} */
     const ctx = window.slenderCtx;
     if (!ctx || !ctx.active) return;
 

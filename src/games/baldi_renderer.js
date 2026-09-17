@@ -1,6 +1,11 @@
 // --- Baldi's Basics 3D Raycasting Renderer Module ---
 
 window.baldiRenderer = {
+  /**
+   * Renders a 3D raycast frame for Baldi's basics minigame.
+   * @param {BaldiCtx} ctx
+   * @param {CanvasRenderingContext2D} canvasCtx
+   */
   render3D: function(ctx, canvasCtx) {
     if (ctx.jumpScareActive) {
       // Flashing screen

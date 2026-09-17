@@ -1,3 +1,4 @@
+// @ts-check
 // --- Lightweight Run-State Management ---
 // Tracks player choices and behavioral tendencies across a single run.
 // Does NOT modify persistent save data or localStorage.
@@ -22,8 +23,18 @@
  * @property {boolean} invarThreatened - Used Invar's name as leverage or threat
  */
 
-window.gameState = {
-  /** @type {GameStats} */
+/**
+ * @typedef {Object} GameState
+ * @property {GameStats} stats - Run statistics tracking player tendencies
+ * @property {GameFlags} flags - Progression and event flags for this run
+ * @property {function(): void} reset - Resets all run stats and flags to initial baseline
+ * @property {function(keyof GameStats, number): void} addStat - Safely adds or subtracts a stat value (clamped 0-10)
+ * @property {function(keyof GameFlags, boolean=): void} setFlag - Sets a boolean flag
+ * @property {function(keyof GameFlags): boolean} hasFlag - Checks a boolean flag
+ */
+
+/** @type {GameState} */
+const gameState = {
   stats: {
     romance: 0,
     chaos: 0,
@@ -31,7 +42,6 @@ window.gameState = {
     trust: 3
   },
 
-  /** @type {GameFlags} */
   flags: {
     hasBurekas: false,
     usedPhysicalForce: false,
@@ -43,10 +53,6 @@ window.gameState = {
     invarThreatened: false
   },
 
-  /**
-   * Resets all run stats and flags to initial baseline.
-   * Called only at the start of a genuinely new run.
-   */
   reset: function() {
     this.stats.romance = 0;
     this.stats.chaos = 0;
@@ -63,34 +69,22 @@ window.gameState = {
     this.flags.invarThreatened = false;
   },
 
-  /**
-   * Safely adds or subtracts a stat value, clamped between 0 and 10.
-   * @param {'romance'|'chaos'|'force'|'trust'} stat
-   * @param {number} delta
-   */
   addStat: function(stat, delta) {
     if (this.stats[stat] !== undefined) {
       this.stats[stat] = Math.max(0, Math.min(10, this.stats[stat] + delta));
     }
   },
 
-  /**
-   * Sets a boolean flag.
-   * @param {keyof GameFlags} flag
-   * @param {boolean} [value=true]
-   */
   setFlag: function(flag, value = true) {
     if (this.flags[flag] !== undefined) {
       this.flags[flag] = !!value;
     }
   },
 
-  /**
-   * Checks a boolean flag.
-   * @param {keyof GameFlags} flag
-   * @returns {boolean}
-   */
   hasFlag: function(flag) {
     return !!this.flags[flag];
   }
 };
+
+// Bind to window for shared access across classic script tags
+window['gameState'] = gameState;

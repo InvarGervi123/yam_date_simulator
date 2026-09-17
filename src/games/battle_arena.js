@@ -1,6 +1,10 @@
 // --- Deltarune Active Dodging Arena Module (8 Sequential Stages & Undertale Soul Modes) ---
 
 window.battleArena = {
+  /**
+   * @param {TouchEvent} e
+   * @param {BattleCtx} ctx
+   */
   handleTouchMove: (e, ctx) => {
     e.preventDefault();
     const touch = e.touches[0];
@@ -13,6 +17,10 @@ window.battleArena = {
     ctx.heart.style.top = ctx.heartY + "px";
   },
 
+  /**
+   * Starts enemy turn bullet hell sequence in the dodging arena.
+   * @param {BattleCtx} ctx
+   */
   startEnemyTurn: function(ctx) {
     if (ctx.isGameOver) return;
     
@@ -831,6 +839,10 @@ window.battleArena = {
     }, 450);
   },
 
+  /**
+   * Cleans up timers, event listeners, and hazards after an enemy turn.
+   * @param {BattleCtx} ctx
+   */
   cleanupEnemyTurn: function(ctx) {
     clearInterval(window.battleMoveInterval);
     clearInterval(window.battleSpawnInterval);

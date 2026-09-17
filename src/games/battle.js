@@ -85,6 +85,7 @@ function runDeltaruneBattle(config) {
    * @property {Function} updateHpBars - Re-renders player and boss HP/TP status bars.
    * @property {Function} startPlayerTurn - Resets turn state and opens action menu.
    */
+  /** @type {BattleCtx} */
   const battleCtx = {
     get playerHp() { return playerHp; },
     set playerHp(v) { playerHp = v; updateHpBars(); },

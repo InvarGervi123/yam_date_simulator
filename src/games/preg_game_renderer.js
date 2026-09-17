@@ -25,6 +25,7 @@
    * @property {number} lastParticleSpawn - Timestamp of last generated star particle.
    * @property {number} temporaryHitBlur - CSS blur intensity filter in pixels.
    */
+  /** @type {PregCtx} */
   window.pregCtx = {
     playerHp: 100,
     bossHp: 100,

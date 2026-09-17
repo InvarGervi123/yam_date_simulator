@@ -31,6 +31,7 @@ function runPregnancyGame(onSuccess, onFail) {
   }
 
   // Bind references to global state bridge
+  /** @type {PregCtx} */
   const ctx = window.pregCtx;
 
   // Reset/Initialize state variables on startup

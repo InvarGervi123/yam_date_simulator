@@ -154,6 +154,7 @@ function runBaldiMinigame(config) {
    * @property {boolean} jumpScareActive - Flag if jumpscare triggers.
    * @property {HTMLImageElement} jumpscareYamImg - Image source for the jumpscare sprite.
    */
+  /** @type {BaldiCtx} */
   const baldiCtx = {
     get px() { return px; },
     get py() { return py; },
