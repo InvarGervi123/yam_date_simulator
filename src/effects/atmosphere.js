@@ -258,6 +258,49 @@
       } else if (sceneStr.includes('drag_yam') || sceneStr.includes('steal_drawer') || txtStr.includes('בכוח') || txtStr.includes('לפרוץ')) {
         this.triggerComicImpact();
       }
+    },
+
+    // 7. Subtle Contextual Stat Effects (No text, no numbers, no HUD)
+    playRomanceFeedback: function() {
+      if (!atmosphereEnabled) return;
+      this.spawnRomanticSparkles(3);
+      if (typeof triggerVibration === 'function') triggerVibration(20);
+    },
+
+    playTrustFeedback: function() {
+      if (!atmosphereEnabled) return;
+      const gameElem = document.getElementById('game');
+      if (gameElem) {
+        gameElem.classList.add('effect-trust-pulse');
+        setTimeout(() => gameElem.classList.remove('effect-trust-pulse'), 600);
+      }
+      if (typeof triggerVibration === 'function') triggerVibration(15);
+    },
+
+    playForceFeedback: function() {
+      if (!atmosphereEnabled) return;
+      const gameElem = document.getElementById('game');
+      if (gameElem) {
+        gameElem.classList.add('effect-redflash', 'effect-shake');
+        setTimeout(() => gameElem.classList.remove('effect-redflash', 'effect-shake'), 400);
+      }
+      if (typeof triggerVibration === 'function') triggerVibration([50, 30, 70]);
+    },
+
+    playChaosFeedback: function() {
+      if (!atmosphereEnabled) return;
+      const gameElem = document.getElementById('game');
+      if (gameElem) {
+        gameElem.classList.add('effect-shake');
+        setTimeout(() => gameElem.classList.remove('effect-shake'), 300);
+      }
+      if (typeof triggerVibration === 'function') triggerVibration(25);
+    },
+
+    playBurekasFeedback: function() {
+      if (!atmosphereEnabled) return;
+      this.spawnBurekasRain(3);
+      if (typeof triggerVibration === 'function') triggerVibration(25);
     }
   };
 })();

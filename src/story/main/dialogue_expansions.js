@@ -20,6 +20,7 @@ Object.assign(window.story, {
             window.gameState.addStat('romance', 1);
             window.gameState.addStat('trust', 1);
           }
+          if (window.atmosphereEngine) window.atmosphereEngine.playTrustFeedback();
         }
       },
       {
@@ -30,6 +31,7 @@ Object.assign(window.story, {
             window.gameState.setFlag('hasBurekas', true);
             window.gameState.addStat('chaos', 1);
           }
+          if (window.atmosphereEngine) window.atmosphereEngine.playBurekasFeedback();
         }
       },
       {
@@ -40,6 +42,7 @@ Object.assign(window.story, {
             window.gameState.addStat('romance', 1);
             window.gameState.addStat('trust', 2);
           }
+          if (window.atmosphereEngine) window.atmosphereEngine.playRomanceFeedback();
         }
       },
       {

@@ -46,6 +46,7 @@ Object.assign(window.story, {
         next: "room_intro_normal",
         onSelect: function() {
           if (window.gameState) window.gameState.addStat('romance', 2);
+          if (window.atmosphereEngine) window.atmosphereEngine.playRomanceFeedback();
           if (typeof playMusic === "function") playMusic("audio/בואי תמי (גרסא לדייטים).mp3");
         }
       },
@@ -57,6 +58,7 @@ Object.assign(window.story, {
             window.gameState.addStat('force', 2);
             window.gameState.addStat('chaos', 1);
           }
+          if (window.atmosphereEngine) window.atmosphereEngine.playForceFeedback();
           if (typeof playMusic === "function") playMusic("audio/גישה פיזית ודרמטית.mp3");
         }
       },
