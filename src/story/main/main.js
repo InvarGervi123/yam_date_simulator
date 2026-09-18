@@ -499,10 +499,23 @@ Object.assign(window.story, {
     character: "images/characters/yam.png",
     text: "ים קם.\nהיקום נבהל.\nכוח הכבידה הגיש ערעור.\nעכשיו צריך לבחור לאן הולכים.",
     onEnter: function(scene) {
+      const baseChoices = [
+        { text: "פתח תקווה", next: "petah_tikva_path" },
+        { text: "קולנוע", next: "cinema_path" },
+        { text: "ספסל עצוב ליד תחנת אוטובוס", next: "bus_stop" },
+        { text: "לצלם את זה לערוץ", next: "content_date" },
+        { text: "לחזור למיטה כי זה היה יותר מדי", next: "end_back_to_bed" }
+      ];
+
       if (window.gameState && window.gameState.hasFlag('hasBurekas')) {
         scene.text = "ים קם.\nהיקום נבהל, אבל ריח הבורקס החם שהבאת הצליח לשכנע אותו לעמוד על הרגליים.\nעכשיו צריך לבחור לאן הולכים.";
+        scene.choices = [
+          { text: "🥐 לשלוף את הבורקס החם ולהתחיל דייט מאפייה", next: "burekas_path" },
+          ...baseChoices
+        ];
       } else {
         scene.text = "ים קם.\nהיקום נבהל.\nכוח הכבידה הגיש ערעור.\nעכשיו צריך לבחור לאן הולכים.";
+        scene.choices = baseChoices;
       }
     },
     choices: [
