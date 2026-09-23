@@ -132,6 +132,7 @@ function runBaldiMinigame(config) {
   let activePadSession = false;
   let jumpScareActive = false;
   let invincibilityTime = 0;
+  let yamFreezeUntil = 0;
 
   // Sound slaps loop
   let yamLastSlap = 0;
@@ -446,7 +447,7 @@ function runBaldiMinigame(config) {
         
         let targetInterval = Math.max(180, Math.min(1300, (dist * 250) - (mistakesCount * 120)));
         
-        if (timeNow - yamLastSlap > targetInterval) {
+        if (timeNow >= yamFreezeUntil && timeNow - yamLastSlap > targetInterval) {
           yamLastSlap = timeNow;
           playSfx("audio/crack.mp3"); // Slap ruler!
           triggerVibration(20);
@@ -493,7 +494,9 @@ function runBaldiMinigame(config) {
           lives--;
           jumpScareActive = true;
           mistakesCount++;
-          invincibilityTime = Date.now() + 2000; // 2 seconds of invincibility to prevent instant death loops
+          yamFreezeUntil = Date.now() + 3000; // Yam stops moving and slapping for 3 seconds
+          yamLastSlap = Date.now() + 3000;
+          invincibilityTime = Date.now() + 3500; // 3.5 seconds of player invincibility to allow escape
           
           playSfx("audio/hit.mp3");
           triggerVibration([500, 150, 500]);
@@ -517,8 +520,20 @@ function runBaldiMinigame(config) {
             }, 1200);
             return;
           } else {
-            promptText.textContent = `נפגעת! נשארו לך ${lives} חיים!`;
+            promptText.textContent = `נפגעת! נשארו לך ${lives} חיים! (ים קפוא ל-3 שניות)`;
             promptText.style.color = "#ff3333";
+            setTimeout(() => {
+              if (isMinigameActive && !isGameOver && !activePadSession) {
+                if (collectedNotebooksCount >= 3) {
+                  promptText.textContent = "מצא את היציאה 🚪! מהר!";
+                  promptText.style.color = "#ffff00";
+                } else {
+                  promptText.textContent = "מצא 3 מחברות 📘 בתוך הכיתות!";
+                  promptText.style.color = "#ffffff";
+                }
+              }
+            }, 3000);
+
             setTimeout(() => {
               jumpScareActive = false;
               // Push Yam back step-by-step checking for wall collisions to prevent clipping
