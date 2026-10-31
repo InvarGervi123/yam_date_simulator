@@ -550,7 +550,7 @@ function startYamShadowRenderer(canvas) {
         }
       }
 
-      // 2. Collision check: Invar Node (Fragile: dies easily if not protected)
+      // 2. Collision check: Invar Node
       if (!teleportState.disappeared && !teleportState.charging) {
         const dxInvar = b.x - invarLogicalX;
         const dyInvar = b.y - invarLogicalY;
@@ -559,9 +559,9 @@ function startYamShadowRenderer(canvas) {
 
         if (distInvar < invarHitbox) {
           if (currentTime > attackCtx.invarInvulnerableUntil) {
-            attackCtx.invarInvulnerableUntil = currentTime + 350; // Invar is very vulnerable (350ms window)
+            attackCtx.invarInvulnerableUntil = currentTime + 800; // 800ms invulnerability gives player time to react
             if (window.yamShadowCtx) {
-              window.yamShadowCtx.invarHp = Math.max(0, window.yamShadowCtx.invarHp - 20); // 2 hits on 30 HP kills Invar
+              window.yamShadowCtx.invarHp = Math.max(0, window.yamShadowCtx.invarHp - 10); // 10 damage per hit
               if (typeof window.updateYamShadowHud === 'function') {
                 window.updateYamShadowHud();
               }
