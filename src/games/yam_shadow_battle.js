@@ -22,8 +22,8 @@ window.yamShadowCtx = {
   active: false,
   playerHp: 100,
   maxPlayerHp: 100,
-  invarHp: 100,
-  maxInvarHp: 100,
+  invarHp: 30,
+  maxInvarHp: 30,
   yamHp: 100,
   yamMaxHp: 100,
   invarPosition: 'bottom-right',
@@ -360,8 +360,8 @@ function runYamShadowBattle(config) {
   ctx.active = true;
   ctx.playerHp = 100;
   ctx.maxPlayerHp = 100;
-  ctx.invarHp = 100;
-  ctx.maxInvarHp = 100;
+  ctx.invarHp = 30;
+  ctx.maxInvarHp = 30;
   ctx.yamHp = 100;
   ctx.yamMaxHp = 100;
   ctx.healCooldown = 0;
@@ -434,7 +434,7 @@ function runYamShadowBattle(config) {
           <div style="width: 100px; height: 12px; background: #333; border-radius: 6px; overflow: hidden; border: 1px solid #555;">
             <div id="yamShadowInvarHpBar" style="width: 100%; height: 100%; background: #3498db; transition: width 0.2s;"></div>
           </div>
-          <span id="yamShadowInvarHpText" style="color: #fff; font-size: 12px; font-weight: bold;">100/100</span>
+          <span id="yamShadowInvarHpText" style="color: #fff; font-size: 12px; font-weight: bold;">30/30</span>
         </div>
       </div>
       <div id="yamShadowCanvasContainer" style="position: relative; width: 600px; height: 400px; border: 2px solid #8e44ad; background: #000000; box-shadow: 0 0 15px rgba(142, 68, 173, 0.5);">
@@ -512,6 +512,8 @@ window.showItemSubmenu = showItemSubmenu;
 window.executeItem = executeItem;
 window.retryYamShadowBattle = retryYamShadowBattle;
 window.exitYamShadowBattle = exitYamShadowBattle;
+window.executeInvarDefeat = executeInvarDefeat;
+window.executePlayerDefeat = executePlayerDefeat;
 window.showPlayerTurnMenu = showPlayerTurnMenu;
 window.onEnemyAttackWaveComplete = onEnemyAttackWaveComplete;
 window.runYamShadowBattle = runYamShadowBattle;

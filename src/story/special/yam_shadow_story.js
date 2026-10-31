@@ -248,8 +248,9 @@ Object.assign(window.story, {
   yam_shadow_vertical_slice_end: {
     speaker: "ים",
     character: "images/characters/yam_angry.png",
-    text: "ים נסוג צעד אחד לאחור, נשען על הארון.\nהצל מאחוריו מבעבע ולא נעלם.\n'זה עדיין לא נגמר...'",
+    text: "ים נסוג צעד אחד לאחור, נשען על הארון.\nהצל מאחוריו מבעבע ולא נעלם.\n'זה עדיין לא נגמר... אבל את... את ראית מה באמת מסתתר מאחורי השמיכה.'",
     choices: [
+      { text: "👑 לגלות את הסוד הסופי! (סרטון הפתעה 🎬)", next: "end_final_secret" },
       { text: "🏠 חזרה לחדר של ים", next: "room_intro" },
       { text: "🔄 חזרה למסך הראשי", next: "start" }
     ]
@@ -271,6 +272,7 @@ Object.assign(window.story, {
     effect: "redflash",
     text: "ים מפסיק לתקוף. הצל מאחוריו מתפרץ.\n'מה עשית לו...?!'\n\n📢 מסלול Grief Mode יתווסף בשלב Gameplay עתידי.",
     choices: [
+      { text: "🔄 ניסיון חוזר", next: "yam_shadow_battle_start" },
       { text: "🏠 חזרה למסך הראשי", next: "start" }
     ]
   },

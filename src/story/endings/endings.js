@@ -759,7 +759,45 @@ Object.assign(window.story, {
     speaker: "סוף סודי: הטאבלט החשוד",
     vibrate: [100, 50, 200, 50, 300],
     text: "🛠️ סוף סודי: DevTools Hack\n\nפתחת את DevTools מתוך הטאבלט של ים ושינית את התשובות בקוד ל-100% הצלחה!\nים החוויר: 'זה... לצורכי חינוך בלבד!'\nבקונסול הופיעה הודעה: ADMIN PASSWORD: yam123.\nים קיבל באן מהטאבלט של עצמו, אבל הוא מעריך את התושייה וההאקינג שלך!\nניצחון טכנולוגי קורע מצחוק!",
-    end: true
+    end: true,
+    choices: [
+      {
+        text: "🎁 לחשוף את הסוד הסופי! (סרטון הפתעה 🎬)",
+        next: "end_final_secret"
+      },
+      {
+        text: "לשחק שוב מההתחלה",
+        next: "start"
+      }
+    ]
+  },
+
+  end_final_secret: {
+    speaker: "סוף סודי: הסוד הסופי",
+    character: "images/characters/yam_happy.png",
+    bg: "images/backgrounds/room.jpg",
+    music: "audio/main.mp3",
+    effect: "flash",
+    vibrate: [150, 100, 250],
+    video: "https://youtu.be/QPSExX5EP-U",
+    text: "👑 סוף סודי: סרטון ההפתעה (הסוד הסופי)\n\n🎉 מדהים! הצלחת למצוא את הסוד הסופי של ים דייט סימולטור! 🎉\n\nחשפת את כל הרמזים, פתרת את התעלומות של אורנית, הבסת את הצל של ים ו-THE ECHO, והגעת אל מעבר לקוד.\n\nכפרס מיוחד למי שהצליח למצוא את הסוד הסופי – הנה סרטון ההפתעה הבלעדי!\nאפשר לצפות בו ישירות כאן בחלון למעלה, או לפתוח בקישור ישיר ב-YouTube.",
+    end: true,
+    choices: [
+      {
+        text: "🎬 פתח את סרטון ההפתעה ב-YouTube (קישור ישיר)",
+        onSelect: () => {
+          window.open("https://youtu.be/QPSExX5EP-U", "_blank");
+        }
+      },
+      {
+        text: "🔄 לשחק שוב מההתחלה",
+        next: "start"
+      },
+      {
+        text: "🏠 חזרה לחדר של ים",
+        next: "room_intro"
+      }
+    ]
   },
 
   end_polish_chocolate_ch1: {

@@ -120,6 +120,12 @@ window.endingRegistry = {
     "title": "סוף אימה: מלכודת ה-goy 👹",
     "hidden": true
   },
+  "end_final_secret": {
+    "code": "S06",
+    "category": "SECRET",
+    "title": "סוף סודי: סרטון ההפתעה (הסוד הסופי)",
+    "hidden": true
+  },
   "end_canon_bad": {
     "code": "B01",
     "category": "BAD",
