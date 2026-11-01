@@ -31,6 +31,7 @@ const ASSETS = [
   './src/story/special/special.js',
   './src/story/court/court_ch1.js',
   './src/story/court/court_ch2.js',
+  './src/story/court/court_ch3.js',
   './src/story/court/court.js',
   './src/story/special/battle.js',
   './src/story/special/baldi.js',

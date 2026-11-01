@@ -94,6 +94,50 @@
       chapter: 2,
       name: "פרוטוקול תיק 3: המאפייה הקוסמית",
       desc: "מסמך סודי שהודלף ממעבדי השופט AI: 'שלב המוקדמות הושלם. בתיק 3 יזומנו ים, ליליה והינוורים למשפט מול האופה העליון של המולטיוורס!'"
+    },
+
+    // --- פרק 3: תביעת המדינה והדיסקורד נגד ים שמואל (שירי המחאה והמזרן הריבוני) ---
+    {
+      id: "evidence_political_tape",
+      icon: "📼",
+      chapter: 3,
+      name: "קלטת הדריל: המנון המזרן הריבוני",
+      desc: "קובץ האודיו הלוהט מ-02:47 בלילה: 140 BPM, אוטו-טיון שבור, וחרוזים זועמים הדורשים פטור ממע\"מ על בורקס וחוק יסוד שמיכה."
+    },
+    {
+      id: "evidence_ac_remote",
+      icon: "📟",
+      chapter: 3,
+      name: "שלט המזגן שנפל מתחת למיטה",
+      desc: "שלט מזגן של אמא שעמד על 16 מעלות. נמצא מתחת למזרן. מוכיח חד-משמעית שהקריאה 'להפיל את השלטון' התייחסה לשלט של המזגן!"
+    },
+    {
+      id: "evidence_audio_spectrum",
+      icon: "📊",
+      chapter: 3,
+      name: "ניתוח ספקטרוגרפי של ה-WAV",
+      desc: "ניתוח תדרי קול מבודד: מוכיח שים מלמל מתוך שינה 'הכוס תה צריכה מילוי-שיקוי' ולא 'הכנסת צריכה פינוי-בינוי'!"
+    },
+    {
+      id: "evidence_sleep_deprivation",
+      icon: "📑",
+      chapter: 3,
+      name: "דוח שכרות שינה (400 שורטס)",
+      desc: "יומן רשת המוכיח: ים צרך 400 שורטס של חתולים ברצף, שוקו מקולקל, והגיע לרמת גלוקוז שגורמת לחריזה בלתי נשלטת ללא כוונה פלילית."
+    },
+    {
+      id: "evidence_broken_headset",
+      icon: "🎧",
+      chapter: 3,
+      name: "אוזניות הגיימינג המעוותות",
+      desc: "אוזניות עם מיקרופון של 8-bit שקלטו רעשי מאוורר ופירורי בורקס, מה שגרם לכל מילה פשוטה להישמע כמו מניפסט אנרכיסטי מאיים."
+    },
+    {
+      id: "evidence_oranit_bed_treaty",
+      icon: "📜",
+      chapter: 3,
+      name: "אמנת אורנית להגנת המזרן",
+      desc: "סעיף 4א' המקודש: 'שיר מחאה או דריל שנכתבו מתחת לשמיכת פוך אינם שפיטים בשום בית דין שאין בו חימום תת-רצפתי ותה נענע'."
     }
   ];
 
@@ -160,6 +204,87 @@
     `;
     gameElem.appendChild(dualInvars);
 
+    // 2e. Sovereign Bed Layer 1: Headboard & Pillows (Behind Yam: z-index 17)
+    let bedHeadboard = document.getElementById("courtBedHeadboard");
+    if (!bedHeadboard) {
+      bedHeadboard = document.createElement("div");
+      bedHeadboard.id = "courtBedHeadboard";
+      bedHeadboard.innerHTML = `
+        <div class="court-bed-headboard-frame"></div>
+        <div class="court-bed-pillows">
+          <div class="court-bed-pillow"></div>
+          <div class="court-bed-pillow right"></div>
+        </div>
+        <div class="court-bed-lamp">
+          <div class="bed-lamp-shade"></div>
+          <div class="bed-lamp-stand"></div>
+          <div class="bed-lamp-base"></div>
+        </div>
+      `;
+      gameElem.appendChild(bedHeadboard);
+    }
+
+    // 2e-2. Sovereign Bed Layer 2: Duvet Blanket & Plaque (In front of Yam: z-index 23)
+    let bedDuvet = document.getElementById("courtBedDuvet");
+    if (!bedDuvet) {
+      bedDuvet = document.createElement("div");
+      bedDuvet.id = "courtBedDuvet";
+      bedDuvet.innerHTML = `
+        <div class="court-bed-zzz-wrap">
+          <span class="bed-zzz">Z</span>
+          <span class="bed-zzz">z</span>
+          <span class="bed-zzz">z</span>
+        </div>
+        <div class="court-bed-duvet-cover">
+          <div class="court-bed-plaque">
+            <span>🛏️</span>
+            <span>עיר מקלט — מזרן ריבוני אורנית</span>
+          </div>
+        </div>
+      `;
+      gameElem.appendChild(bedDuvet);
+    }
+
+    // 2f. Audio Spectrum & Track Visualizer (Chapter 3)
+    let audioVisualizer = document.getElementById("courtAudioVisualizer");
+    if (!audioVisualizer) {
+      audioVisualizer = document.createElement("div");
+      audioVisualizer.id = "courtAudioVisualizer";
+      audioVisualizer.innerHTML = `
+        <div class="court-audio-trackinfo">
+          <div class="court-audio-rec-dot"></div>
+          <span id="courtAudioTrackName">🔴 REC: TRACK_140BPM_POLITICAL_MANIFESTO.WAV</span>
+        </div>
+        <div class="court-audio-equalizer">
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        </div>
+      `;
+      gameElem.appendChild(audioVisualizer);
+    }
+
+    // 2g. Invar Cyber-Defense Terminal (Chapter 3)
+    let invarTerminal = document.getElementById("courtInvarTerminal");
+    if (!invarTerminal) {
+      invarTerminal = document.createElement("div");
+      invarTerminal.id = "courtInvarTerminal";
+      invarTerminal.innerHTML = `
+        <div class="terminal-titlebar">
+          <span>⚡ YANIVAR_DEFENSE_v3.2</span>
+          <span>● ONLINE</span>
+        </div>
+        <div class="terminal-stream" id="courtTerminalStream">
+          &gt; BYPASSING DISCORD CHARGES...<br>
+          &gt; EXAMINING AUDIO SPECTRUM: 140BPM<br>
+          &gt; PROVING LACK OF INTENT...<br>
+          &gt; STATUS: DEFENDING YAM [100%]<span class="terminal-cursor"></span>
+        </div>
+      `;
+      gameElem.appendChild(invarTerminal);
+    }
+
     // 3. Court Record Modal (Evidence Binder)
     const recordModal = document.createElement("div");
     recordModal.id = "courtRecordModal";
@@ -225,6 +350,64 @@
       onPresentCallback = null;
       updateHpDisplay();
       this.setCourtActive(true);
+      this.setBedPodium(false);
+      this.setAudioVisualizer(false);
+      this.setInvarTerminal(false);
+    },
+
+    setBedPodium: function(active, speaking = false) {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      const headboard = document.getElementById("courtBedHeadboard");
+      const duvet = document.getElementById("courtBedDuvet");
+      if (!gameElem) return;
+
+      if (active) {
+        gameElem.classList.add("court-bed-active");
+        if (speaking) {
+          if (headboard) headboard.classList.add("speaking");
+          if (duvet) duvet.classList.add("speaking");
+        } else {
+          if (headboard) headboard.classList.remove("speaking");
+          if (duvet) duvet.classList.remove("speaking");
+        }
+      } else {
+        gameElem.classList.remove("court-bed-active");
+        if (headboard) headboard.classList.remove("speaking");
+        if (duvet) duvet.classList.remove("speaking");
+      }
+    },
+
+    setAudioVisualizer: function(active, trackInfo = "") {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      const trackNameElem = document.getElementById("courtAudioTrackName");
+      if (!gameElem) return;
+
+      if (active) {
+        gameElem.classList.add("court-audio-active");
+        if (trackNameElem && trackInfo) {
+          trackNameElem.textContent = trackInfo;
+        }
+      } else {
+        gameElem.classList.remove("court-audio-active");
+      }
+    },
+
+    setInvarTerminal: function(active, streamText = "") {
+      initCourtDom();
+      const gameElem = document.getElementById("game");
+      const streamElem = document.getElementById("courtTerminalStream");
+      if (!gameElem) return;
+
+      if (active) {
+        gameElem.classList.add("court-terminal-active");
+        if (streamElem && streamText) {
+          streamElem.innerHTML = streamText + '<span class="terminal-cursor"></span>';
+        }
+      } else {
+        gameElem.classList.remove("court-terminal-active");
+      }
     },
 
     getHp: function() {
@@ -581,10 +764,12 @@
       if (!modal || !grid) return;
 
       const scn = (typeof currentScene !== "undefined" ? currentScene : (window.currentScene || ""));
+      const isCh3 = scn.includes("ch3");
       const isCh2 = scn.includes("ch2");
 
       // Filter or prioritize evidence based on active chapter
       const relevantList = EVIDENCE_DATABASE.filter(item => {
+        if (isCh3) return item.chapter === 3 || !item.chapter;
         if (isCh2) return item.chapter === 2 || !item.chapter;
         return item.chapter === 1 || !item.chapter;
       });

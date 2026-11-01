@@ -231,9 +231,7 @@ function addChoice(label, nextScene, onSelect) {
       try { onSelect(); } catch (err) { console.error("Error in choice onSelect:", err); }
     }
     const target = (typeof nextScene === "function") ? nextScene() : nextScene;
-    if (target) {
-      showScene(target);
-    }
+    showScene(target);
   };
   choices.appendChild(btn);
 }
@@ -313,8 +311,6 @@ function showScene(target) {
   const dialogBox = document.getElementById("dialogBox");
 
   if (id === "start" || id === "main_menu") {
-    const vc = document.getElementById("sceneVideoContainer");
-    if (vc) { vc.innerHTML = ""; vc.style.display = "none"; }
     if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
     if (window.ttsEngine) window.ttsEngine.cancel();
     if (p5Menu) p5Menu.style.display = "flex";
@@ -536,45 +532,6 @@ function showScene(target) {
   // Performance Preloading Optimization
   preloadNextAssets(scene);
 
-  // Handle Scene Video Embed
-  let videoContainer = document.getElementById("sceneVideoContainer");
-  if (scene.video) {
-    if (!videoContainer) {
-      videoContainer = document.createElement("div");
-      videoContainer.id = "sceneVideoContainer";
-      const choicesEl = document.getElementById("choices");
-      if (choicesEl && choicesEl.parentNode) {
-        choicesEl.parentNode.insertBefore(videoContainer, choicesEl);
-      }
-    }
-    videoContainer.style.display = "flex";
-    videoContainer.style.flexDirection = "column";
-    videoContainer.style.alignItems = "center";
-    videoContainer.style.justifyContent = "center";
-    videoContainer.style.margin = "10px auto";
-    videoContainer.style.zIndex = "20";
-    videoContainer.style.width = "90%";
-    videoContainer.style.maxWidth = "480px";
-
-    let embedUrl = scene.video;
-    if (embedUrl.includes("youtu.be/")) {
-      const vidId = embedUrl.split("youtu.be/")[1].split("?")[0].split("&")[0];
-      embedUrl = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
-    } else if (embedUrl.includes("watch?v=")) {
-      const vidId = embedUrl.split("watch?v=")[1].split("&")[0];
-      embedUrl = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
-    }
-
-    videoContainer.innerHTML = `
-      <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px; border: 2px solid #e74c3c; box-shadow: 0 0 25px rgba(231, 76, 60, 0.7); background: #000;">
-        <iframe src="${embedUrl}" title="Secret Surprise Video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-      </div>
-    `;
-  } else if (videoContainer) {
-    videoContainer.innerHTML = "";
-    videoContainer.style.display = "none";
-  }
-
   // Check for Minigame Trigger
   if (scene.minigame) {
     if (window.ttsEngine) window.ttsEngine.cancel();
@@ -587,11 +544,7 @@ function showScene(target) {
     if (scene.end) {
       if (typeof stopWiiPulseGame === "function") stopWiiPulseGame();
       nextBtn.style.display = "none";
-      if (scene.choices && scene.choices.length > 0) {
-        scene.choices.forEach(choice => addChoice(choice.text, choice.next, choice.onSelect));
-      } else {
-        addChoice("לשחק שוב מההתחלה", "start");
-      }
+      addChoice("לשחק שוב מההתחלה", "start");
       return;
     }
   }
@@ -721,7 +674,7 @@ let currentGalleryCategory = "ALL";
 const GALLERY_CATEGORIES = [
   { id: "ALL", label: "הכל", icon: "🌐" },
   { id: "MAIN", label: "ראשיים", icon: "🏆", headerTitle: "🏆 סיומים ראשיים (M01 - M14)" },
-  { id: "SECRET", label: "סודיים", icon: "🔮", headerTitle: "🔮 סיומים סודיים (S01 - S06)" },
+  { id: "SECRET", label: "סודיים", icon: "🔮", headerTitle: "🔮 סיומים סודיים (S01 - S05)" },
   { id: "COURT", label: "בית הדין", icon: "🏛️", headerTitle: "🏛️ סאגת בית הדין באורנית (C01 - C05)" },
   { id: "DLC", label: "DLC וסאגות", icon: "🍫", headerTitle: "🍫 שוקולד פולני וקרב צללים (DLC01 - DLC11)" },
   { id: "BAD", label: "סיומים רעים", icon: "💀", headerTitle: "💀 סיומים רעים נרטיביים (B01 - B12)" },

@@ -248,9 +248,8 @@ Object.assign(window.story, {
   yam_shadow_vertical_slice_end: {
     speaker: "ים",
     character: "images/characters/yam_angry.png",
-    text: "ים נסוג צעד אחד לאחור, נשען על הארון.\nהצל מאחוריו מבעבע ולא נעלם.\n'זה עדיין לא נגמר... אבל את... את ראית מה באמת מסתתר מאחורי השמיכה.'",
+    text: "ים נסוג צעד אחד לאחור, נשען על הארון.\nהצל מאחוריו מבעבע ולא נעלם.\n'זה עדיין לא נגמר...'",
     choices: [
-      { text: "👑 לגלות את הסוד הסופי! (סרטון הפתעה 🎬)", next: "end_final_secret" },
       { text: "🏠 חזרה לחדר של ים", next: "room_intro" },
       { text: "🔄 חזרה למסך הראשי", next: "start" }
     ]
